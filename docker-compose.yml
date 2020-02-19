@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: .
+    image: anki-dev
+    volumes:
+      - '.:/srv/app'
+    ports:
+      - '5000:5000'
+    depends_on: 
+      - postgres
+    restart: unless-stopped
+    environment:
+      ## Путь к точке создания приложения
+      FLASK_APP: app/test.py
+      ## Секретный ключ
+      SECRET_KEY: '!! Something secret !!'
+      ## Данные для доступа к постгресу (да, они отдельно, а не одним урлом)
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: ankibot
+  postgres:
+    image: postgres
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: ankibot
+
+volumes:
+  pgdata: null

@@ -1,0 +1,27 @@
+version: '3.7'
+
+services:
+  app:
+    image: ${CONTAINER_TEST_IMAGE}
+    command: pipenv run python -m pytest --disable-warnings -vvv -x tests/
+    depends_on: 
+      - postgres
+    restart: unless-stopped
+    environment:
+      FLASK_APP: app/test.py
+      SECRET_KEY: '!! Something secret !!'
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: ankibot
+  postgres:
+    image: postgres
+    volumes:
+      - 'pgdata:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: ankibot
+
+volumes:
+  pgdata: null
