@@ -15,7 +15,7 @@ before_script:
 Build New Images:
   stage: Build
   script:
-    - docker build --cache-from $CONTAINER_TEST_IMAGE:latest --tag $CONTAINER_TEST_IMAGE:latest --pull -t $CONTAINER_TEST_IMAGE .
+    - docker build --cache-from $CONTAINER_TEST_IMAGE --pull -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
 
 Code Health:
