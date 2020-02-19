@@ -15,7 +15,7 @@ before_script:
 Build New Images:
   stage: Build
   script:
-    - docker build --pull -t $CONTAINER_TEST_IMAGE .
+    - docker build --cache-from $CONTAINER_TEST_IMAGE:latest --tag $CONTAINER_TEST_IMAGE:latest --pull -t $CONTAINER_TEST_IMAGE .
     - docker push $CONTAINER_TEST_IMAGE
 
 Code Health:
@@ -27,6 +27,7 @@ Code Health:
 Application Tests:
   stage: Test
   script:
+    - apk add --update py-pip && pip install docker-compose
     - docker-compose -p anki-tests-${CI_JOB_ID} -f tests/docker-compose.yml run --rm -T app
   after_script:
     - docker rm -fv anki-tests-${CI_JOB_ID}_app_1 anki-tests-${CI_JOB_ID}_postgres_1 || true
