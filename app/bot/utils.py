@@ -2,11 +2,10 @@ import re
 
 from telebot import types
 
-from app.logic.utils import humanize_title, get_or_create
 from app.logic.get import get_decks
+from app.logic.utils import get_or_create, humanize_title
 
-from . import replies
-from . import markups
+from . import markups, replies
 
 
 expectations = dict()  # chat_id: {key: value}

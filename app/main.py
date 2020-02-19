@@ -1,7 +1,7 @@
+import telebot
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 
-import telebot
 
 server = Flask(__name__)
 server.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:@localhost/ankibot'

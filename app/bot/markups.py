@@ -1,4 +1,5 @@
 from random import shuffle
+
 from telebot import types
 
 from .. import config

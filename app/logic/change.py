@@ -1,10 +1,8 @@
 from time import time
 
-from .. import config
-from .. import errors
+from .. import config, errors
 from ..models import models
-
-from .utils import generate_title, generate_attempt, is_title_correct
+from .utils import generate_attempt, generate_title, is_title_correct
 
 
 def rename_user_deck(user: models.User, user_deck: models.UserDeck, deck_title: str):

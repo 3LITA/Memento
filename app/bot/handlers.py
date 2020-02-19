@@ -3,42 +3,39 @@ from random import shuffle
 import telebot
 from telebot import types
 
-from .. import errors
-from .. import config
-
-from ..logic.create import create_new_user_deck, create_new_card
-from ..logic.utils import humanize_title
+from .. import config, errors
+from ..local import TOKEN
+from ..logic.change import (
+    inc_attempt,
+    rename_user_deck,
+    set_inline_keyboard,
+    set_knowledge,
+)
+from ..logic.create import create_new_card, create_new_user_deck
 from ..logic.delete import (
     delete_user_deck,
-    remove_user_card,
-    remove_public_deck,
     forget_keyboard,
+    remove_public_deck,
+    remove_user_card,
     remove_user_deck,
 )
 from ..logic.get import (
-    pull_card,
-    search_user_deck_by_title,
-    get_user_deck_by_id,
     get_card_by_id,
     get_public_deck_by_id,
+    get_user_deck_by_id,
+    pull_card,
     search_public_deck_by_slug,
+    search_user_deck_by_title,
 )
-from ..logic.share import get_rights, update_user_deck, merge_user_deck_with_public
-from ..logic.change import (
-    inc_attempt,
-    set_knowledge,
-    set_inline_keyboard,
-    rename_user_deck,
-)
+from ..logic.share import get_rights, merge_user_deck_with_public, update_user_deck
+from ..logic.utils import humanize_title
+from . import commands, markups, replies, utils
+
 
 # from app.bot.commands import *
 # import app.bot.replies as replies
 # import app.bot.utils as utils
 # import app.bot.markups as markups
-
-from ..local import TOKEN
-
-from . import replies, utils, markups, commands
 
 
 bot = telebot.TeleBot(TOKEN)

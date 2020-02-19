@@ -1,7 +1,5 @@
-from .. import errors
-from .. import config
+from .. import config, errors
 from ..models import models
-
 from .utils import generate_title, is_title_correct
 
 

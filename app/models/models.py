@@ -1,13 +1,12 @@
 from sqlalchemy.dialects.postgresql import ARRAY
 
-from ..main import db
 from ..config import (
-    MAX_DECK_TITLE_LENGTH,
-    MAX_SLUG_LENGTH,
-    MAX_QUESTION_LENGTH,
     MAX_ANSWER_LENGTH,
+    MAX_DECK_TITLE_LENGTH,
+    MAX_QUESTION_LENGTH,
+    MAX_SLUG_LENGTH,
 )
-
+from ..main import db
 from .mutable import MutableList
 
 

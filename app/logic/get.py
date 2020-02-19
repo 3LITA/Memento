@@ -2,7 +2,6 @@ from random import random, shuffle
 
 from .. import errors
 from ..models import models
-
 from .utils import generate_title
 
 

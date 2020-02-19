@@ -1,9 +1,8 @@
 from .. import errors
 from ..models import models
-
-from .utils import generate_title
-from .delete import remove_user_card
 from .create import create_card_with_question
+from .delete import remove_user_card
+from .utils import generate_title
 
 
 def get_rights(user: models.User, public_deck: models.PublicDeck):
