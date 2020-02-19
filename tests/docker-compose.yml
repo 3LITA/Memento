@@ -3,7 +3,7 @@ version: '3.7'
 services:
   app:
     image: ${CONTAINER_TEST_IMAGE}
-    command: pipenv run python -m pytest --disable-warnings -vvv -x tests/
+    command: pytest --disable-warnings -vvv -x tests/
     depends_on: 
       - postgres
     restart: unless-stopped
