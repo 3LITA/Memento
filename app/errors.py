@@ -1,48 +1,38 @@
 class NonUniqueTitleError(Exception):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class PasswordsNotMatchError(PermissionError):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class NoPublicDeckError(Exception):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class RightsError(PermissionError):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class CreatorError(RightsError):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class AdminError(RightsError):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class RangeError(Exception):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class DoesNotExistError(Exception):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class NonUniqueSlugError(Exception):
-    def __init__(self, message):
-        super().__init__(message)
+    pass
 
 
 class EmptyDeckError(Exception):
-    def __init__(self, message):
-        super().__init__(message)
+    pass

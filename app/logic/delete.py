@@ -1,8 +1,10 @@
-from ..models import models
+import typing
+
+from app.models import models
 from .utils import generate_title
 
 
-def remove_user_deck(user: models.User, deck_title: str):
+def remove_user_deck(user: models.User, deck_title: str) -> typing.Optional[bool]:
 
     title = generate_title(user.chat_id, deck_title)
     deck = models.UserDeck.query.filter_by(title=title).first()
@@ -11,13 +13,13 @@ def remove_user_deck(user: models.User, deck_title: str):
         return delete_user_deck(deck)
 
 
-def delete_user_deck(deck: models.UserDeck):
+def delete_user_deck(deck: models.UserDeck) -> bool:
     models.db.session.delete(deck)
     models.db.session.commit()
     return True
 
 
-def remove_user_card(user_card: models.Card):
+def remove_user_card(user_card: models.Card) -> models.Card:
     # while training user decides to delete the current card
     public_card = user_card.public_card
     if len(public_card.user_cards) == 1:
@@ -29,12 +31,12 @@ def remove_user_card(user_card: models.Card):
     return user_card
 
 
-def remove_public_deck(public_deck: models.PublicDeck):
+def remove_public_deck(public_deck: models.PublicDeck) -> None:
     models.db.session.delete(public_deck)
     models.db.session.commit()
 
 
-def forget_keyboard(user):
+def forget_keyboard(user: models.User) -> None:
     user.inline_keyboard_id = None
     models.db.session.add(user)
     models.db.session.commit()

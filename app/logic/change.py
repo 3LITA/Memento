@@ -1,11 +1,12 @@
+import typing
 from time import time
 
-from .. import config, errors
-from ..models import models
+from app import config, errors
+from app.models import models
 from .utils import generate_attempt, generate_title, is_title_correct
 
 
-def rename_user_deck(user: models.User, user_deck: models.UserDeck, deck_title: str):
+def rename_user_deck(user: models.User, user_deck: models.UserDeck, deck_title: str) -> models.UserDeck:
 
     if not is_title_correct(deck_title):
         raise AttributeError('deck title contains incorrect symbols')
@@ -29,7 +30,7 @@ def rename_user_deck(user: models.User, user_deck: models.UserDeck, deck_title: 
         return user_deck
 
 
-def is_answer_correct(user_card: models.Card, user_answer):
+def is_answer_correct(user_card: models.Card, user_answer: str) -> bool:
 
     public_card = user_card.public_card
 
@@ -43,7 +44,7 @@ def is_answer_correct(user_card: models.Card, user_answer):
         return sorted(list(user_answer)) == sorted(list(public_card.correct_answers))
 
 
-def add_attempt(card: models.Card, user_answer):
+def add_attempt(card: models.Card, user_answer: str) -> bool:
 
     success = is_answer_correct(card, user_answer)
     timestamp = int(time())
@@ -59,7 +60,7 @@ def add_attempt(card: models.Card, user_answer):
     return success
 
 
-def inc_attempt(card: models.Card):
+def inc_attempt(card: models.Card) -> models.Card:
     card.attempts_number += 1
 
     models.db.session.add(card)
@@ -68,7 +69,7 @@ def inc_attempt(card: models.Card):
     return card
 
 
-def set_knowledge(card: models.Card, knowledge: int):
+def set_knowledge(card: models.Card, knowledge: int) -> typing.Union[models.Card, int]:
     if knowledge in range(1, config.KNOWLEDGE_RANGE + 1):
         card.knowledge = knowledge
         models.db.session.add(card)
@@ -78,71 +79,7 @@ def set_knowledge(card: models.Card, knowledge: int):
         return knowledge
 
 
-def set_inline_keyboard(user, inline_keyboard_id):
+def set_inline_keyboard(user: models.User, inline_keyboard_id: int) -> None:
     user.inline_keyboard_id = inline_keyboard_id
     models.db.session.add(user)
     models.db.session.commit()
-
-
-# def rename_public_deck(user: User, public_deck: PublicDeck, title: str):
-#     """
-#     Strictly renames public deck
-#     :param user: User that send rename request
-#     :param public_deck: PublicDeck that is to be renamed
-#     :param title: title that is to be set
-#     :return: PublicDeck if renamed;
-#              None if User has no rights
-#     """
-#
-#     for user_deck in user.decks:
-#         if user_deck.public == public_deck:
-#             if user_deck.rights == 1 or user_deck.rights == 2:
-#                 public_deck.title = title
-#                 public_deck.save()
-#                 return public_deck
-#
-#
-# def set_slug(user: User, public_deck: PublicDeck, slug: str):
-#     """
-#         Sets a slug for a public deck
-#         :param user: User that send rename request
-#         :param public_deck: PublicDeck that is to be renamed
-#         :param slug: slug that is to be set
-#         :return: PublicDeck if successful;
-#                  slug if this slug already in use
-#                  None if User has no rights
-#         """
-#
-#     for user_deck in user.decks:
-#         if user_deck.public == public_deck:
-#             if user_deck.rights == 2:
-#                 try:
-#                     PublicDeck.objects.get(slug=slug)
-#                     return slug
-#                 except DoesNotExist:
-#                     public_deck.slug = slug
-#                     public_deck.save()
-#                     return public_deck
-#
-#
-# def set_password(user: User, public_deck: PublicDeck, new_password: str, old_password=None):
-#     """
-#         Sets a slug for a public deck
-#         :param user: User that send rename request
-#         :param public_deck: PublicDeck that is to be renamed
-#         :param new_password: password that is to be set
-#         :param old_password: current password
-#         :return: PublicDeck if renamed;
-#                  old_password if it does not match the real password
-#                  None if User has no rights
-#         """
-#
-#     for user_deck in user.decks:
-#         if user_deck.public == public_deck:
-#             if user_deck.rights == 2:
-#                 if public_deck.password == old_password:
-#                     public_deck.password = new_password
-#                     public_deck.save()
-#                     return public_deck
-#                 else:
-#                     return old_password

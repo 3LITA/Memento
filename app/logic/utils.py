@@ -1,25 +1,26 @@
 import re
+import typing
 
-from ..models import models
+from app.models import models
 
 
-def generate_title(chat_id, title):
+def generate_title(chat_id: int, title: str) -> str:
     return str(chat_id) + ':' + title.lower()
 
 
-def humanize_title(chat_id, title):
-    return title[1 + len(str(chat_id)) :]
+def humanize_title(chat_id: int, title: str) -> str:
+    return title[1 + len(str(chat_id)):]
 
 
-def is_title_correct(title):
+def is_title_correct(title: str) -> typing.Optional[typing.Match]:
     return re.match(r'^[A-Za-z0-9_-]*$', title)
 
 
-def generate_attempt(success, timestamp):
+def generate_attempt(success: bool, timestamp: int) -> str:
     return 'T:' + str(timestamp) if success else 'F:' + str(timestamp)
 
 
-def get_or_create(chat_id, username):
+def get_or_create(chat_id: int, username: str) -> models.User:
 
     if username:
         named_user = models.User.query.filter_by(username=username).first()

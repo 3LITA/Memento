@@ -1,12 +1,12 @@
 from sqlalchemy.dialects.postgresql import ARRAY
 
-from ..config import (
+from app.config import (
     MAX_ANSWER_LENGTH,
     MAX_DECK_TITLE_LENGTH,
     MAX_QUESTION_LENGTH,
     MAX_SLUG_LENGTH,
 )
-from ..main import db
+from app.main import db
 from .mutable import MutableList
 
 
@@ -26,7 +26,7 @@ class PublicDeck(db.Model):
         'Invite', backref='public_deck', lazy=True
     )  # O-M to Invite
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<PublicDeck %r>' % self.slug
 
 
@@ -66,7 +66,7 @@ class Question(db.Model):
     )  # M-O to PublicDeck
     cards = db.relationship('Card', backref='question', lazy=True)  # O-M to UserCard
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<Question %r>' % self.id
 
 
@@ -85,7 +85,7 @@ class UserDeck(db.Model):
     )  # M-O to User
     cards = db.relationship('Card', backref='user_deck', lazy=True)  # O-M to UserCard
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<UserDeck %r>' % self.title
 
 
@@ -105,13 +105,13 @@ class Card(db.Model):
         db.Integer, db.ForeignKey('user_deck.id'), nullable=False
     )  # M-O to UserDeck
 
-    def __gt__(self, other):
+    def __gt__(self, other: 'Card') -> bool:
         return self.attempts_number > other.attempts_number
 
-    def __lt__(self, other):
+    def __lt__(self, other: 'Card') -> bool:
         return self.attempts_number < other.attempts_number
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<Card %r>' % self.id
 
 
@@ -127,7 +127,7 @@ class User(db.Model):
     )  # O-M to Admin
     invites = db.relationship('Invite', backref='user', lazy=True)  # O-M to Invite
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return '<User %r>' % self.chat_id
 
 

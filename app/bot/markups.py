@@ -2,7 +2,7 @@ from random import shuffle
 
 from telebot import types
 
-from .. import config
+from app import config
 
 
 def create_menu_markup(user):

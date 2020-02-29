@@ -1,11 +1,13 @@
-from .. import errors
-from ..models import models
+import typing
+
+from app import errors
+from app.models import models
 from .create import create_card_with_question
 from .delete import remove_user_card
 from .utils import generate_title
 
 
-def get_rights(user: models.User, public_deck: models.PublicDeck):
+def get_rights(user: models.User, public_deck: models.PublicDeck) -> int:
 
     rights = None
     for admin in public_deck.admins:
@@ -15,8 +17,8 @@ def get_rights(user: models.User, public_deck: models.PublicDeck):
 
 
 def share_user_deck(
-    user: models.User, user_deck: models.UserDeck, slug: str, password=None
-):
+    user: models.User, user_deck: models.UserDeck, slug: str, password: typing.Optional[str] = None
+) -> models.PublicDeck:
     """
         Creates a PublicDeck from a UserDeck
         :param user: User that wants to share a deck
@@ -60,8 +62,8 @@ def share_user_deck(
 
 
 def join_deck(
-    user: models.User, public_deck: models.PublicDeck, title: str, password=None
-):
+    user: models.User, public_deck: models.PublicDeck, title: str, password: typing.Optional[str] = None
+) -> models.UserDeck:
     """
     Creates UserDeck that is connected to the PublicDeck and fills it with [UserCard]
     :param user: User that wants to add a deck
@@ -103,7 +105,7 @@ def join_deck(
     return user_deck
 
 
-def update_user_deck(user_deck: models.UserDeck, delete=True):
+def update_user_deck(user_deck: models.UserDeck, delete: bool = True) -> typing.Optional[models.UserDeck]:
     """
     Makes UserDeck.cards similar to its public instance if version of public_instance is newer;
     saves public_deck
@@ -141,7 +143,7 @@ def update_user_deck(user_deck: models.UserDeck, delete=True):
     return user_deck
 
 
-def merge_user_deck_with_public(user: models.User, user_deck: models.UserDeck):
+def merge_user_deck_with_public(user: models.User, user_deck: models.UserDeck) -> typing.Optional[models.PublicDeck]:
     """
     Merges UserDeck with its public instance;
     removes [PublicCard] that were deleted as [UserCard] in UserDeck;
@@ -163,22 +165,20 @@ def merge_user_deck_with_public(user: models.User, user_deck: models.UserDeck):
     if not is_admin:
         raise errors.RightsError('User does not have rights for merging')
 
-    if user_deck.version == public_deck.version:
-        return
+    if user_deck.version != public_deck.version:
+        cards = [user_card.public_card for user_card in user_deck.cards]
 
-    cards = [user_card.public_card for user_card in user_deck.cards]
+        public_deck.cards = cards
+        public_deck.version += 1
+        user_deck.version = public_deck.version
 
-    public_deck.cards = cards
-    public_deck.version += 1
-    user_deck.version = public_deck.version
-
-    models.db.session.add(public_deck)
-    models.db.session.add(user_deck)
-    models.db.session.commit()
-    return public_deck
+        models.db.session.add(public_deck)
+        models.db.session.add(user_deck)
+        models.db.session.commit()
+        return public_deck
 
 
-def become_admin(user: models.User, public_deck: models.PublicDeck):
+def become_admin(user: models.User, public_deck: models.PublicDeck) -> models.Admin:
 
     if get_rights(user, public_deck):
         raise errors.AdminError('User is already admin')
@@ -189,7 +189,7 @@ def become_admin(user: models.User, public_deck: models.PublicDeck):
 
 def add_admin(
     recruiter: models.User, newbie_username: str, public_deck: models.PublicDeck
-):
+) -> models.Admin:
     """
     Adds an admin to the PublicDeck
     :param recruiter: User that has to be creator of the deck
@@ -216,7 +216,7 @@ def add_admin(
 
 def kick_admin(
     recruiter: models.User, kicked_username: str, public_deck: models.PublicDeck
-):
+) -> models.Admin:
 
     kicked = models.User.query.filter_by(username=kicked_username).first()
     if kicked is None:

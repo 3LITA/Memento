@@ -1,9 +1,11 @@
-from .. import config, errors
-from ..models import models
+import typing
+
+from app import config, errors
+from app.models import models
 from .utils import generate_title, is_title_correct
 
 
-def create_new_user_deck(user: models.User, deck_title: str):
+def create_new_user_deck(user: models.User, deck_title: str) -> models.UserDeck:
     """
 
     :param user:
@@ -30,9 +32,9 @@ def create_new_user_deck(user: models.User, deck_title: str):
         return deck
 
 
-def create_card_with_question(
-    deck: models.UserDeck, question: models.Question, need_commit=True
-):
+def create_card_with_question(deck: models.UserDeck,
+                              question: models.Question,
+                              need_commit: bool = True) -> models.Card:
     user_card = models.Card(question=question, user_deck=deck)
     models.db.session.add(user_card)
     if need_commit:
@@ -42,11 +44,11 @@ def create_card_with_question(
 
 def create_new_card(
     user_deck: models.UserDeck,
-    card_type,
-    question_string,
+    card_type: int,
+    question_string: str,
     correct_answers: list = None,
     wrong_answers: list = None,
-):
+) -> models.Card:
     """
     Creates a new UserCard;
     :param user_deck: UserDeck that is to store the UserCard
@@ -82,7 +84,7 @@ def create_new_card(
         ):
             raise AttributeError('card with this type must have correct_answers')
 
-        elif card_type == 4 and len(correct_answers) != 1:
+        elif card_type == 4 and correct_answers and len(correct_answers) != 1:
             raise AttributeError(
                 'card with type 4 must have exactly one correct answer'
             )
