@@ -3,9 +3,10 @@ from random import shuffle
 from telebot import types
 
 from app import config
+from app.models import models
 
 
-def create_menu_markup(user):
+def create_menu_markup(user: models.User) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 
@@ -20,7 +21,7 @@ def create_menu_markup(user):
     return keyboard
 
 
-def create_edit_card_markup(card):
+def create_edit_card_markup(card: models.Card) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup()
 
     change_question_btn = types.InlineKeyboardButton(
@@ -51,7 +52,7 @@ def create_edit_card_markup(card):
     return inline_keyboard
 
 
-def create_edit_user_deck_markup(deck):
+def create_edit_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup(row_width=2)
 
     rename_btn = types.InlineKeyboardButton(
@@ -66,7 +67,7 @@ def create_edit_user_deck_markup(deck):
     return inline_keyboard
 
 
-def create_rename_user_deck_markup(deck):
+def create_rename_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup()
 
     inline_keyboard.add(
@@ -76,7 +77,7 @@ def create_rename_user_deck_markup(deck):
     return inline_keyboard
 
 
-def create_delete_user_deck_markup(deck):
+def create_delete_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup()
 
     sure_btn = types.InlineKeyboardButton(
@@ -90,7 +91,7 @@ def create_delete_user_deck_markup(deck):
     return inline_keyboard
 
 
-def create_deck_menu_markup(user_deck):
+def create_deck_menu_markup(user_deck: models.UserDeck) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 
@@ -116,7 +117,7 @@ def create_deck_menu_markup(user_deck):
     return keyboard
 
 
-def create_new_deck_markup():
+def create_new_deck_markup() -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
     back_btn = types.InlineKeyboardButton(text='Назад', callback_data='add_deck')
@@ -126,7 +127,7 @@ def create_new_deck_markup():
     return keyboard
 
 
-def create_choose_card_type_markup(user_deck_id):
+def create_choose_card_type_markup(user_deck_id: int) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup(row_width=config.CARD_TYPES_RANGE)
 
     buttons = [
@@ -143,7 +144,7 @@ def create_choose_card_type_markup(user_deck_id):
     return keyboard
 
 
-def create_created_card_markup(card, user_deck):
+def create_created_card_markup(card: models.Card, user_deck: models.UserDeck) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 
@@ -159,7 +160,7 @@ def create_created_card_markup(card, user_deck):
     return keyboard
 
 
-def create_cancel_markup(user_deck):
+def create_cancel_markup(user_deck: models.UserDeck) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup()
     cancel_btn = types.InlineKeyboardButton(
         text='Отмена', callback_data=f'deck.{user_deck.id}'
@@ -169,7 +170,7 @@ def create_cancel_markup(user_deck):
     return keyboard
 
 
-def create_basic_learn_markup(card):
+def create_basic_learn_markup(card: models.Card) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     show_btn = types.InlineKeyboardButton(
         text='Подсказка', callback_data=f'show.{card.id}.{card.question.card_type}'
@@ -181,7 +182,7 @@ def create_basic_learn_markup(card):
     return keyboard
 
 
-def create_answer_sheet_markup(card):
+def create_answer_sheet_markup(card: models.Card) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     answers = [[ans, True] for ans in card.question.correct_answers]
     answers.extend([[ans, False] for ans in card.question.wrong_answers])
@@ -231,7 +232,7 @@ def create_answer_sheet_markup(card):
     return keyboard
 
 
-def create_set_knowledge_markup(card):
+def create_set_knowledge_markup(card: models.Card) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 

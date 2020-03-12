@@ -7,7 +7,7 @@ from .delete import remove_user_card
 from .utils import generate_title
 
 
-def get_rights(user: models.User, public_deck: models.PublicDeck) -> int:
+def get_rights(user: models.User, public_deck: models.PublicDeck) -> typing.Optional[int]:
 
     rights = None
     for admin in public_deck.admins:
@@ -122,7 +122,7 @@ def update_user_deck(user_deck: models.UserDeck, delete: bool = True) -> typing.
         raise errors.NoPublicDeckError('Deck has no public instance')
 
     if user_deck.version == public_deck.version:
-        return
+        return None
 
     if delete:
         for user_card in user_deck.cards:
@@ -165,7 +165,7 @@ def merge_user_deck_with_public(user: models.User, user_deck: models.UserDeck) -
     if not is_admin:
         raise errors.RightsError('User does not have rights for merging')
 
-    if user_deck.version != public_deck.version:
+    if user_deck.version != public_deck.version: 
         cards = [user_card.public_card for user_card in user_deck.cards]
 
         public_deck.cards = cards
@@ -176,6 +176,7 @@ def merge_user_deck_with_public(user: models.User, user_deck: models.UserDeck) -
         models.db.session.add(user_deck)
         models.db.session.commit()
         return public_deck
+    return None
 
 
 def become_admin(user: models.User, public_deck: models.PublicDeck) -> models.Admin:

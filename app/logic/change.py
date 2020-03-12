@@ -43,6 +43,8 @@ def is_answer_correct(user_card: models.Card, user_answer: str) -> bool:
     elif public_card.card_type == 3:
         return sorted(list(user_answer)) == sorted(list(public_card.correct_answers))
 
+    return False  # fucking mypy forced my to write it
+
 
 def add_attempt(card: models.Card, user_answer: str) -> bool:
 

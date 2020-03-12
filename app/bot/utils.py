@@ -1,23 +1,27 @@
 import re
+import typing
 
 from telebot import types
 
 from app.logic.get import get_decks
 from app.logic.utils import get_or_create, humanize_title
+from app.models import models
 
 from . import markups, replies
 
 
-expectations = dict()  # chat_id: {key: value}
+expectations: typing.Dict[int, typing.Dict[str, typing.Any]] = dict() # chat_id: {key: value}
 
 
-def get_user(message):
+def get_user(message: types.Message) -> models.User:
     return get_or_create(message.from_user.id, message.from_user.username)
 
 
-def get_args(message):
+def get_args(message: types.Message) -> typing.Optional[typing.List[str]]:
     pattern = r'(^/\w+)(\s(.*))?'
-    args = re.search(pattern, message.text).group(3)
+    search = re.search(pattern, message.text)
+    if search:
+        args = search.group(3)
     if args:
         args = args.strip()
         if args == '':
@@ -25,68 +29,13 @@ def get_args(message):
     return args
 
 
-def count_gaps(question):
+def count_gaps(question: str) -> int:
     pattern = r'(_)'
     count = len(re.findall(pattern, question))
     return count
 
 
-#
-#
-# def ask_question(user, user_deck):
-#     # return [question, reply_keyboard, inline_keyboard]
-#
-#     card = pull_card(user_deck)
-#     public_card = card.public_card
-#
-#     reply_keyboard = types.ReplyKeyboardMarkup(one_time_keyboard=False,
-#                                                resize_keyboard=True)
-#     inline_keyboard = None
-#
-#     show_btn = types.KeyboardButton(text='/show')
-#     cancel_btn = types.KeyboardButton(text='/cancel')
-#
-#     reply_keyboard.add(show_btn, cancel_btn)
-#
-#     if public_card.card_type == 0:
-#
-#         expectations[user.chat_id] = ['set_knowledge', {'user_deck_id': user_deck.id,
-#                                                         'user_card_id': card.id,
-#                                                         'public_card_id': public_card.id}]
-#
-#         inline_keyboard = create_set_knowledge_inline_keyboard(card)
-#         text = public_card.question + '\n\n' + replies.SET_KNOWLEDGE_REPLY
-#
-#     elif public_card.card_type == 1 or public_card.card_type == 2:
-#
-#         expectations[user.chat_id] = ['learn', {'user_deck_id': user_deck.id,
-#                                                 'user_card_id': card.id,
-#                                                 'public_card_id': public_card.id,
-#                                                 'correct_answers': public_card.correct_answers}]
-#         text = public_card.question
-#
-#     elif public_card.card_type == 3 or public_card.card_type == 4:
-#
-#         inline_keyboard, correct_numbers = create_answer_sheet(card)
-#
-#         if public_card.card_type == 3:
-#             text = public_card.question + '\n\n' + replies.CHOOSE_MANY_REPLY
-#         else:
-#             text = public_card.question + '\n\n' + replies.CHOOSE_ONE_REPLY
-#
-#         expectations[user.chat_id] = ['learn_markup', {'user_deck_id': user_deck.id,
-#                                                        'user_card_id': card.id,
-#                                                        'public_card_id': public_card.id,
-#                                                        'correct_answers': correct_numbers}]
-#
-#     else:
-#         print(f'Unknown card type: {public_card.card_type}')
-#         return
-#
-#     return text, reply_keyboard, inline_keyboard
-
-
-def create_learn_decks_inline_keyboard(user):
+def create_learn_decks_inline_keyboard(user: models.User) -> typing.Optional[types.InlineKeyboardMarkup]:
 
     decks = get_decks(user)
 
@@ -100,9 +49,10 @@ def create_learn_decks_inline_keyboard(user):
                 )
             )
         return markup
+    return None  # probably it is wrong
 
 
-def decks_inline_keyboard(user):
+def decks_inline_keyboard(user: models.User) -> typing.Optional[types.InlineKeyboardMarkup]:
 
     decks = get_decks(user)
 
@@ -118,30 +68,10 @@ def decks_inline_keyboard(user):
         markup.add(*markuped)
         markup.add(types.InlineKeyboardButton(text='Назад', callback_data='menu'))
         return markup
+    return None  # probably it is wrong
 
 
-# def parse_answers(js):
-#     buttons = js.get('reply_markup').get('inline_keyboard')
-#     chosen = buttons[-3][0]['callback_data'].split('.')[-1]
-
-#     # if chosen ==
-
-#     print('printing buttons')
-#     print(buttons)
-
-#     keyboard = types.InlineKeyboardMarkup(row_width=1)
-#     keyboard.add(
-#         *[
-#             types.InlineKeyboardButton(
-#                 text=btn[0].get('text'), callback_data=btn[0].get('callback_data')
-#             )
-#             for btn in buttons
-#         ]
-#     )
-#     return keyboard
-
-
-def build_learn_text_and_keyboard(user, card):
+def build_learn_text_and_keyboard(user: models.User, card: models.Card) -> types.InlineKeyboardMarkup:
     text = card.question.question
     if card.question.card_type == 0:
         text += '\n\n' + replies.SET_KNOWLEDGE_REPLY
@@ -158,8 +88,13 @@ def build_learn_text_and_keyboard(user, card):
     return text, keyboard
 
 
-def repeat_keyboard(js):
-    buttons = js.get('reply_markup').get('inline_keyboard')[0]
+def repeat_keyboard(js: dict) -> types.InlineKeyboardMarkup:
+    reply_markup = js.get('reply_markup')
+    if reply_markup:
+        reply_markup = reply_markup.get('inline_keyboard')
+        if reply_markup:
+            buttons = reply_markup[0]  
+    # that's a total bullshit ^
 
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(
@@ -174,40 +109,27 @@ def repeat_keyboard(js):
     return keyboard
 
 
-#
-#
-# def give_card(user, user_deck):
-#     try:
-#         pull_card(user_deck)
-#     except errors.EmptyDeckError:
-#         text = replies.EMPTY_DECK_REPLY
-#         reply_keyboard = None
-#         inline_keyboard = None
-#     else:
-#         text, reply_keyboard, inline_keyboard = ask_question(user, user_deck)
-#     return text, reply_keyboard, inline_keyboard
-
-
-def forget_context(user):
+def forget_context(user: models.User) -> typing.Optional[typing.Dict[str, typing.Any]]:
     try:
         return expectations.pop(user.chat_id)
     except KeyError:
-        return
+        return None
 
 
-def set_context(user, command, metadata: dict = None):
+def set_context(user: models.User, command: str, metadata: dict = None) -> None:
     data = {'command': command}
     if metadata:
         data.update(metadata)
     expectations[user.chat_id] = data
 
 
-def get_expected(message):
+def get_expected(message: types.Message) -> typing.Optional[str]:
     data = expectations.get(message.from_user.id)
     if data:
         return data.get('command')
+    return None
 
 
-def get_context(message):
+def get_context(message: types.Message) -> typing.Optional[typing.Dict[str, typing.Any]]:
     data = expectations.get(message.from_user.id)
     return data

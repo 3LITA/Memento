@@ -4,13 +4,14 @@ from app.models import models
 from .utils import generate_title
 
 
-def remove_user_deck(user: models.User, deck_title: str) -> typing.Optional[bool]:
+def remove_user_deck(user: models.User, deck_title: str) -> bool:
 
     title = generate_title(user.chat_id, deck_title)
     deck = models.UserDeck.query.filter_by(title=title).first()
 
     if deck:
         return delete_user_deck(deck)
+    return False  # mypy 
 
 
 def delete_user_deck(deck: models.UserDeck) -> bool:
