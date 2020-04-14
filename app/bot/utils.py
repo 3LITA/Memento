@@ -1,31 +1,34 @@
 import re
 import typing
+from pprint import pprint
 
 from telebot import types
 
-from app.logic.get import get_decks
-from app.logic.utils import get_or_create, humanize_title
-from app.models import models
+from app.locale import replies
+from app.models import utils
+from app.models.Card import Card
+from app.models.User import User
 
-from . import markups, replies
-
-
-expectations: typing.Dict[int, typing.Dict[str, typing.Any]] = dict() # chat_id: {key: value}
+from . import markups
 
 
-def get_user(message: types.Message) -> models.User:
-    return get_or_create(message.from_user.id, message.from_user.username)
+expectations: typing.Dict[
+    int, typing.Dict[str, typing.Any]
+] = dict()  # chat_id: {key: value}
+
+
+def get_user(message: types.Message) -> User:
+    return User.get_or_create(message.from_user.id, message.from_user.username)
 
 
 def get_args(message: types.Message) -> typing.Optional[typing.List[str]]:
     pattern = r'(^/\w+)(\s(.*))?'
     search = re.search(pattern, message.text)
+    args = None
     if search:
         args = search.group(3)
-    if args:
-        args = args.strip()
-        if args == '':
-            args = None
+        if args and args.strip() != '':
+            args = args.strip()
     return args
 
 
@@ -35,16 +38,18 @@ def count_gaps(question: str) -> int:
     return count
 
 
-def create_learn_decks_inline_keyboard(user: models.User) -> typing.Optional[types.InlineKeyboardMarkup]:
+def create_learn_decks_inline_keyboard(
+    user: User,
+) -> typing.Optional[types.InlineKeyboardMarkup]:
 
-    decks = get_decks(user)
+    decks = user.get_decks()
 
     if decks and len(decks) > 0:
         markup = types.InlineKeyboardMarkup()
         for deck in decks:
             markup.add(
                 types.InlineKeyboardButton(
-                    text=humanize_title(user.chat_id, deck.title),
+                    text=utils.humanize_title(user.chat_id, deck.title),
                     callback_data=f'learn_decks.{deck.id}',
                 )
             )
@@ -52,15 +57,15 @@ def create_learn_decks_inline_keyboard(user: models.User) -> typing.Optional[typ
     return None  # probably it is wrong
 
 
-def decks_inline_keyboard(user: models.User) -> typing.Optional[types.InlineKeyboardMarkup]:
+def decks_inline_keyboard(user: User) -> typing.Optional[types.InlineKeyboardMarkup]:
 
-    decks = get_decks(user)
+    decks = User.get_decks(user)
 
     if decks and len(decks) > 0:
         markup = types.InlineKeyboardMarkup()
         markuped = [
             types.InlineKeyboardButton(
-                text=humanize_title(user.chat_id, deck.title).upper(),
+                text=utils.humanize_title(user.chat_id, deck.title).upper(),
                 callback_data=f'deck.{deck.id}',
             )
             for deck in decks
@@ -71,8 +76,10 @@ def decks_inline_keyboard(user: models.User) -> typing.Optional[types.InlineKeyb
     return None  # probably it is wrong
 
 
-def build_learn_text_and_keyboard(user: models.User, card: models.Card) -> types.InlineKeyboardMarkup:
-    text = card.question.question
+def build_learn_text_and_keyboard(
+    user: User, card: Card
+) -> typing.Tuple[str, types.InlineKeyboardMarkup]:
+    text = card.question.text
     if card.question.card_type == 0:
         text += '\n\n' + replies.SET_KNOWLEDGE_REPLY
         keyboard = markups.create_set_knowledge_markup(card)
@@ -91,32 +98,31 @@ def build_learn_text_and_keyboard(user: models.User, card: models.Card) -> types
 def repeat_keyboard(js: dict) -> types.InlineKeyboardMarkup:
     reply_markup = js.get('reply_markup')
     if reply_markup:
-        reply_markup = reply_markup.get('inline_keyboard')
-        if reply_markup:
-            buttons = reply_markup[0]  
-    # that's a total bullshit ^
+        inline_keyboard = reply_markup.get('inline_keyboard')
+    # say thanks to mypy for that total bullshit ^
+    print('inline_keyboard')
+    pprint(inline_keyboard)
 
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(
         *[
             types.InlineKeyboardButton(
-                text=btn.get('text'), callback_data=btn.get('callback_data')
+                text=btn[0].get('text'), callback_data=btn[0].get('callback_data')
             )
-            for btn in buttons
-            if not btn.get('callback_data').startswith('show')
+            for btn in inline_keyboard
         ]
     )
     return keyboard
 
 
-def forget_context(user: models.User) -> typing.Optional[typing.Dict[str, typing.Any]]:
+def forget_context(user: User) -> typing.Optional[typing.Dict[str, typing.Any]]:
     try:
         return expectations.pop(user.chat_id)
     except KeyError:
         return None
 
 
-def set_context(user: models.User, command: str, metadata: dict = None) -> None:
+def set_context(user: User, command: str, metadata: dict = None) -> None:
     data = {'command': command}
     if metadata:
         data.update(metadata)
@@ -130,6 +136,17 @@ def get_expected(message: types.Message) -> typing.Optional[str]:
     return None
 
 
-def get_context(message: types.Message) -> typing.Optional[typing.Dict[str, typing.Any]]:
-    data = expectations.get(message.from_user.id)
+def get_context(message: types.Message,) -> typing.Dict[str, typing.Any]:
+    data = expectations[message.from_user.id]
     return data
+
+
+def build_chosen_answers_reply(card: Card) -> str:
+    return card.question.text + '\n\n' + replies.USER_CHOSEN_REPLY + ''
+
+
+def parse_chosen_nums(js: dict) -> typing.List[str]:
+    text = js['text'].split(replies.USER_CHOSEN_REPLY)
+    chosen_nums = sorted(text[-1].strip().split(','))
+
+    return chosen_nums

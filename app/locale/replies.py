@@ -1,4 +1,4 @@
-from . import commands
+from app.settings.dist import COMMANDS
 
 
 START_REPLY = (
@@ -8,13 +8,13 @@ START_REPLY = (
 START_AGAIN = 'Привет снова, {}!'
 
 HELP_REPLY = (
-    f'{commands.help_commands[-1]} - вывести данное окно \n'
-    f'{commands.cancel_commands[-1]} - отменить текущую операцию \n'
-    f'{commands.decks_commands[-1]} - посмотреть список колод\n'
-    f'{commands.deck_create_commands[-1]} _НАЗВАНИЕ КОЛОДЫ_ - создать новую колоду \n'
-    f'{commands.card_create_commands[-1]} _НАЗВАНИЕ КОЛОДЫ_ - добавить карту в колоду \n'
-    f'{commands.delete_commands[-1]} _НАЗВАНИЕ КОЛОДЫ_ - удалить колоду \n'
-    f'{commands.learn_commands[-1]} _НАЗВАНИЕ КОЛОДЫ_ - учить карты в колоде'
+    f'{COMMANDS["help_commands"][-1]} - вывести данное окно \n'
+    f'{COMMANDS["cancel_commands"][-1]} - отменить текущую операцию \n'
+    f'{COMMANDS["decks_commands"][-1]} - посмотреть список колод\n'
+    f'{COMMANDS["deck_create_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - создать новую колоду \n'
+    f'{COMMANDS["card_create_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - добавить карту в колоду \n'
+    f'{COMMANDS["delete_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - удалить колоду \n'
+    f'{COMMANDS["learn_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - учить карты в колоде'
 )
 
 UNKNOWN_COMMAND_REPLY = 'К сожалению, я не знаю данной команды.'
@@ -165,10 +165,10 @@ CREATE_NEW_DECK_REPLY = (
 DECK_MENU_REPLY = 'Колода *{}*'
 
 CHOOSE_CARD_TYPE_REPLY = (
-    'Выбери тип карты, которую ты хочешь добваить в "*{}*".\n\n'
+    'Выбери тип карты, которую ты хочешь добавить в "*{}*".\n\n'
     '0: *Карта без ответа*: просто какой-то факт/напоминание;\n'
     '1: *Простая карта*: задаётся вопрос - ожидается ответ;\n'
-    '2: *Карта с вводом*: в вопросе есть \f_, которые нужно заполнить;\n'
+    '2: *Карта с вводом*: в вопросе есть \_, которые нужно заполнить;\n'
     '3: *Карта с выбором правильных овтетов*;\n'
     '4: *Карта с ровно одним правильным ответом*.'
 )
@@ -235,7 +235,7 @@ DELETE_USER_DECK_REPLY = 'Удаляем колоду *{}*?'
 
 CARD_REPLY = '{}\n\n' '{}'
 
-USER_CHOSEN_REPLY = 'Твой выбор: '
+USER_CHOSEN_REPLY = 'Твой выбор:'
 
 CORRECT_REPLIES = [
     'Правильно!',

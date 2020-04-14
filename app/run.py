@@ -2,21 +2,24 @@ import telebot
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 
+from app.settings import local
+
 
 server = Flask(__name__)
-server.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:@localhost/ankibot'
+server.config['SQLALCHEMY_DATABASE_URI'] = local.POSTGRES_URI
 db = SQLAlchemy(server)
 
 
 @server.route('/', methods=['GET'])
-def index():
+def index() -> str:
     return '<h1>Bot welcomes you!</h1>'
 
 
-@server.route('/secret', methods=['POST'])
-def webhook():
-    print('got here')
-    from app.bot.handlers import bot
+@server.route(f'/{local.BOT_SECRET_URL}', methods=['POST'])
+def webhook() -> str:
+    print('Got new bot request')
+    from app.bot import contextual_handlers, markup_handlers
+    from app.bot.main import bot
 
     json_string = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_string)
@@ -25,4 +28,4 @@ def webhook():
 
 
 if __name__ == '__main__':
-    server.run(debug=True)
+    server.run(debug=False)

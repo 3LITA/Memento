@@ -2,11 +2,13 @@ from random import shuffle
 
 from telebot import types
 
-from app import config
-from app.models import models
+from app.models.Card import Card
+from app.models.User import User
+from app.models.UserDeck import UserDeck
+from app.settings import dist
 
 
-def create_menu_markup(user: models.User) -> types.InlineKeyboardMarkup:
+def create_menu_markup(user: User) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 
@@ -21,7 +23,7 @@ def create_menu_markup(user: models.User) -> types.InlineKeyboardMarkup:
     return keyboard
 
 
-def create_edit_card_markup(card: models.Card) -> types.InlineKeyboardMarkup:
+def create_edit_card_markup(card: Card) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup()
 
     change_question_btn = types.InlineKeyboardButton(
@@ -52,7 +54,7 @@ def create_edit_card_markup(card: models.Card) -> types.InlineKeyboardMarkup:
     return inline_keyboard
 
 
-def create_edit_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboardMarkup:
+def create_edit_user_deck_markup(deck: UserDeck) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup(row_width=2)
 
     rename_btn = types.InlineKeyboardButton(
@@ -67,7 +69,7 @@ def create_edit_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboardM
     return inline_keyboard
 
 
-def create_rename_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboardMarkup:
+def create_rename_user_deck_markup(deck: UserDeck) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup()
 
     inline_keyboard.add(
@@ -77,7 +79,7 @@ def create_rename_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboar
     return inline_keyboard
 
 
-def create_delete_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboardMarkup:
+def create_delete_user_deck_markup(deck: UserDeck) -> types.InlineKeyboardMarkup:
     inline_keyboard = types.InlineKeyboardMarkup()
 
     sure_btn = types.InlineKeyboardButton(
@@ -91,7 +93,7 @@ def create_delete_user_deck_markup(deck: models.UserDeck) -> types.InlineKeyboar
     return inline_keyboard
 
 
-def create_deck_menu_markup(user_deck: models.UserDeck) -> types.InlineKeyboardMarkup:
+def create_deck_menu_markup(user_deck: UserDeck) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 
@@ -128,13 +130,13 @@ def create_new_deck_markup() -> types.InlineKeyboardMarkup:
 
 
 def create_choose_card_type_markup(user_deck_id: int) -> types.InlineKeyboardMarkup:
-    keyboard = types.InlineKeyboardMarkup(row_width=config.CARD_TYPES_RANGE)
+    keyboard = types.InlineKeyboardMarkup(row_width=dist.CARD_TYPES_RANGE)
 
     buttons = [
         types.InlineKeyboardButton(
             text=f'{i}', callback_data=f'card_type.{user_deck_id}.{i}'
         )
-        for i in range(config.CARD_TYPES_RANGE)
+        for i in range(dist.CARD_TYPES_RANGE)
     ]
     buttons.append(
         types.InlineKeyboardButton(text='Назад', callback_data=f'deck.{user_deck_id}')
@@ -144,7 +146,9 @@ def create_choose_card_type_markup(user_deck_id: int) -> types.InlineKeyboardMar
     return keyboard
 
 
-def create_created_card_markup(card: models.Card, user_deck: models.UserDeck) -> types.InlineKeyboardMarkup:
+def create_created_card_markup(
+    card: Card, user_deck: UserDeck
+) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 
@@ -160,7 +164,7 @@ def create_created_card_markup(card: models.Card, user_deck: models.UserDeck) ->
     return keyboard
 
 
-def create_cancel_markup(user_deck: models.UserDeck) -> types.InlineKeyboardMarkup:
+def create_cancel_markup(user_deck: UserDeck) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup()
     cancel_btn = types.InlineKeyboardButton(
         text='Отмена', callback_data=f'deck.{user_deck.id}'
@@ -170,7 +174,7 @@ def create_cancel_markup(user_deck: models.UserDeck) -> types.InlineKeyboardMark
     return keyboard
 
 
-def create_basic_learn_markup(card: models.Card) -> types.InlineKeyboardMarkup:
+def create_basic_learn_markup(card: Card) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup(row_width=2)
     show_btn = types.InlineKeyboardButton(
         text='Подсказка', callback_data=f'show.{card.id}.{card.question.card_type}'
@@ -182,7 +186,7 @@ def create_basic_learn_markup(card: models.Card) -> types.InlineKeyboardMarkup:
     return keyboard
 
 
-def create_answer_sheet_markup(card: models.Card) -> types.InlineKeyboardMarkup:
+def create_answer_sheet_markup(card: Card) -> types.InlineKeyboardMarkup:
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     answers = [[ans, True] for ans in card.question.correct_answers]
     answers.extend([[ans, False] for ans in card.question.wrong_answers])
@@ -232,7 +236,7 @@ def create_answer_sheet_markup(card: models.Card) -> types.InlineKeyboardMarkup:
     return keyboard
 
 
-def create_set_knowledge_markup(card: models.Card) -> types.InlineKeyboardMarkup:
+def create_set_knowledge_markup(card: Card) -> types.InlineKeyboardMarkup:
 
     keyboard = types.InlineKeyboardMarkup()
 

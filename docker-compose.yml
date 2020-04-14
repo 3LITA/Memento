@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   app:
@@ -14,14 +14,14 @@ services:
     restart: unless-stopped
     environment:
       ## Путь к точке создания приложения
-      FLASK_APP: app/test.py
+      FLASK_APP: app/run.py
       ## Секретный ключ
       SECRET_KEY: '!! Something secret !!'
       ## Данные для доступа к постгресу (да, они отдельно, а не одним урлом)
-      POSTGRES_HOST: postgres
-      POSTGRES_USER: dev
-      POSTGRES_PASSWORD: devpass
-      POSTGRES_DB: ankibot
+      DATABASE_USER: dev
+      DATABASE_PASS: devpass
+      DATABASE_HOST: postgres
+      DATABASE_NAME: ankibot
   postgres:
     image: postgres
     volumes:
