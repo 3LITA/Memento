@@ -1,3 +1,5 @@
+import importlib
+
 import telebot
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
@@ -7,7 +9,7 @@ from app.settings import local
 
 server = Flask(__name__)
 server.config['SQLALCHEMY_DATABASE_URI'] = local.POSTGRES_URI
-db = SQLAlchemy(server)
+db = SQLAlchemy(server)  # type: ignore
 
 
 @server.route('/', methods=['GET'])
@@ -18,7 +20,8 @@ def index() -> str:
 @server.route(f'/{local.BOT_SECRET_URL}', methods=['POST'])
 def webhook() -> str:
     print('Got new bot request')
-    from app.bot import contextual_handlers, markup_handlers
+    importlib.import_module('bot.contextual_handlers')
+    importlib.import_module('bot.markup_handlers')
     from app.bot.main import bot
 
     json_string = request.get_data().decode('utf-8')

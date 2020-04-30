@@ -20,7 +20,7 @@ def start_handler(message: types.Message) -> None:
         bot.delete_message(user.chat_id, user.inline_keyboard_id)
     else:
         text = replies.START_REPLY.format(message.from_user.first_name)
-    bot.send_message(chat_id=message.chat.id, text=text, reply_markup=keyboard)
+    bot.send_message(chat_id=message.chat.id, text=text, reply_markup=keyboard, parse_mode='Markdown')
 
 
 @bot.message_handler(commands=dist.COMMANDS.get('help_commands'))
