@@ -4,7 +4,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies
+from app.locale import replies, buttons
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 
@@ -54,13 +54,13 @@ def show_answers_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
-    card_id, cor = message.data.split('.')[1:]
+    card_id, correct = message.data.split('.')[1:]
     card = Card.get_by_id(card_id)
 
     js = message.message.json
 
     if card.question.card_type == 3 or card.question.card_type == 4:
-        text = cor.replace(',', ', ')
+        text = correct.replace(',', ', ')
         text += '\n\n' + message.message.text
     else:
         if len(card.question.correct_answers) > 0:
@@ -73,7 +73,7 @@ def show_answers_markup_handler(message: types.Message) -> None:
         text += '\n\n' + message.message.text
         # print(message.message.text)
 
-    keyboard = utils.repeat_keyboard(js)
+    keyboard = utils.repeat_keyboard(js, exclude=[buttons.TIP])
 
     bot.edit_message_text(
         text=text,

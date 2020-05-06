@@ -34,8 +34,6 @@ def learn_contextual_handler(message: types.Message) -> None:
 
 @bot.message_handler(func=lambda message: True)
 def wtf_handler(message: types.Message) -> None:
-    print(utils.expectations)
-    print(utils.get_expected(message) == 'learn')
     answers = replies.WTF_MESSAGES
     shuffle(answers)
     text = answers[0]

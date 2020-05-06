@@ -1,7 +1,7 @@
 from app.run import db
 
 
-class Invite(db.Model):
+class Invite(db.Model):  # type: ignore
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)  # M-O
     public_deck_id = db.Column(

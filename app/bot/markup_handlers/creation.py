@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies
+from app.locale import replies, buttons
 from app.models.Card import Card
 from app.models.User import User
 from app.models.UserDeck import UserDeck
@@ -18,7 +18,7 @@ def deck_menu_markup_handler(message: types.Message) -> None:
 
     user_deck_id = message.data.split('.')[-1]
     user_deck = UserDeck.get_by_id(user_deck_id)
-    deck_title = humanize_title(user.chat_id, user_deck.title)
+    deck_title = humanize_title(user_deck.title)
 
     text = replies.CHOOSE_CARD_TYPE_REPLY.format(deck_title.upper())
 
@@ -47,10 +47,11 @@ def card_type_markup_handler(message: types.Message) -> None:
     else:
         text = replies.SEND_QUESTION_REPLY.format(card_type)
 
+    # TODO: move to markups.py
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(
         types.InlineKeyboardButton(
-            text='Назад', callback_data=f'add_card.{user_deck_id}'
+            text=buttons.BACK, callback_data=f'add_card.{user_deck_id}'
         )
     )
     metadata = {'card_type': int(card_type), 'user_deck_id': int(user_deck_id)}

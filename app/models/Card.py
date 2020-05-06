@@ -9,7 +9,7 @@ from app.settings import dist
 from . import Question, UserDeck, utils
 
 
-class Card(db.Model):
+class Card(db.Model):  # type: ignore
 
     id = db.Column(db.Integer, primary_key=True)
     attempts_number = db.Column(db.Integer, default=0, nullable=False)
@@ -79,7 +79,7 @@ class Card(db.Model):
         question = self.question
 
         if question.card_type == 1:
-            return user_answer in question.correct_answers
+            return user_answer.lower() in question.correct_answers
 
         elif question.card_type == 2:
             return list(user_answer) == list(question.correct_answers)

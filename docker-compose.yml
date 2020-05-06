@@ -18,7 +18,6 @@ services:
       ## Секретный ключ - а для чего?
       SECRET_KEY: '!! Something secret !!'
       ## TOKEN для дева пусть у каждого свой будет
-      ## Данные для доступа к постгресу (да, они отдельно, а не одним урлом)
       DATABASE_USER: dev
       DATABASE_PASS: devpass
       DATABASE_HOST: postgres

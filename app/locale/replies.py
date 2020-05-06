@@ -1,385 +1,376 @@
-from app.settings.dist import COMMANDS
-
+from app.settings import COMMANDS
 
 START_REPLY = (
-    'Привет, *{}*!\n' 'Я бот, который поможет тебе в игровой форме учить термины.'
+    "Hi, *{}*!\n"
+    "I am gonna help you learn everything you've always wanted,\n"
+    "no matter how hard it is!."
 )
 
-START_AGAIN = 'Привет снова, {}!'
+START_AGAIN = "Welcome back, {}!"
 
 HELP_REPLY = (
-    f'{COMMANDS["help_commands"][-1]} - вывести данное окно \n'
-    f'{COMMANDS["cancel_commands"][-1]} - отменить текущую операцию \n'
-    f'{COMMANDS["decks_commands"][-1]} - посмотреть список колод\n'
-    f'{COMMANDS["deck_create_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - создать новую колоду \n'
-    f'{COMMANDS["card_create_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - добавить карту в колоду \n'
-    f'{COMMANDS["delete_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - удалить колоду \n'
-    f'{COMMANDS["learn_commands"][-1]} _НАЗВАНИЕ КОЛОДЫ_ - учить карты в колоде'
+    f"{COMMANDS['menu_commands'][-1]} - use this command to navigate\n"
 )
 
-UNKNOWN_COMMAND_REPLY = 'К сожалению, я не знаю данной команды.'
+UNKNOWN_COMMAND_REPLY = "Sorry, I don't understand this command"
 
-NO_DECKS_REPLY = 'У тебя ещё нет ни одной колоды!\n' 'Не пора ли создать парочку?'
-
-DECKS_REPLY = 'Список твоих колод:\n'
-
-CREATE_NO_DECK_TITLE_REPLY = (
-    'Пожалуйста, введи команду в формате:\n' '/new НАЗВАНИЕ_КОЛОДЫ'
+NO_DECKS_REPLY = (
+    "You don't have any decks yet!\n"
+    "Maybe it's time to create one?"
 )
+
+DECKS_REPLY = 'Your decks:\n'
 
 TOO_LONG_DECK_TITLE_REPLY = (
-    'К сожалению, это название слишком длинное. \n' 'Придумай другое, покороче.'
+    'Sorry, this title is too long. \n' 'Try to choose a shorter one.'
 )
 
 USER_DECK_TITLE_NOT_UNIQUE_REPLY = (
-    'К сожалению, у тебя уже есть колода с названием *{}*. \n'
-    'Придумай другое название, или переименуй имеющуюся колоду.'
+    'Oops, you already have a deck called *{}*. \n'
+    'Please, choose another name or rename the existing deck.'
 )
 
-USER_DECK_CREATED_REPLY = 'Колода с названием {} была успешно создана!'
+USER_DECK_CREATED_REPLY = 'Deck {title} was successfully created!'
 
-NOTHING_TO_DELETE_MESSAGE = 'Прости, но я не могу ничего удалить.'
+NOTHING_TO_DELETE_MESSAGE = "Sorry, but there's nothing to delete."
 
-CARD_DELETED_MESSAGE = 'Карта была успешно удалена!'
+CARD_DELETED_MESSAGE = 'The card was successfully deleted!'
 
-USER_DECK_DELETED_REPLY = 'Колода с названием *{deck_title}* была успешно удалена!'
+USER_DECK_DELETED_REPLY = 'Deck *{deck_title}* was successfully deleted!'
 
 USER_DECK_RENAMED_REPLY = (
-    'Колода *{ex_deck_title}* отныне называется *{new_deck_title}*.'
+    'Deck *{ex_deck_title}* was renamed to *{new_deck_title}*.'
 )
 
 USER_DECK_WRONG_TITLE_FORMATTING_REPLY = (
-    'В названии колоды могут присутствовать только следующие символы:\n'
-    'Латинские буквы, цифры, -, _.'
+    'A deck title can only contain these symbols:\n'
+    'Uppercase or lowercase letters, digits, -, _.'
 )
 
 DELETE_DECK_NONE_MESSAGE = (
-    'Прости, но у тебя нет колод.\n' 'Нет колод - следовательно, и удалять тоже нечего.'
+    'Sorry, but you have no decks.'
 )
 
 DELETE_DECK_NOT_FOUND_MESSAGE = (
-    'К сожалению, у тебя нет колоды с таким названием.\n'
-    'Введи /decks для просмотра списка твоих колод'
+    "Sorry, but I can't find this deck.\n"
+    'Type /decks to see your decks'
 )
 
 USER_DECK_NOT_FOUND_REPLY = (
-    'К сожалению, у тебя нет колоды с таким названием.\n'
-    'Введи /decks для просмотра списка твоих колод'
+    "Sorry, but I can't find this deck.\n"
+    'Type /decks to see your decks'
 )
 
-CARD_NO_TITLE_MESSAGE = 'Пожалуйста, введи команду в формате:\n' '/card НАЗВАНИЕ_КОЛОДЫ'
+CARD_NO_TITLE_MESSAGE = 'Please, use this format:\n' '/card DECK_NAME'
 
 CARD_TYPES_MESSAGE = (
-    'Формат заполнения:\n'
-    'X. ВОПРОС,\n'
-    'где X - тип карты\n\n'
-    'Типы карт:\n'
-    '0: карта без ответа, просто какой-то факт/напоминание;\n'
-    '1: простая карта, задаётся вопрос - ожидается ответ;\n'
-    '2: карта с вводом, в вопросе есть _, которые нужно заполнить;\n'
-    '3: карта с выбором правильных овтетов.\n\n'
-    'P.S. Если это простая карта, то можешь не указывать тип, просто пришли ВОПРОС.'
+    'Do it this way:\n'
+    'CARD_TYPE. QUESTION\n\n'
+    'Card types:\n'
+    '0: a card with no answer, just some fact;\n'
+    '1: a question-answer card;\n'
+    '2: a card with gaps _ that you need to fill;\n'
+    '3: a card with multiple choice.\n\n'
+    "P.S. If it's a type 1 card you don't need to write a CARD_TYPE, just a QUESTION."
 )
 
 EMPTY_DECK_REPLY = (
-    'К сожалению, в данной колоде нет ни одной карты.\n' 'Не пора ли добавить парочку?'
+    "Sorry, but there aren't any cards in this deck so far.\n" "Maybe it's time to add one?"
 )
 
 LEARN_NO_TITLE_MESSAGE = (
-    'Пожалуйста, введи команду в формате:\n' '/learn НАЗВАНИЕ_КОЛОДЫ'
+    'Please, use this format::\n' '/learn DECK_NAME'
 )
 
-NOTHING_TO_SHOW_MESSAGE = 'Извини, но мне нечего тебе показать.'
+NOTHING_TO_SHOW_MESSAGE = 'Sorry, I have nothing to show.'
 
-CANCEL_MESSAGE = 'Твоя последняя команда была отменена.'
+CANCEL_MESSAGE = 'You last command was cancelled.'
 
-NOTHING_TO_CANCEL_MESSAGE = 'Тебе нечего отменять.'
+NOTHING_TO_CANCEL_MESSAGE = 'Sorry, nothing to cancel.'
 
-# NO_CORRECT_ANSWERS_MESSAGE = 'Правильных ответов на этот вопрос нет.\n' \
-#                              'В таком случае тебе стоит прислать 0.'
+# NO_CORRECT_ANSWERS_MESSAGE = 'No correct answers to this question.\n' \
+#                              'In this case you need to set type 0.'
 
-UNEXPECTED_ERROR_REPLY = 'Что-то пошло не так.\n' 'Попробуй ещё раз.'
+UNEXPECTED_ERROR_REPLY = 'Something went wrong.\n' 'Try again.'
 
-SHARE_MESSAGE = 'Хорошо, теперь пришли мне уникальное название (регистр не важен), которое ты хочешь дать твоей новой колоде.'
+SHARE_MESSAGE = 'Well, now send me a deck name, it can contain letters of any case.'
 
-PERMISSION_DENIED_MESSAGE = 'Прости, но у тебя нет прав на выполнение данной операции.'
+PERMISSION_DENIED_MESSAGE = 'Sorry, permission denied.'
 
-NO_PUBLIC_DECK_INSTANCE_MESSAGE = 'Данная колода не может быть обновлена.'
+NO_PUBLIC_DECK_INSTANCE_MESSAGE = 'This deck cannot be updated.'
 
-DECK_UPDATED_MESSAGE = 'Колода была успешно обновлена!'
+DECK_UPDATED_MESSAGE = 'The deck was successfully updated!'
 
-DECK_UP_TO_DATE_MESSAGE = 'Колода уже обновлена.'
+DECK_UP_TO_DATE_MESSAGE = 'The deck is up to date.'
 
-PUBLIC_DECK_NOT_FOUND_MESSAGE = 'Извини, но мне не удалось найти данную колоду.'
+PUBLIC_DECK_NOT_FOUND_MESSAGE = 'Sorry, deck not found.'
 
 ASK_PASSWORD_MESSAGE = (
-    'У данной колоды установлен пароль. Пришли мне его, чтобы добавить её себе.'
+    'This deck has a password. Type it to add this deck.'
 )
 
 JOIN_SET_TITLE_MESSAGE = (
-    'Хорошо. Теперь придумай название, которое ты дашь колоде.\n'
-    'Помни, что оно должно быть уникальным!'
+    'OK. Please give this deck a name.\n'
+    'Remember that it should be unique!'
 )
 
 PUBLIC_DECK_DELETED_MESSAGE = (
-    'Извини, но похоже, что эта колода была удалена, и ты не сможешь её добавить.'
+    'Sorry, but this deck no longer exists.'
 )
 
 HIRE_MESSAGE = (
-    'Хорошо, теперь пришли мне никнейм пользователя, которого ты хотел бы назначить админом, например,\n'
+    'OK, now send me a username that you want to give admin rights, for example,\n'
     '@durov'
 )
 
 FIRE_MESSAGE = (
-    'Хорошо, теперь пришли мне никнейм пользователя, которого необходимо разжаловать, например,\n'
+    'OK, now send me a username that you want to disrank, for example,\n'
     '@durov'
 )
 
-CHOOSE_DECK_REPLY = 'Список твоих колод:'
+CHOOSE_DECK_REPLY = 'Your decks:'
 
-SET_KNOWLEDGE_REPLY = 'Пожалуйста, оцени свои знания данной карты:'
+SET_KNOWLEDGE_REPLY = 'Please, estimate your knowledge level:'
 
 CHOOSE_MANY_REPLY = (
-    'Выбери верные варианты (если они есть) и нажми *Submit*:\n\n' 'Твои ответы:'
+    'Choose correct answers (if there are any) and press *Submit*:\n\n' 'Your answers:'
 )
 
-CHOOSE_ONE_REPLY = 'Выбери верный вариант'
+CHOOSE_ONE_REPLY = 'Choose one answer'
 
-LEARN_REPLY = '/show - посмотреть правильный ответ\n' '/cancel - остановить обучение'
+LEARN_REPLY = '/show - show correct answer\n' '/cancel - stop learning'
 
-TOO_LATE_TO_SET_KNOWLEDGE_REPLY = 'Уже поздно оценивать свои знания этой карточки.'
+TOO_LATE_TO_SET_KNOWLEDGE_REPLY = "It's too late to set knowledge level."
 
-TOO_LATE_TO_EDIT_REPLY = 'Прости, но уже поздно редактировать карточку.'
+TOO_LATE_TO_EDIT_REPLY = "It's too late to edit the card."
 
-TOO_LATE_TO_ANSWER_REPLY = 'Прости, но уже поздно отвечать на этот вопрос.'
+TOO_LATE_TO_ANSWER_REPLY = "It's too late to answer this question."
 
-MENU_REPLY = 'Это стартовое меню'
+MENU_REPLY = "It's a start menu."
 
-ADD_DECK_REPLY = 'Создать новую колоду или добавить уже имеющуюся?'
+ADD_DECK_REPLY = 'Do you want to create a new deck or add an existing one?'
 
 CREATE_NEW_DECK_REPLY = (
-    'Для того, чтобы создать новую колоду, пришли мне название, которое ты хочешь ей дать.\n'
-    'P.S. Помни, что оно должно быть уникальным.'
+    'Send me a name to your deck.\n'
+    'P.S. Remember that it should be unique.'
 )
 
-DECK_MENU_REPLY = 'Колода *{}*'
+DECK_MENU_REPLY = 'Deck *{}*'
 
 CHOOSE_CARD_TYPE_REPLY = (
-    'Выбери тип карты, которую ты хочешь добавить в "*{}*".\n\n'
-    '0: *Карта без ответа*: просто какой-то факт/напоминание;\n'
-    '1: *Простая карта*: задаётся вопрос - ожидается ответ;\n'
-    '2: *Карта с вводом*: в вопросе есть \\_, которые нужно заполнить;\n'
-    '3: *Карта с выбором правильных овтетов*;\n'
-    '4: *Карта с ровно одним правильным ответом*.'
+    'Choose type of a card that you want to add to "*{}*".\n\n'
+    '0: a card with no answer, just some fact;\n'
+    '1: a question-answer card;\n'
+    '2: a card with gaps \\_ that you need to fill;\n'
+    '3: a card with multiple choice;\n'
+    '4: a card with only one correct answer.'
 )
 
 SEND_QUESTION_REPLY = (
-    'Ты выбрал тип карты *{}*.\n\n'
-    'Пришли мне *вопрос*, который будет на данной карточке.'
+    'You chose card type *{}*.\n\n'
+    'Send me a *question*, that should be on a card.'
 )
 
 SEND_QUESTION_TYPE_2_REPLY = (
-    'Ты выбрал тип карты *2*.\n\n'
-    'Пришли мне *вопрос*, который будет на данной карточке.\n\n'
-    'Учти, что вопрос должен содержать поля для ввода "*_*".'
+    'You chose card type *2*.\n\n'
+    'Send me a *question*, that should be on a card.\n\n'
+    'Remember that the question should contain gaps "*_*".'
 )
 
-SEND_FACT_REPLY = 'Пришли мне *факт*, который будет на карточке.'
+SEND_FACT_REPLY = 'Send me the *fact*, that should be on this card.'
 
-FACT_CREATED_REPLY = 'Твоя новая карта:\n\n' '{}'
+FACT_CREATED_REPLY = 'Your new card:\n\n' '{}'
 
 SEND_ANSWERS_TYPE_1_REPLY = (
-    'Пришли мне возможные ответы на данный вопрос через запятую.\n\n' '{}'
+    'Send me possible answers to this question.\n\n' '{}'
 )
 
 SEND_ANSWERS_TYPE_2_REPLY = (
-    'Пришли мне {} ответов, которые надо ввести в поля для ввода на данный вопрос через запятую.\n\n'
+    'Send me {} comma-separated answers to this question.\n\n'
     '{}'
 )
 
 SEND_CORRECT_ANSWERS_REPLY = (
-    'Пришли мне правильные ответы через запятую на вопрос:\n\n' '{}'
+    'Send me comma-separated correct answers to this question:\n\n' '{}'
 )
 
-SEND_CORRECT_ANSWER_REPLY = 'Пришли мне правильный ответ на вопрос:\n\n' '{}'
+SEND_CORRECT_ANSWER_REPLY = 'Send me the correct answer to this question:\n\n' '{}'
 
 SEND_WRONG_ANSWERS_REPLY = (
-    'Пришли мне неправильные ответы через запятую на вопрос:\n\n' '{}'
+    'Send me comma-separated incorrect answers to this question:\n\n' '{}'
 )
 
-NO_CORRECT_ANSWERS_REPLY = 'Правильных ответов нет.'
+NO_CORRECT_ANSWERS_REPLY = 'There are no correct answers.'
 
-NO_WRONG_ANSWERS_REPLY = 'Неправильных ответов нет.'
+NO_WRONG_ANSWERS_REPLY = 'There are no incorrect answers.'
 
 INCORRECT_WRONG_ANSWERS_REPLY = (
-    'Зачем ты меня дуришь?\n\n'
-    'Пришли мне неправильные ответы через запятую на вопрос:\n\n'
+    'You are confusing me!\n\n'
+    'Send me comma-separated incorrect answers to this question:\n\n'
     '{}'
 )
 
 INCORRECT_CORRECT_ANSWERS_REPLY = (
-    'Зачем ты меня дуришь?\n\n'
-    'Пришли мне правильные ответы через запятую на вопрос:\n\n'
+    'You are confusing me!\n\n'
+    'Send me comma-separated correct answers to this question:\n\n'
     '{}'
 )
 
-EDIT_CARD_REPLY = 'Что именно ты хочешь изменить в этой карте?\n\n' '{}\n\n' '{}'
+EDIT_CARD_REPLY = 'What do you want to change in this card?\n\n' '{}\n\n' '{}'
 
-EDIT_USER_DECK_REPLY = 'Что именно ты хочешь изменить в колоде *{deck_title}*?'
+EDIT_USER_DECK_REPLY = 'What do you want to change in this deck *{deck_title}*?'
 
 RENAME_USER_DECK_REPLY = (
-    'Пришли мне название, которое ты хочешь дать колоде *{deck_title}*.'
+    'Send me the name to the deck *{deck_title}*.'
 )
 
-DELETE_USER_DECK_REPLY = 'Удаляем колоду *{}*?'
+DELETE_USER_DECK_REPLY = 'Are you sure you want to delete deck *{}*?'
 
 CARD_REPLY = '{}\n\n' '{}'
 
-USER_CHOSEN_REPLY = 'Твой выбор:'
+USER_CHOSEN_REPLY = 'Your choice:'
 
 CORRECT_REPLIES = [
-    'Правильно!',
-    'Совершенно верно!',
-    'Абсолютно точно!',
-    'Верно, молодец!',
-    'Именно!',
+    'Correct!',
+    'Absolutely correct!',
+    'Perfect!',
+    'Well done!',
+    'Excellent!',
 ]
 
-WRONG_REPLIES = ['Неправильно!', 'Неверно!', 'Прости, но ты ошибаешься!']
+WRONG_REPLIES = ['Wrong!', 'Bad news, wrong!', 'Sorry, incorrect!']
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 CARD_QUESTION_TOO_LONG_MESSAGE = (
-    'Твой вопрос слишком длинный.\n' 'Попробуй его подсократить.'
+    'Your question is too long.\n' 'Try to make it shorter.'
 )
 
-CARD_QUESTION_TYPE_0 = 'Отлично, вот твоя карта:\n\n' 'ВОПРОС:\n' '{}'
+CARD_QUESTION_TYPE_0 = 'Well done! Here is your card:\n\n' 'QUESTION:\n' '{}'
 
 CARD_QUESTION_TYPE_1 = (
-    'Отлично, теперь пришли мне все возможные правильные ответы через точку с запятой.'
+    'Perfect, please send me semicolon-separated answers to this question.'
 )
 
 CARD_QUESTION_TYPE_2_NO_GAPS = (
-    'Как же так?\n'
-    'Ты обещал, что это будет карта с вводом, следовательно, в вопросе должны быть поля для ввода _\n'
-    'P.S. это нижнее подчёркивание, если что.'
+    'On no!\n'
+    'You chose a gap text question, so there have to be gaps _\n'
+    "P.S. it's an underscore."
 )
 
 CARD_QUESTION_TYPE_2 = (
-    'Отлично, теперь пришли мне соответственно {} ответов через точку с запятой.'
+    'OK, I got it, now please send me {} answers separated with semicolon.'
 )
 
 CARD_QUESTION_TYPE_3 = (
-    'Отлично, теперь пришли мне правильные и неправильные ответы в подобном формате:\n'
-    '[правильный_ответ_1; правильный_ответ_2] [неправильный_ответ_1]\n'
-    'P.S. Можешь оставить один из этих списков пустым. Но только один!'
+    'Great, now please give me correct and wrong answers as follows:\n'
+    '[correct_answer_1; correct_answer_2] [wrong_answer_1]\n'
+    'P.S. You can leave one of the lists empty. But only one!'
 )
 
-CARD_QUESTION_NO_TYPE = 'Шутишь? Введи /card_types для помощи в оформлении карты.'
+CARD_QUESTION_NO_TYPE = 'Err, what? Please type /card_types if you need help in card editing.'
 
-CARD_CREATED_REPLY = 'Карта типа {0} успешно создана:\n\n' '{1}\n\n' '{2}'
+CARD_CREATED_REPLY = 'The card of type {0} was successfully created:\n\n' '{1}\n\n' '{2}'
 
 CARD_WITH_CHOICE_CREATED_REPLY = (
-    'Карта типа {0} успешно создана:\n\n'
+    'The card of type {0} was successfully created:\n\n'
     '{1}\n\n'
-    'Правильные: {2}\n\n'
-    'Неправильные: {3}'
+    'Correct: {2}\n\n'
+    'Wrong: {3}'
 )
 
 INCORRECT_GAPS_NUMBER_IN_QUESTION_REPLY = (
-    'Прошу прощения, но в карте типа *2* должны быть поля для ввода "*_*"'
+    'Sorry, but a card of type *2* should contain gaps "*_*"'
 )
 
 INCORRECT_GAPS_NUMBER_IN_ANSWER_REPLY = (
-    'Прости, но мне необходимо {} ответов, а у тебя их {}.'
+    'Sorry, but I need {} answers, whereas you gave me {}.'
 )
 
 CARD_TYPE_3_BRACKETS_NOT_MATCH_MESSAGE = (
-    'Кажется, в твоём сообщении неправильное количество "[" и "]".\n'
-    'Пожалуйста, проверь правильность написания и пришли ответы заново.'
+    'Looks like your message has mistakes in "[" and "]" brackets.\n'
+    'Please correct it and send your answers again.'
 )
 
 CARD_TYPE_3_NO_ANSWERS_MESSAGE = (
-    'К сожалению, у меня не получилось вычленить ни одного ответа.\n'
-    'Пожалуйста, проверь корректность оформления и пришли ответы заново.'
+    "Sorry, but I couldn't get a single answer.\n"
+    'Please check once more and send your answers again.'
 )
 
 ANSWER_INCORRECT_MESSAGE = (
-    'Неверно\n' 'Попробуй ещё раз, либо напиши /show, чтобы посмотреть правильный овтет'
+    'Wrong\n' 'Try again, or type /show, to see the correct answer'
 )
 
-ANSWER_CORRECT_MESSAGES = ['Верно!', 'Правильно!', 'Совершенно верно!', 'Отлично!']
+ANSWER_CORRECT_MESSAGES = ['Well done!', 'Correct!', 'Perfect!', 'Excellent!']
 
 NO_SUCH_OPTION_MESSAGE = (
-    'К сожалению, либо такого варианта ответа нет, либо я что-то неправильно понял.\n'
-    'Напиши правильные варианты через точку с запятой, если их нет, пришли 0.'
+    "Sorry, either this variant doesn't exist or I didn't understand it.\n"
+    "Send correct answers separated with semicolon, or 0 if there aren't any."
 )
 
 UNKNOWN_CARD_TYPE_MESSAGE = (
-    'Я даже не знаю, как проверить правильность карты такого типа.'
+    "I don't know how to check a card of this type."
 )
 
 SET_KNOWLEDGE_MESSAGE = (
-    'Теперь оцени свои знания данной карточки, отправь число:\n'
-    '1 - совсем не знаю\n'
-    '2 - чуть-чуть знаю\n'
-    '3 - знаю.\n\n'
-    'После этого я пришлю следующую карточку из данной колоды.'
+    'Now rate you knowledge level, send me a number:\n'
+    "1 - I don't know\n"
+    '2 - I know a little\n'
+    '3 - I know it.\n\n'
+    'Then I will give you the next card.'
 )
 
 INCORRECT_KNOWLEDGE_MESSAGE = (
-    'Просто отправь число:\n' '1 - совсем не знаю\n' '2 - чуть-чуть знаю\n' '3 - знаю.'
+    'Just give me the number:\n' "1 - I don't know\n" '2 - I know a little\n' '3 - I know it.'
 )
 
-KNOWLEDGE_OUT_OF_RANGE_MESSAGE = 'Можно оценить знания карты только по шкале от 1 до 3.'
+KNOWLEDGE_OUT_OF_RANGE_MESSAGE = 'You can rate your knowledge level from 1 to 3.'
 
-TOO_LONG_SLUG_MESSAGE = (
-    'Данная строка слишком длинная. Пожалуйста, придумай строку покороче.'
-)
+TOO_LONG_SLUG_MESSAGE = "This line is too long."
 
-SLUG_NON_UNIQUE_MESSAGE = 'Эта строка уже используется, придумай другую.'
+SLUG_NON_UNIQUE_MESSAGE = "This line is already used, try again."
 
 PUBLIC_DECK_CREATED_MESSAGE = (
-    'Отлично! Чтобы другие люди смогли добавить её себе, им нужно написать команду:\n'
+    'Great! Type this command to allow others to add this deck:\n'
     '/join {}'
 )
 
 USER_NOT_FOUND_MESSAGE = (
-    'К сожалению, мне не удалось найти данного пользователя.\n'
-    'Ты уверен, что он пользуется данным ботом?'
+    'Sorry, but I cannot find this user.\n'
+    'Are you sure they are registered?'
 )
 
 USERNAME_NOT_PARSED_MESSAGE = (
-    'Проверь корректность отправленного никнейма, он должен начинаться со знака @.'
+    'Check the spelling of a username, it should start with @.'
 )
 
-HIRED_IS_ADMIN_ALREADY_MESSAGE = 'Данный пользователь уже является админом этой колоды.'
+HIRED_IS_ADMIN_ALREADY_MESSAGE = 'This user is already an admin.'
 
-HIRED_NOTIFY_MESSAGE = 'Поздравляю! Вы назначены админом колоды {}!'
+HIRED_NOTIFY_MESSAGE = 'Congratulations! You were set as an admin of deck {}!'
 
-USER_HIRED_MESSAGE = 'Пользователь @{} назначен админом колоды {}.'
+USER_HIRED_MESSAGE = 'User @{} was set as an admin of deck {}.'
 
-FIRED_IS_NOT_ADMIN_MESSAGE = 'Данный пользователь не является админом этой колоды.'
+FIRED_IS_NOT_ADMIN_MESSAGE = 'This user is not an admin.'
 
-FIRED_NOTIFY_MESSAGE = 'К сожалению, вы были разжалованы с должности админа колоды {}.'
+FIRED_NOTIFY_MESSAGE = 'Sorry, but you were resigned from deck {}.'
 
-USER_FIRED_MESSAGE = 'Пользователь @{} был разжалован с должности админа колоды {}.'
+USER_FIRED_MESSAGE = 'User @{} was resigned from deck {}.'
 
-SELF_USERNAME_MESSAGE = 'Эту операцию нельзя выполнить с самим собой!'
+SELF_USERNAME_MESSAGE = "You can't perform this operation with yourself!"
 
-WRONG_PASSWORD_MESSAGE = 'Неверный пароль, попробуй ещё раз.'
+WRONG_PASSWORD_MESSAGE = 'Wrong password, try again.'
 
 PASSWORD_CHANGED_MESSAGE = (
-    'Извини, но пароль был изменён, повтори всю процедуру заново.'
+    'Sorry, but the password was updated, do it again.'
 )
 
-ALREADY_JOINED_MESSAGE = 'Ты уже добавил себе данную колоду.'
+ALREADY_JOINED_MESSAGE = 'You have already added this deck.'
 
-JOIN_MESSAGE = 'Ты успешно добавил себе колоду {}.'
+JOIN_MESSAGE = 'You successfully added a deck {}.'
 
 WTF_MESSAGES = [
-    'Ты это к чему?',
-    'Советую ввести /help и посмотреть список доступных команд',
-    'К сожалению, я не понимаю о чём ты',
-    'Прости, но я не могу поддержать диалог...\n' 'Зато я могу предложить поучиться!',
+    'What do you mean?',
+    'Please type /help and get the available commands',
+    "Sorry, I can't understand",
+    "Sorry, but I can't reply...\n" 'But I can help you learn something!',
 ]

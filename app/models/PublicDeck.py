@@ -1,10 +1,10 @@
 import typing
 
 from app.run import db
-from app.settings.dist import MAX_SLUG_LENGTH
+from app.settings import MAX_SLUG_LENGTH
 
 
-class PublicDeck(db.Model):
+class PublicDeck(db.Model):  # type: ignore
 
     id = db.Column(db.Integer, primary_key=True)
     # title = db.Column(db.String(MAX_DECK_TITLE_LENGTH), nullable=False)

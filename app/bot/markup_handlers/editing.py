@@ -10,6 +10,7 @@ from app.models.utils import humanize_title
 
 @bot.callback_query_handler(func=lambda message: message.data.startswith('edit_card'))
 def edit_card_markup_handler(message: types.Message) -> None:
+    # TODO: edit this hardcoded replies
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -54,7 +55,7 @@ def edit_deck_markup_handler(message: types.Message) -> None:
     deck = UserDeck.get_by_id(deck_id)
 
     text = replies.EDIT_USER_DECK_REPLY.format(
-        deck_title=humanize_title(user.chat_id, deck.title).upper()
+        deck_title=humanize_title(deck.title).upper()
     )
     keyboard = markups.create_edit_user_deck_markup(deck)
 
@@ -78,7 +79,7 @@ def rename_user_deck_markup_handler(message: types.Message) -> None:
     deck = UserDeck.get_by_id(deck_id)
 
     text = replies.RENAME_USER_DECK_REPLY.format(
-        deck_title=humanize_title(user.chat_id, deck.title).upper()
+        deck_title=humanize_title(deck.title).upper()
     )
     keyboard = markups.create_rename_user_deck_markup(deck)
 
@@ -105,7 +106,7 @@ def delete_user_deck_markup_handler(message: types.Message) -> None:
     deck = UserDeck.get_by_id(deck_id)
 
     text = replies.DELETE_USER_DECK_REPLY.format(
-        humanize_title(user.chat_id, deck.title).upper()
+        humanize_title(deck.title).upper()
     )
     keyboard = markups.create_delete_user_deck_markup(deck)
 
@@ -132,7 +133,7 @@ def ensure_delete_user_deck_markup_handler(message: types.Message) -> None:
         deck.delete()
 
         text = replies.USER_DECK_DELETED_REPLY.format(
-            deck_title=humanize_title(user.chat_id, deck.title).upper()
+            deck_title=humanize_title(deck.title).upper()
         )
     else:
         text = replies.USER_DECK_NOT_FOUND_REPLY

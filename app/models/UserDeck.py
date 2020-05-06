@@ -2,18 +2,18 @@ import typing
 from random import random, shuffle
 
 from app.run import db
-from app.settings import dist
+from app import settings
 
 from . import Card, PublicDeck, User, utils
 
 
-class UserDeck(db.Model):
+class UserDeck(db.Model):  # type: ignore
 
     # title is unique inside the User namespace
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(
-        db.String(dist.MAX_DECK_TITLE_LENGTH), nullable=False, unique=True
+        db.String(settings.MAX_DECK_TITLE_LENGTH), nullable=False, unique=True
     )
     version = db.Column(db.Integer)
     public_id = db.Column(
@@ -22,7 +22,7 @@ class UserDeck(db.Model):
     user_id = db.Column(
         db.Integer, db.ForeignKey('user.id'), nullable=False
     )  # M-O to User
-    cards = db.relationship('Card', backref='user_deck', lazy=True)  # O-M to UserCard
+    cards = db.relationship('Card', backref='user_deck', lazy=True, cascade='all, delete-orphan')  # O-M to UserCard
 
     def __repr__(self) -> str:
         return '<UserDeck %r>' % self.title
@@ -35,12 +35,12 @@ class UserDeck(db.Model):
         if not utils.is_title_correct(deck_title):
             raise AttributeError('deck title contains incorrect symbols')
         if (
-            len(utils.generate_title(self.chat_id, deck_title))
-            > dist.MAX_DECK_TITLE_LENGTH
+            len(utils.generate_title(user.id, deck_title))
+            > settings.MAX_DECK_TITLE_LENGTH
         ):
             raise ValueError('deck title is too long')
         else:
-            self.title = utils.generate_title(user.chat_id, deck_title)
+            self.title = utils.generate_title(user.id, deck_title)
             self.user = user
             db.session.add(self)
             db.session.commit()
@@ -50,9 +50,9 @@ class UserDeck(db.Model):
         if not utils.is_title_correct(deck_title):
             raise ValueError('deck title contains incorrect symbols')
 
-        proper_title = utils.generate_title(self.user_id, deck_title)
+        proper_title = utils.generate_title(self.user.id, deck_title)
 
-        if len(proper_title) > dist.MAX_DECK_TITLE_LENGTH:
+        if len(proper_title) > settings.MAX_DECK_TITLE_LENGTH:
             raise ValueError('deck title is too long')
 
         search = UserDeck.query.filter_by(title=proper_title).first()
@@ -97,7 +97,7 @@ class UserDeck(db.Model):
     def search_by_title(
         cls, user: User.User, user_deck_title: str
     ) -> typing.Optional['UserDeck']:
-        proper_title = utils.generate_title(user.chat_id, user_deck_title)
+        proper_title = utils.generate_title(user.id, user_deck_title)
         return cls.query.filter_by(title=proper_title).first()
 
     @classmethod

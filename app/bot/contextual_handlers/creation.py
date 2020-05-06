@@ -44,7 +44,7 @@ def rename_user_deck_handler(message: types.Message) -> None:
     context = utils.get_context(message)
     deck_id = context['deck_id']
     deck = UserDeck.get_by_id(deck_id)
-    ex_title = humanize_title(user.chat_id, deck.title)
+    ex_title = humanize_title(deck.title)
 
     try:
         deck.rename(title)

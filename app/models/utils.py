@@ -26,12 +26,12 @@ def is_title_correct(title: str) -> typing.Optional[typing.Match]:
     return re.match(r'^[A-Za-z0-9_-]*$', title)
 
 
-def generate_title(chat_id: int, title: str) -> str:
-    return str(chat_id) + ':' + title.lower()
+def generate_title(id: int, title: str) -> str:
+    return str(id) + ':' + title.lower()
 
 
-def humanize_title(chat_id: int, title: str) -> str:
-    return title[1 + len(str(chat_id)) :]
+def humanize_title(title: str) -> str:
+    return title.split(':')[-1]
 
 
 def generate_attempt(success: bool, timestamp: int) -> str:

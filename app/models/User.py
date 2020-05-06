@@ -5,7 +5,7 @@ from app.run import db
 from . import Admin, Invite, UserDeck
 
 
-class User(db.Model):
+class User(db.Model):  # type: ignore
 
     id = db.Column(db.Integer, primary_key=True)
     chat_id = db.Column(db.Integer, unique=True, nullable=False)

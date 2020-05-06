@@ -75,7 +75,7 @@ def deck_menu_markup_handler(message: types.Message) -> None:
     user_deck = UserDeck.get_by_id(user_deck_id)
 
     text = replies.DECK_MENU_REPLY.format(
-        humanize_title(user.chat_id, user_deck.title).upper()
+        humanize_title(user_deck.title).upper()
     )
 
     keyboard = markups.create_deck_menu_markup(user_deck)

@@ -1,10 +1,10 @@
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from app.run import db
-from app.settings.dist import MAX_ANSWER_LENGTH, MAX_QUESTION_LENGTH
+from app.settings import MAX_ANSWER_LENGTH, MAX_QUESTION_LENGTH
 
 
-class Question(db.Model):
+class Question(db.Model):  # type: ignore
     """
     <-- Notes for future coding -->
 

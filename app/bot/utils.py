@@ -1,10 +1,10 @@
 import re
 import typing
-from pprint import pprint
+# from pprint import pprint
 
 from telebot import types
 
-from app.locale import replies
+from app.locale import replies, buttons
 from app.models import utils
 from app.models.Card import Card
 from app.models.User import User
@@ -49,7 +49,7 @@ def create_learn_decks_inline_keyboard(
         for deck in decks:
             markup.add(
                 types.InlineKeyboardButton(
-                    text=utils.humanize_title(user.chat_id, deck.title),
+                    text=utils.humanize_title(deck.title),
                     callback_data=f'learn_decks.{deck.id}',
                 )
             )
@@ -62,16 +62,17 @@ def decks_inline_keyboard(user: User) -> typing.Optional[types.InlineKeyboardMar
     decks = User.get_decks(user)
 
     if decks and len(decks) > 0:
+        # TODO: move to replies.py
         markup = types.InlineKeyboardMarkup()
         markuped = [
             types.InlineKeyboardButton(
-                text=utils.humanize_title(user.chat_id, deck.title).upper(),
+                text=utils.humanize_title(deck.title).upper(),
                 callback_data=f'deck.{deck.id}',
             )
             for deck in decks
         ]
         markup.add(*markuped)
-        markup.add(types.InlineKeyboardButton(text='Назад', callback_data='menu'))
+        markup.add(types.InlineKeyboardButton(text=buttons.BACK, callback_data='menu'))
         return markup
     return None  # probably it is wrong
 
@@ -95,21 +96,18 @@ def build_learn_text_and_keyboard(
     return text, keyboard
 
 
-def repeat_keyboard(js: dict) -> types.InlineKeyboardMarkup:
-    reply_markup = js.get('reply_markup')
-    if reply_markup:
-        inline_keyboard = reply_markup.get('inline_keyboard')
-    # say thanks to mypy for that total bullshit ^
-    print('inline_keyboard')
-    pprint(inline_keyboard)
+def repeat_keyboard(js: dict, exclude: typing.Optional[typing.List] = None) -> types.InlineKeyboardMarkup:
+    if exclude is None:
+        exclude = []
+    inline_keyboard = js.get('reply_markup', {}).get('inline_keyboard')
 
     keyboard = types.InlineKeyboardMarkup(row_width=1)
     keyboard.add(
         *[
             types.InlineKeyboardButton(
-                text=btn[0].get('text'), callback_data=btn[0].get('callback_data')
+                text=btn.get('text'), callback_data=btn.get('callback_data')
             )
-            for btn in inline_keyboard
+            for btn in inline_keyboard[0] if btn.get('text') not in exclude
         ]
     )
     return keyboard

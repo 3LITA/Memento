@@ -1,7 +1,7 @@
 from app.run import db
 
 
-class Admin(db.Model):
+class Admin(db.Model):  # type: ignore
     """
     rights: 1: admin
             2: creator
