@@ -21,59 +21,59 @@ msgstr ""
 
 #: app/locale/buttons.py:3
 msgid "My decks"
-msgstr ""
+msgstr "Мои колоды"
 
 #: app/locale/buttons.py:5
 msgid "Add deck"
-msgstr ""
+msgstr "Добавить колоду"
 
 #: app/locale/buttons.py:7
 msgid "Question"
-msgstr ""
+msgstr "Вопрос"
 
 #: app/locale/buttons.py:9
 msgid "Correct"
-msgstr ""
+msgstr "Правильные"
 
 #: app/locale/buttons.py:11
 msgid "Wrong"
-msgstr ""
+msgstr "Неправильные"
 
 #: app/locale/buttons.py:13
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: app/locale/buttons.py:15
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 #: app/locale/buttons.py:17
 msgid "Rename"
-msgstr ""
+msgstr "Переименовать"
 
 #: app/locale/buttons.py:19
 msgid "Back"
-msgstr ""
+msgstr "Назад"
 
 #: app/locale/buttons.py:21
 msgid "Add card"
-msgstr ""
+msgstr "Добавить карту"
 
 #: app/locale/buttons.py:23
 msgid "Learn"
-msgstr ""
+msgstr "Учить"
 
 #: app/locale/buttons.py:25
 msgid "Edit"
-msgstr ""
+msgstr "Редактировать"
 
 #: app/locale/buttons.py:27
 msgid "Tip"
-msgstr ""
+msgstr "Подсказка"
 
 #: app/locale/buttons.py:29
 msgid "Submit"
-msgstr ""
+msgstr "Подтвердить"
 
 #: app/locale/buttons.py:31
 msgid "👎🏻"
@@ -89,27 +89,27 @@ msgstr ""
 
 #: app/locale/buttons.py:33
 msgid "Create a new deck"
-msgstr ""
+msgstr "Создать новую колоду"
 
 #: app/locale/buttons.py:35
 msgid "Add an existing one"
-msgstr ""
+msgstr "Добавить существующую"
 
 #: app/locale/buttons.py:37 app/locale/replies.py:139
 msgid "Correct answers: "
-msgstr ""
+msgstr "Правильные ответы: "
 
 #: app/locale/buttons.py:39
 msgid "No correct answers"
-msgstr ""
+msgstr "Правильных ответов нет"
 
 #: app/locale/buttons.py:41
 msgid "Wrong answers: "
-msgstr ""
+msgstr "Неправильные ответы: "
 
 #: app/locale/buttons.py:43
 msgid "No wrong answers"
-msgstr ""
+msgstr "Неправильных ответов нет"
 
 #: app/locale/replies.py:5
 msgid ""
