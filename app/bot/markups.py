@@ -151,7 +151,7 @@ def create_created_card_markup(
     card: Card, user_deck: UserDeck
 ) -> types.InlineKeyboardMarkup:
 
-    keyboard = types.InlineKeyboardMarkup()
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
 
     edit_btn = types.InlineKeyboardButton(
         text=buttons.EDIT, callback_data=f'edit_card.{card.id}'
@@ -159,8 +159,11 @@ def create_created_card_markup(
     next_btn = types.InlineKeyboardButton(
         text=buttons.ADD_CARD, callback_data=f'add_card.{user_deck.id}'
     )
+    cancel_btn = types.InlineKeyboardButton(
+        text=buttons.CANCEL, callback_data=f'deck.{user_deck.id}'
+    )
 
-    keyboard.add(edit_btn, next_btn)
+    keyboard.add(edit_btn, next_btn, cancel_btn)
 
     return keyboard
 
@@ -192,11 +195,7 @@ def create_answer_sheet_markup(card: Card) -> types.InlineKeyboardMarkup:
     answers = [[ans, True] for ans in card.question.correct_answers]
     answers.extend([[ans, False] for ans in card.question.wrong_answers])
 
-    print(answers)
-
     shuffle(answers)
-
-    print(answers)
 
     corrects = [i for i in range(len(answers)) if answers[i][1]]
 
@@ -221,7 +220,7 @@ def create_answer_sheet_markup(card: Card) -> types.InlineKeyboardMarkup:
     if card.question.card_type == 3:
         keyboard.add(
             types.InlineKeyboardButton(
-                text=buttons.CONFIRM, callback_data=f'submit.{card.id}.{cor}.0'
+                text=buttons.SUBMIT, callback_data=f'submit.{card.id}.{cor}'
             )
         )
 

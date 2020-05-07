@@ -24,6 +24,18 @@ EDIT = 'Edit'
 
 TIP = 'Tip'
 
-CONFIRM = 'Confirm'
+SUBMIT = 'Submit'
 
 KNOWLEDGE_RATES = ['👍🏻', '🖕🏻', '👎🏻']
+
+CREATE_NEW_DECK = 'Create a new deck'
+
+ADD_EXISTING_DECK = 'Add an existing one'
+
+CORRECT_ANSWERS = 'Correct answers: '
+
+NO_CORRECT_ANSWERS = 'No correct answers'
+
+WRONG_ANSWERS = 'Wrong answers: '
+
+NO_WRONG_ANSWERS = 'No wrong answers'

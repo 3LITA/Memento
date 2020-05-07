@@ -3,10 +3,10 @@ from app.settings import COMMANDS
 START_REPLY = (
     "Hi, *{}*!\n"
     "I am gonna help you learn everything you've always wanted,\n"
-    "no matter how hard it is!."
+    "no matter how hard it is!"
 )
 
-START_AGAIN = "Welcome back, {}!"
+START_AGAIN = "Welcome back, *{}*!"
 
 HELP_REPLY = (
     f"{COMMANDS['menu_commands'][-1]} - use this command to navigate\n"
@@ -26,34 +26,34 @@ TOO_LONG_DECK_TITLE_REPLY = (
 )
 
 USER_DECK_TITLE_NOT_UNIQUE_REPLY = (
-    'Oops, you already have a deck called *{}*. \n'
+    'Oops, you already have a deck called *{title}*. \n'
     'Please, choose another name or rename the existing deck.'
 )
 
-USER_DECK_CREATED_REPLY = 'Deck {title} was successfully created!'
+USER_DECK_CREATED_REPLY = 'Deck *{title}* was successfully created!'
 
 NOTHING_TO_DELETE_MESSAGE = "Sorry, but there's nothing to delete."
 
-CARD_DELETED_MESSAGE = 'The card was successfully deleted!'
+CARD_DELETED_REPLY = "The card was successfully deleted!"
 
-USER_DECK_DELETED_REPLY = 'Deck *{deck_title}* was successfully deleted!'
+USER_DECK_DELETED_REPLY = "Deck *{deck_title}* was successfully deleted!"
 
 USER_DECK_RENAMED_REPLY = (
-    'Deck *{ex_deck_title}* was renamed to *{new_deck_title}*.'
+    "Deck *{ex_deck_title}* was renamed to *{new_deck_title}*."
 )
 
 USER_DECK_WRONG_TITLE_FORMATTING_REPLY = (
-    'A deck title can only contain these symbols:\n'
-    'Uppercase or lowercase letters, digits, -, _.'
+    "A deck title can only contain these symbols:\n"
+    "Uppercase or lowercase letters, digits, -, _."
 )
 
 DELETE_DECK_NONE_MESSAGE = (
-    'Sorry, but you have no decks.'
+    "Sorry, but you have no decks."
 )
 
 DELETE_DECK_NOT_FOUND_MESSAGE = (
     "Sorry, but I can't find this deck.\n"
-    'Type /decks to see your decks'
+    "Type /decks to see your decks"
 )
 
 USER_DECK_NOT_FOUND_REPLY = (
@@ -155,7 +155,7 @@ CREATE_NEW_DECK_REPLY = (
     'P.S. Remember that it should be unique.'
 )
 
-DECK_MENU_REPLY = 'Deck *{}*'
+DECK_MENU_REPLY = "Deck *{}*"
 
 CHOOSE_CARD_TYPE_REPLY = (
     'Choose type of a card that you want to add to "*{}*".\n\n'
@@ -228,6 +228,10 @@ DELETE_USER_DECK_REPLY = 'Are you sure you want to delete deck *{}*?'
 
 CARD_REPLY = '{}\n\n' '{}'
 
+CORRECT_ANSWER_IS_REPLY = 'Correct answer: '
+
+CORRECT_ANSWERS_ARE_REPLY = 'Correct answers: '
+
 USER_CHOSEN_REPLY = 'Your choice:'
 
 CORRECT_REPLIES = [
@@ -270,7 +274,7 @@ CARD_QUESTION_TYPE_3 = (
 
 CARD_QUESTION_NO_TYPE = 'Err, what? Please type /card_types if you need help in card editing.'
 
-CARD_CREATED_REPLY = 'The card of type {0} was successfully created:\n\n' '{1}\n\n' '{2}'
+CARD_CREATED_REPLY = 'The card of type {type} was successfully created:\n\n' '{question}\n\n' '{correct_answers}'
 
 CARD_WITH_CHOICE_CREATED_REPLY = (
     'The card of type {0} was successfully created:\n\n'

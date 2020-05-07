@@ -18,14 +18,21 @@ def learn_contextual_handler(message: types.Message) -> None:
     card_id = context['card_id']
     card = Card.get_by_id(card_id)
 
-    if card.add_attempt(message.text):
+    answer = (
+        message.text if card.question.card_type == 1
+        else [ans.strip() for ans in message.text.split(',')]
+    )
+
+    if card.add_attempt(answer):
+        reply = ''
         keyboard = markups.create_set_knowledge_markup(card)
         reply_list = replies.CORRECT_REPLIES
     else:
+        reply = f'{card.question.text}\n\n'
         keyboard = markups.create_basic_learn_markup(card)
         reply_list = replies.WRONG_REPLIES
     shuffle(reply_list)
-    reply = reply_list[0]
+    reply += reply_list[0]
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(user.chat_id, reply, reply_markup=keyboard).message_id

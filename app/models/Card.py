@@ -46,7 +46,7 @@ class Card(db.Model):  # type: ignore
     def __repr__(self) -> str:
         return '<Card %r>' % self.id
 
-    def add_attempt(self: 'Card', user_answer: str) -> bool:
+    def add_attempt(self: 'Card', user_answer: typing.Union[str, typing.List]) -> bool:
 
         success = self._is_answer_correct(user_answer)
         timestamp = int(time())
@@ -75,7 +75,7 @@ class Card(db.Model):  # type: ignore
         else:
             return knowledge
 
-    def _is_answer_correct(self: 'Card', user_answer: str) -> bool:
+    def _is_answer_correct(self: 'Card', user_answer: typing.Union[str, typing.List]) -> bool:
         question = self.question
 
         if question.card_type == 1:
@@ -87,7 +87,11 @@ class Card(db.Model):  # type: ignore
         elif question.card_type == 3:
             return sorted(list(user_answer)) == sorted(list(question.correct_answers))
 
-        return False  # fucking mypy forced my to write it
+        return False  # mypy forced my to write it
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
     @classmethod
     def fromQuestion(

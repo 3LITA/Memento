@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies
+from app.locale import replies, buttons
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
@@ -24,11 +24,16 @@ def new_deck_handler(message: types.Message) -> None:
     except AttributeError as err:
         text = str(err)
     else:
-        text = replies.USER_DECK_CREATED_REPLY.format(title.upper())
+        text = replies.USER_DECK_CREATED_REPLY.format(title=title.upper())
         utils.forget_context(user)
         keyboard = markups.create_menu_markup(user)
     bot.delete_message(user.chat_id, markup_message_id)
-    message_id = bot.send_message(user.chat_id, text, reply_markup=keyboard).message_id
+    message_id = bot.send_message(
+        user.chat_id,
+        text,
+        reply_markup=keyboard,
+        parse_mode='Markdown',
+    ).message_id
     user.set_inline_keyboard(message_id)
 
 
@@ -69,6 +74,7 @@ def rename_user_deck_handler(message: types.Message) -> None:
     func=lambda message: utils.get_expected(message) == 'send_question'
 )
 def send_question_handler(message: types.Message) -> None:
+    # TODO: move keyboard generation to markups.py
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -80,7 +86,7 @@ def send_question_handler(message: types.Message) -> None:
 
     keyboard = types.InlineKeyboardMarkup()
     cancel_btn = types.InlineKeyboardButton(
-        text='Отмена', callback_data=f'deck.{user_deck_id}'
+        text=buttons.CANCEL, callback_data=f'deck.{user_deck_id}'
     )
     keyboard.add(cancel_btn)
 
@@ -124,7 +130,7 @@ def send_question_handler(message: types.Message) -> None:
             elif card_type == 3:
                 keyboard.add(
                     types.InlineKeyboardButton(
-                        text='Правильных ответов нет',
+                        text=buttons.NO_CORRECT_ANSWERS,
                         callback_data=f'no_correct_answers',
                     )
                 )
@@ -182,7 +188,7 @@ def correct_answers_handler(message: types.Message) -> None:
                 text = replies.SEND_WRONG_ANSWERS_REPLY.format(question)
                 keyboard.add(
                     types.InlineKeyboardButton(
-                        text='Неправильных ответов нет',
+                        text=buttons.NO_WRONG_ANSWERS,
                         callback_data='no_wrong_answers',
                     )
                 )
@@ -194,7 +200,9 @@ def correct_answers_handler(message: types.Message) -> None:
                 )
 
                 text = replies.CARD_CREATED_REPLY.format(
-                    card_type, question, correct_answers
+                    type=card_type,
+                    question=question,
+                    correct_answers=correct_answers,
                 )
 
                 keyboard = markups.create_created_card_markup(user_card, user_deck)

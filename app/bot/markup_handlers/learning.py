@@ -59,19 +59,18 @@ def show_answers_markup_handler(message: types.Message) -> None:
 
     js = message.message.json
 
-    if card.question.card_type == 3 or card.question.card_type == 4:
+    if card.question.card_type == 3:
         text = correct.replace(',', ', ')
         text += '\n\n' + message.message.text
     else:
         if len(card.question.correct_answers) > 0:
-            text = 'Правильный ответ: '
+            text = replies.CORRECT_ANSWER_IS_REPLY
         else:
-            text = 'Правильные ответы: '
+            text = replies.CORRECT_ANSWERS_ARE_REPLY
         for ans in card.question.correct_answers:
             text += ans + ', '
         text = text[:-2]
         text += '\n\n' + message.message.text
-        # print(message.message.text)
 
     keyboard = utils.repeat_keyboard(js, exclude=[buttons.TIP])
 
@@ -88,25 +87,26 @@ def submit_answer_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
-    card_id, correct_answers, chosen = message.data.split('.')[1:]
+    card_id, correct_answers = message.data.split('.')[1:]
+
+    chosen = [int(num) for num in utils.parse_chosen_nums(message.message.json)]
+    answers = utils.convert_chosen_to_answers(message.message.json, chosen)
 
     card = Card.get_by_id(card_id)
 
-    if chosen == correct_answers:
-        texts = replies.CORRECT_REPLIES
-        shuffle(texts)
-        text = texts[0]
+    if card.add_attempt(answers):
+        reply = ''
         keyboard = markups.create_set_knowledge_markup(card)
+        reply_list = replies.CORRECT_REPLIES
     else:
-        card.inc_attempt()
-        texts = replies.WRONG_REPLIES
-        shuffle(texts)
-        text = texts[0]
-        text += '\n\n' + utils.build_chosen_answers_reply(card)
+        reply = f'{card.question.text}\n\n'
         keyboard = markups.create_answer_sheet_markup(card)
+        reply_list = replies.WRONG_REPLIES
+    shuffle(reply_list)
+    reply += reply_list[0]
 
     bot.edit_message_text(
-        text=text,
+        text=reply,
         chat_id=user.chat_id,
         message_id=markup_message_id,
         reply_markup=keyboard,
@@ -117,7 +117,6 @@ def submit_answer_markup_handler(message: types.Message) -> None:
 def answer_sheet_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
-    print('In answer_sheet_markup_handler')
 
     card_id, correct_numbers, num = message.data.split('.')[1:]
     card = Card.get_by_id(card_id)
@@ -136,19 +135,18 @@ def answer_sheet_markup_handler(message: types.Message) -> None:
                 chosen_nums.append(num)
                 chosen_nums = sorted(chosen_nums)
             text = utils.build_chosen_answers_reply(card) + ', '.join(chosen_nums)
-            print(text)
     else:
         if num == correct_numbers:
-            texts = replies.CORRECT_REPLIES
-            shuffle(texts)
-            text = texts[0]
+            text = ''
+            reply_list = replies.CORRECT_REPLIES
             keyboard = markups.create_set_knowledge_markup(card)
         else:
             card.inc_attempt()
-            texts = replies.WRONG_REPLIES
-            shuffle(texts)
-            text = texts[0]
+            text = f'{card.question.text}\n\n'
+            reply_list = replies.WRONG_REPLIES
             keyboard = markups.create_answer_sheet_markup(card)
+        shuffle(reply_list)
+        text += reply_list[0]
 
     bot.edit_message_text(
         text=text,

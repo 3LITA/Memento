@@ -101,15 +101,18 @@ def repeat_keyboard(js: dict, exclude: typing.Optional[typing.List] = None) -> t
         exclude = []
     inline_keyboard = js.get('reply_markup', {}).get('inline_keyboard')
 
-    keyboard = types.InlineKeyboardMarkup(row_width=1)
-    keyboard.add(
-        *[
-            types.InlineKeyboardButton(
-                text=btn.get('text'), callback_data=btn.get('callback_data')
-            )
-            for btn in inline_keyboard[0] if btn.get('text') not in exclude
-        ]
-    )
+    keyboard = types.InlineKeyboardMarkup()
+    for row in range(len(inline_keyboard)):
+        for btn in inline_keyboard[row]:
+            text = btn.get('text')
+            callback_data = btn.get('callback_data')
+            if text not in exclude:
+                keyboard.add(
+                    types.InlineKeyboardButton(
+                        text=text,
+                        callback_data=callback_data,
+                    )
+                )
     return keyboard
 
 
@@ -140,11 +143,21 @@ def get_context(message: types.Message,) -> typing.Dict[str, typing.Any]:
 
 
 def build_chosen_answers_reply(card: Card) -> str:
-    return card.question.text + '\n\n' + replies.USER_CHOSEN_REPLY + ''
+    return card.question.text + '\n\n' + replies.USER_CHOSEN_REPLY + ' '
 
 
 def parse_chosen_nums(js: dict) -> typing.List[str]:
     text = js['text'].split(replies.USER_CHOSEN_REPLY)
-    chosen_nums = sorted(text[-1].strip().split(','))
+    chosen_nums = sorted([num.strip() for num in text[-1].split(',')])
 
     return chosen_nums
+
+
+def convert_chosen_to_answers(js: dict, chosen: typing.List[int]) -> typing.List[str]:
+    inline_keyboard = js.get('reply_markup', {}).get('inline_keyboard')
+    answers = []
+    for num in chosen:
+        num_part_length = len(f'{num - 1}) ')
+        answer = inline_keyboard[num - 1][0]['text'][num_part_length:]
+        answers.append(answer)
+    return answers

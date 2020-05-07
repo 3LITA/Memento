@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies
+from app.locale import replies, buttons
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
 
@@ -31,15 +31,16 @@ def add_deck_markup_handler(message: types.Message) -> None:
 
     text = replies.ADD_DECK_REPLY
 
+    # TODO: move keyboard generation to markups.py
     keyboard = types.InlineKeyboardMarkup()
 
     create_deck_btn = types.InlineKeyboardButton(
-        text='Создать новую колоду', callback_data='new'
+        text=buttons.CREATE_NEW_DECK, callback_data='new'
     )
     add_existing_btn = types.InlineKeyboardButton(
-        text='Добавить уже имеющуюся', callback_data='join'
+        text=buttons.ADD_EXISTING_DECK, callback_data='join'
     )
-    back_btn = types.InlineKeyboardButton(text='В главное меню', callback_data='menu')
+    back_btn = types.InlineKeyboardButton(text=buttons.BACK, callback_data='menu')
 
     keyboard.add(create_deck_btn, add_existing_btn)
     keyboard.add(back_btn)

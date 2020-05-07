@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies
+from app.locale import replies, buttons
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
@@ -10,7 +10,7 @@ from app.models.utils import humanize_title
 
 @bot.callback_query_handler(func=lambda message: message.data.startswith('edit_card'))
 def edit_card_markup_handler(message: types.Message) -> None:
-    # TODO: edit this hardcoded replies
+    # TODO: move keyboard generation to markups.py
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -21,20 +21,20 @@ def edit_card_markup_handler(message: types.Message) -> None:
 
     question_text = card.question.text
     if card.question.correct_answers and len(card.question.correct_answers) > 0:
-        answers = 'Правильные ответы: '
+        answers = buttons.CORRECT_ANSWERS
         for ans in card.question.correct_answers:
             answers += ans + ', '
         answers = answers[:-2]
     else:
-        answers = 'Правильных ответов нет'
+        answers = buttons.NO_CORRECT_ANSWERS
     answers += '\n\n'
     if card.question.wrong_answers and len(card.question.wrong_answers) > 0:
-        answers += 'Неправильные ответы: '
+        answers += buttons.WRONG_ANSWERS
         for ans in card.question.wrong_answers:
             answers += ans + ', '
         answers = answers[:-2]
     elif card.question.card_type == 3 or card.question.card_type == 4:
-        answers += 'Неправильных ответов нет'
+        answers += buttons.NO_WRONG_ANSWERS
 
     text = replies.EDIT_CARD_REPLY.format(question_text, answers)
 
@@ -138,6 +138,35 @@ def ensure_delete_user_deck_markup_handler(message: types.Message) -> None:
     else:
         text = replies.USER_DECK_NOT_FOUND_REPLY
     keyboard = markups.create_menu_markup(user)
+    bot.edit_message_text(
+        text=text,
+        chat_id=user.chat_id,
+        message_id=markup_message_id,
+        reply_markup=keyboard,
+        parse_mode='Markdown',
+    )
+
+
+@bot.callback_query_handler(
+    func=lambda message: message.data.startswith('delete_user_card')
+)
+def delete_card_markup_handler(message: types.Message) -> None:
+    user = utils.get_user(message)
+    markup_message_id = user.inline_keyboard_id
+
+    card_id = message.data.split('.')[-1]
+    card = Card.get_by_id(card_id)
+    deck = card.user_deck
+
+    card.delete()
+
+    text = (
+        replies.DECK_MENU_REPLY.format(humanize_title(deck.title)) +
+        '\n\n' +
+        replies.CARD_DELETED_REPLY
+    )
+    keyboard = markups.create_deck_menu_markup(deck)
+
     bot.edit_message_text(
         text=text,
         chat_id=user.chat_id,

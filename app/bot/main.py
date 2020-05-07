@@ -14,15 +14,17 @@ bot = telebot.TeleBot(TOKEN)
 @bot.message_handler(commands=dist.COMMANDS.get('start_commands'))
 def start_handler(message: types.Message) -> None:
     user = utils.get_user(message)
-    keyboard = markups.create_menu_markup(user)
     if user.inline_keyboard_id:
         text = replies.START_AGAIN.format(message.from_user.first_name)
         bot.delete_message(user.chat_id, user.inline_keyboard_id)
     else:
         text = replies.START_REPLY.format(message.from_user.first_name)
-    bot.send_message(
+
+    keyboard = markups.create_menu_markup(user)
+    message_id = bot.send_message(
         chat_id=message.chat.id, text=text, reply_markup=keyboard, parse_mode='Markdown'
-    )
+    ).message_id
+    user.set_inline_keyboard(message_id)
 
 
 @bot.message_handler(commands=dist.COMMANDS.get('help_commands'))
