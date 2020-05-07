@@ -1,7 +1,7 @@
 import typing
 from random import random, shuffle
 
-from app.run import db
+from app.__init__ import db
 from app import settings
 
 from . import Card, PublicDeck, User, utils

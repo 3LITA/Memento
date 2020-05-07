@@ -9,6 +9,7 @@ chardet
 Click
 Flask
 Flask-SQLAlchemy
+Flask-Babel
 idna
 importlib-metadata
 itsdangerous

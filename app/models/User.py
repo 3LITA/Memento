@@ -1,6 +1,6 @@
 import typing
 
-from app.run import db
+from app.__init__ import db
 
 from . import Admin, Invite, UserDeck
 
@@ -16,6 +16,13 @@ class User(db.Model):  # type: ignore
         Admin.Admin, backref='user', lazy=True
     )  # O-M to Admin
     invites = db.relationship(Invite.Invite, backref='user', lazy=True)  # O-M to Invite
+
+    def __init__(self, chat_id: int, username: typing.Optional[str] = None) -> None:
+        self.chat_id = chat_id
+        if username:
+            self.username = username
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self) -> str:
         return '<User %r>' % self.chat_id

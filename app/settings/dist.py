@@ -7,6 +7,9 @@ MAX_ANSWER_LENGTH = 63
 CARD_TYPES_RANGE = 5  # 0 - 4
 KNOWLEDGE_RANGE = 3
 
+DEFAULT_LOCALE = 'en'
+LANGUAGES = ['en', 'ru']
+
 COMMANDS = {
     'start_commands': ['start'],
     'help_commands': ['help'],

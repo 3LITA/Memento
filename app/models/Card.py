@@ -3,7 +3,7 @@ from time import time
 
 from sqlalchemy.dialects.postgresql import ARRAY
 
-from app.run import db
+from app.__init__ import db
 from app.settings import dist
 
 from . import Question, UserDeck, utils

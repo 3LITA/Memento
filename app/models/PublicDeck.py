@@ -1,6 +1,6 @@
 import typing
 
-from app.run import db
+from app.__init__ import db
 from app.settings import MAX_SLUG_LENGTH
 
 

@@ -118,8 +118,11 @@ def no_wrong_answers_markup_handler(message: types.Message) -> None:
     utils.forget_context(user)
 
     text = replies.CARD_WITH_CHOICE_CREATED_REPLY.format(
-        card_type, question, correct_answers, replies.NO_WRONG_ANSWERS_REPLY
-    )
+            type=card_type,
+            question=question,
+            correct_answers=correct_answers,
+            wrong_answers=replies.NO_WRONG_ANSWERS_REPLY,
+        )
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(

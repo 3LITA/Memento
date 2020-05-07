@@ -91,7 +91,7 @@ def send_question_handler(message: types.Message) -> None:
     keyboard.add(cancel_btn)
 
     if len(question) > dist.MAX_QUESTION_LENGTH:
-        text = replies.CARD_QUESTION_TOO_LONG_MESSAGE
+        text = replies.CARD_QUESTION_TOO_LONG_REPLY
     else:
         user_deck = UserDeck.get_by_id(user_deck_id)
         if card_type == 0:
@@ -171,13 +171,14 @@ def correct_answers_handler(message: types.Message) -> None:
         ]
 
         if len(correct_answers) == 0:
-            text = replies.INCORRECT_CORRECT_ANSWERS_REPLY.format(question)
+            text = replies.INCORRECT_NUMBER_OF_CORRECT_ANSWERS_REPLY.format(question)
             keyboard = markups.create_cancel_markup(user_deck)
         else:
             if card_type == 2 and len(correct_answers) != context.get('gaps'):
                 gaps = context.get('gaps')
                 text = replies.INCORRECT_GAPS_NUMBER_IN_ANSWER_REPLY.format(
-                    gaps, len(correct_answers)
+                    expected=gaps,
+                    actual=len(correct_answers),
                 )
             elif card_type == 3:
                 metadata = context
@@ -243,7 +244,7 @@ def wrong_answers_handler(message: types.Message) -> None:
     correct_answers = context.get('correct_answers')
 
     if len(wrong_answers) == 0:
-        text = replies.INCORRECT_WRONG_ANSWERS_REPLY.format(question)
+        text = replies.INCORRECT_NUMBER_OF_WRONG_ANSWERS_REPLY.format(question)
         keyboard = markups.create_cancel_markup(user_deck)
         if correct_answers and len(correct_answers) > 0:
             keyboard.add(
@@ -266,7 +267,10 @@ def wrong_answers_handler(message: types.Message) -> None:
             correct_answers = replies.NO_CORRECT_ANSWERS_REPLY
 
         text = replies.CARD_WITH_CHOICE_CREATED_REPLY.format(
-            card_type, question, correct_answers, wrong_answers
+            type=card_type,
+            question=question,
+            correct_answers=correct_answers,
+            wrong_answers=wrong_answers,
         )
         utils.forget_context(user)
 

@@ -1,4 +1,4 @@
-from app.run import db
+from app.__init__ import db
 
 
 class Admin(db.Model):  # type: ignore

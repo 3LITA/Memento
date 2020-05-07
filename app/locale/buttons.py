@@ -1,41 +1,43 @@
-MY_DECKS = 'My decks'
+from flask_babel import _
 
-ADD_DECK = 'Add deck'
+MY_DECKS = _('My decks')
 
-QUESTION = 'Question'
+ADD_DECK = _('Add deck')
 
-CORRECT = 'Correct'
+QUESTION = _('Question')
 
-WRONG = 'Wrong'
+CORRECT = _('Correct')
 
-DELETE = 'Delete'
+WRONG = _('Wrong')
 
-CANCEL = 'Cancel'
+DELETE = _('Delete')
 
-RENAME = 'Rename'
+CANCEL = _('Cancel')
 
-BACK = 'Back'
+RENAME = _('Rename')
 
-ADD_CARD = 'Add card'
+BACK = _('Back')
 
-LEARN = 'Learn'
+ADD_CARD = _('Add card')
 
-EDIT = 'Edit'
+LEARN = _('Learn')
 
-TIP = 'Tip'
+EDIT = _('Edit')
 
-SUBMIT = 'Submit'
+TIP = _('Tip')
 
-KNOWLEDGE_RATES = ['👎🏻', '🖕🏻', '👍🏻']
+SUBMIT = _('Submit')
 
-CREATE_NEW_DECK = 'Create a new deck'
+KNOWLEDGE_RATES = [_('👎🏻'), _('🖕🏻'), _('👍🏻')]
 
-ADD_EXISTING_DECK = 'Add an existing one'
+CREATE_NEW_DECK = _('Create a new deck')
 
-CORRECT_ANSWERS = 'Correct answers: '
+ADD_EXISTING_DECK = _('Add an existing one')
 
-NO_CORRECT_ANSWERS = 'No correct answers'
+CORRECT_ANSWERS = _('Correct answers: ')
 
-WRONG_ANSWERS = 'Wrong answers: '
+NO_CORRECT_ANSWERS = _('No correct answers')
 
-NO_WRONG_ANSWERS = 'No wrong answers'
+WRONG_ANSWERS = _('Wrong answers: ')
+
+NO_WRONG_ANSWERS = _('No wrong answers')
