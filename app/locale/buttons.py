@@ -26,7 +26,7 @@ TIP = 'Tip'
 
 SUBMIT = 'Submit'
 
-KNOWLEDGE_RATES = ['👍🏻', '🖕🏻', '👎🏻']
+KNOWLEDGE_RATES = ['👎🏻', '🖕🏻', '👍🏻']
 
 CREATE_NEW_DECK = 'Create a new deck'
 

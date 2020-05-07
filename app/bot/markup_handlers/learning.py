@@ -39,7 +39,7 @@ def set_knowledge_markup_handler(message: types.Message) -> None:
     card_id, knowledge = message.data.split('.')[1:]
     card = Card.get_by_id(card_id)
 
-    card.set_knowledge(knowledge)
+    card.set_knowledge(int(knowledge))
     deck = card.user_deck
     new_card = deck.pull_card()
     text, keyboard = utils.build_learn_text_and_keyboard(user, new_card)

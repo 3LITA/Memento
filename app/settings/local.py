@@ -1,8 +1,8 @@
 import os
 
 BOT_SECRET_URL = os.getenv('BOT_PATH')
-# TOKEN = os.getenv('TOKEN')
-TOKEN = '1152242930:AAFI9hBDihuwE1bhp4GewXrjkIa_JZk2maY'
+TOKEN = os.getenv('TOKEN')
+# TOKEN = '1152242930:AAFI9hBDihuwE1bhp4GewXrjkIa_JZk2maY'
 DB_USER = os.getenv('DATABASE_USER')
 DB_PASS = os.getenv('DATABASE_PASS', '')
 DB_HOST = os.getenv('DATABASE_HOST', 'localhost')

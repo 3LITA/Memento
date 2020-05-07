@@ -81,12 +81,10 @@ class UserDeck(db.Model):  # type: ignore
             knowledge = 3
 
         cards = Card.Card.query.filter_by(knowledge=knowledge, user_deck=self).all()
-
         if len(cards) == 0:
-            cards = self.cards
-            shuffle(cards)
-        else:
-            cards.sort()
+            cards = list(self.cards)
+
+        shuffle(cards)
         return cards[0]
 
     def delete(self: 'UserDeck') -> None:

@@ -66,14 +66,15 @@ class Card(db.Model):  # type: ignore
         db.session.add(self)
         db.session.commit()
 
-    def set_knowledge(self: 'Card', knowledge: int) -> typing.Union['Card', int]:
-        if knowledge in range(1, dist.KNOWLEDGE_RANGE + 1):
-            self.knowledge = knowledge
-            db.session.add(self)
-            db.session.commit()
-            return self
-        else:
-            return knowledge
+    def set_knowledge(self: 'Card', knowledge: int) -> 'Card':
+        if self.question.card_type == 0:
+            self.inc_attempt()
+        if knowledge not in range(1, dist.KNOWLEDGE_RANGE + 1):
+            raise AttributeError('Knowledge is out of available range')
+        self.knowledge = knowledge
+        db.session.add(self)
+        db.session.commit()
+        return self
 
     def _is_answer_correct(self: 'Card', user_answer: typing.Union[str, typing.List]) -> bool:
         question = self.question
@@ -145,5 +146,6 @@ class Card(db.Model):  # type: ignore
     def get_by_id(cls, card_id: str) -> 'Card':
         card = cls.query.filter_by(id=card_id).first()
         if not card:
+            print('Card %s not found' % card_id)
             raise AttributeError('card not found')
         return card
