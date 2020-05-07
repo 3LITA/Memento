@@ -2,6 +2,8 @@ from flask_babel import _
 
 from app.settings import COMMANDS
 
+from . import buttons
+
 START_REPLY = _(
     "Hi, *{}*!\n"
     "I am gonna help you learn everything you've always wanted,\n"
@@ -33,7 +35,6 @@ DELETE_DECK_NOT_FOUND_MESSAGE = _(
 
 USER_DECK_NOT_FOUND_REPLY = _(
     "Sorry, but I can't find this deck.\n"
-    'Type /decks to see your decks'
 )
 
 CHOOSE_DECK_REPLY = _("Your decks:")
@@ -41,7 +42,8 @@ CHOOSE_DECK_REPLY = _("Your decks:")
 SET_KNOWLEDGE_REPLY = _("Please, estimate your knowledge level:")
 
 CHOOSE_MANY_REPLY = _(
-    "Choose correct answers (if there are any) and press *Submit*:\n\n" "Your answers:"
+    "Choose correct answers (if there are any) and press *%(submit_btn)s*:\n\n"
+    "Your answers:", submit_btn=buttons.SUBMIT
 )
 
 CHOOSE_ONE_REPLY = _("Choose one answer")

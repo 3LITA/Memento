@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-08 01:47+0400\n"
+"POT-Creation-Date: 2020-05-08 02:13+0400\n"
 "PO-Revision-Date: 2020-05-08 01:50+0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -95,7 +95,7 @@ msgstr "Создать новую колоду"
 msgid "Add an existing one"
 msgstr "Добавить существующую"
 
-#: app/locale/buttons.py:37 app/locale/replies.py:139
+#: app/locale/buttons.py:37 app/locale/replies.py:141
 msgid "Correct answers: "
 msgstr "Правильные ответы: "
 
@@ -111,104 +111,113 @@ msgstr "Неправильные ответы: "
 msgid "No wrong answers"
 msgstr "Неправильных ответов нет"
 
-#: app/locale/replies.py:5
+#: app/locale/replies.py:7
 msgid ""
 "Hi, *{}*!\n"
 "I am gonna help you learn everything you've always wanted,\n"
 "no matter how hard it is!"
 msgstr ""
-
-#: app/locale/replies.py:11
-msgid "Welcome back, *{}*!"
-msgstr ""
+"Привет, *{}*!\n"
+"Я бот, который поможет тебе в игровой форме учить термины."
 
 #: app/locale/replies.py:13
+msgid "Welcome back, *{}*!"
+msgstr "Привет снова, *{}*!"
+
+#: app/locale/replies.py:15
 #, python-format
 msgid "%(menu_command)s - use this command to navigate\n"
-msgstr ""
-
-#: app/locale/replies.py:17
-msgid "Sorry, I don't understand this command"
-msgstr ""
+msgstr "%(menu_command)s - используй эту команду для навигации\n"
 
 #: app/locale/replies.py:19
-msgid "Deck *{title}* was successfully created!"
-msgstr ""
+msgid "Sorry, I don't understand this command"
+msgstr "Извини, я не знаю такой команды"
 
 #: app/locale/replies.py:21
-msgid "The card was successfully deleted!"
-msgstr ""
+msgid "Deck *{title}* was successfully created!"
+msgstr "Колода *{title}* была успешно создана!"
 
 #: app/locale/replies.py:23
-msgid "Deck *{deck_title}* was successfully deleted!"
-msgstr ""
+msgid "The card was successfully deleted!"
+msgstr "Карта была успешно удалена!"
 
 #: app/locale/replies.py:25
-msgid "Deck *{ex_deck_title}* was renamed to *{new_deck_title}*."
-msgstr ""
+msgid "Deck *{deck_title}* was successfully deleted!"
+msgstr "Колода *{deck_title}* была успешно удалена!"
 
-#: app/locale/replies.py:29 app/locale/replies.py:34
+#: app/locale/replies.py:27
+msgid "Deck *{ex_deck_title}* was renamed to *{new_deck_title}*."
+msgstr "Колода *{ex_deck_title}* теперь называется *{new_deck_title}*."
+
+#: app/locale/replies.py:31
 msgid ""
 "Sorry, but I can't find this deck.\n"
 "Type /decks to see your decks"
 msgstr ""
 
-#: app/locale/replies.py:39
+#: app/locale/replies.py:36
+msgid "Sorry, but I can't find this deck.\n"
+msgstr "Извини, но я не могу найти эту колоду.\n"
+
+#: app/locale/replies.py:40
 msgid "Your decks:"
-msgstr ""
+msgstr "Твои колоды:"
 
-#: app/locale/replies.py:41
+#: app/locale/replies.py:42
 msgid "Please, estimate your knowledge level:"
-msgstr ""
+msgstr "Пожалуйста, оцени свои знания:"
 
-#: app/locale/replies.py:43
+#: app/locale/replies.py:44
+#, python-format
 msgid ""
-"Choose correct answers (if there are any) and press *Submit*:\n"
+"Choose correct answers (if there are any) and press *%(submit_btn)s*:\n"
 "\n"
 "Your answers:"
 msgstr ""
+"Выбери правильные варианты (если они, конечно, есть) и нажми *%(submit_btn)s*:\n"
 
-#: app/locale/replies.py:47
-msgid "Choose one answer"
-msgstr ""
 
 #: app/locale/replies.py:49
+msgid "Choose one answer"
+msgstr "Выбери один ответ"
+
+#: app/locale/replies.py:51
 msgid ""
 "/show - show correct answer\n"
 "/cancel - stop learning"
 msgstr ""
 
-#: app/locale/replies.py:51
+#: app/locale/replies.py:53
 msgid "It's too late to set knowledge level."
 msgstr ""
 
-#: app/locale/replies.py:53
+#: app/locale/replies.py:55
 msgid "It's too late to edit the card."
 msgstr ""
 
-#: app/locale/replies.py:55
+#: app/locale/replies.py:57
 msgid "It's too late to answer this question."
 msgstr ""
 
-#: app/locale/replies.py:57
+#: app/locale/replies.py:59
 msgid "It's a start menu."
 msgstr ""
 
-#: app/locale/replies.py:59
+#: app/locale/replies.py:61
 msgid "Do you want to create a new deck or add an existing one?"
 msgstr ""
 
-#: app/locale/replies.py:61
+#: app/locale/replies.py:63
 msgid ""
 "Send me a name to your deck.\n"
 "P.S. Remember that it should be unique."
 msgstr ""
 
-#: app/locale/replies.py:66
+#: app/locale/replies.py:68
 msgid "Deck *{}*"
 msgstr ""
 
-#: app/locale/replies.py:68
+#: app/locale/replies.py:70
 msgid ""
 "Choose type of a card that you want to add to \"*{}*\".\n"
 "\n"
@@ -219,14 +228,14 @@ msgid ""
 "4: a card with only one correct answer."
 msgstr ""
 
-#: app/locale/replies.py:77
+#: app/locale/replies.py:79
 msgid ""
 "You chose card type *{}*.\n"
 "\n"
 "Send me a *question*, that should be on a card."
 msgstr ""
 
-#: app/locale/replies.py:82
+#: app/locale/replies.py:84
 msgid ""
 "You chose card type *2*.\n"
 "\n"
@@ -235,61 +244,61 @@ msgid ""
 "Remember that the question should contain gaps \"*_*\"."
 msgstr ""
 
-#: app/locale/replies.py:88
+#: app/locale/replies.py:90
 msgid "Send me the *fact*, that should be on this card."
 msgstr ""
 
-#: app/locale/replies.py:90
+#: app/locale/replies.py:92
 msgid ""
 "Your new card:\n"
 "\n"
 "{}"
 msgstr ""
 
-#: app/locale/replies.py:92
+#: app/locale/replies.py:94
 msgid ""
 "Send me possible answers to this question.\n"
 "\n"
 "{}"
 msgstr ""
 
-#: app/locale/replies.py:96
+#: app/locale/replies.py:98
 msgid ""
 "Send me {} comma-separated answers to this question.\n"
 "\n"
 "{}"
 msgstr ""
 
-#: app/locale/replies.py:101
+#: app/locale/replies.py:103
 msgid ""
 "Send me comma-separated correct answers to this question:\n"
-"\n"
-"{}"
-msgstr ""
-
-#: app/locale/replies.py:105
-msgid ""
-"Send me the correct answer to this question:\n"
 "\n"
 "{}"
 msgstr ""
 
 #: app/locale/replies.py:107
 msgid ""
+"Send me the correct answer to this question:\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:109
+msgid ""
 "Send me comma-separated incorrect answers to this question:\n"
 "\n"
 "{}"
 msgstr ""
 
-#: app/locale/replies.py:111
+#: app/locale/replies.py:113
 msgid "There are no correct answers."
 msgstr ""
 
-#: app/locale/replies.py:113
+#: app/locale/replies.py:115
 msgid "There are no incorrect answers."
 msgstr ""
 
-#: app/locale/replies.py:115
+#: app/locale/replies.py:117
 msgid ""
 "You are confusing me!\n"
 "\n"
@@ -298,7 +307,7 @@ msgid ""
 "{}"
 msgstr ""
 
-#: app/locale/replies.py:121
+#: app/locale/replies.py:123
 msgid ""
 "You are confusing me!\n"
 "\n"
@@ -307,7 +316,7 @@ msgid ""
 "{}"
 msgstr ""
 
-#: app/locale/replies.py:127
+#: app/locale/replies.py:129
 msgid ""
 "What do you want to change in this card?\n"
 "\n"
@@ -316,65 +325,65 @@ msgid ""
 "{}"
 msgstr ""
 
-#: app/locale/replies.py:129
+#: app/locale/replies.py:131
 msgid "What do you want to change in this deck *{deck_title}*?"
 msgstr ""
 
-#: app/locale/replies.py:131
+#: app/locale/replies.py:133
 msgid "Send me the name to the deck *{deck_title}*."
 msgstr ""
 
-#: app/locale/replies.py:135
+#: app/locale/replies.py:137
 msgid "Are you sure you want to delete deck *{}*?"
 msgstr ""
 
-#: app/locale/replies.py:137
+#: app/locale/replies.py:139
 msgid "Correct answer: "
 msgstr ""
 
-#: app/locale/replies.py:141
+#: app/locale/replies.py:143
 msgid "Your choice:"
 msgstr ""
 
-#: app/locale/replies.py:144
+#: app/locale/replies.py:146
 msgid "Correct!"
 msgstr ""
 
-#: app/locale/replies.py:145
+#: app/locale/replies.py:147
 msgid "Absolutely correct!"
 msgstr ""
 
-#: app/locale/replies.py:146
+#: app/locale/replies.py:148
 msgid "Perfect!"
 msgstr ""
 
-#: app/locale/replies.py:147
+#: app/locale/replies.py:149
 msgid "Well done!"
 msgstr ""
 
-#: app/locale/replies.py:148
+#: app/locale/replies.py:150
 msgid "Excellent!"
 msgstr ""
 
-#: app/locale/replies.py:152
+#: app/locale/replies.py:154
 msgid "Wrong!"
 msgstr ""
 
-#: app/locale/replies.py:153
+#: app/locale/replies.py:155
 msgid "Bad news, wrong!"
 msgstr ""
 
-#: app/locale/replies.py:154
+#: app/locale/replies.py:156
 msgid "Sorry, incorrect!"
 msgstr ""
 
-#: app/locale/replies.py:157
+#: app/locale/replies.py:159
 msgid ""
 "Your question is too long.\n"
 "Try to make it shorter."
 msgstr ""
 
-#: app/locale/replies.py:161
+#: app/locale/replies.py:163
 msgid ""
 "The card of type {type} was successfully created:\n"
 "\n"
@@ -383,7 +392,7 @@ msgid ""
 "{correct_answers}"
 msgstr ""
 
-#: app/locale/replies.py:163
+#: app/locale/replies.py:165
 msgid ""
 "The card of type {type} was successfully created:\n"
 "\n"
@@ -394,29 +403,28 @@ msgid ""
 "Wrong: {wrong_answers}"
 msgstr ""
 
-#: app/locale/replies.py:170
+#: app/locale/replies.py:172
 msgid "Sorry, but a card of type *2* should contain gaps \"*_*\""
 msgstr ""
 
-#: app/locale/replies.py:174
+#: app/locale/replies.py:176
 msgid "Sorry, but I need {expected} answers, whereas you gave me {actual}."
 msgstr ""
 
-#: app/locale/replies.py:179
+#: app/locale/replies.py:181
 msgid "What do you mean?"
 msgstr ""
 
-#: app/locale/replies.py:180
+#: app/locale/replies.py:182
 msgid "Please type /help and get the available commands"
 msgstr ""
 
-#: app/locale/replies.py:181
+#: app/locale/replies.py:183
 msgid "Sorry, I can't understand"
 msgstr ""
 
-#: app/locale/replies.py:182
+#: app/locale/replies.py:184
 msgid ""
 "Sorry, but I can't reply...\n"
 "But I can help you learn something!"
 msgstr ""
-
