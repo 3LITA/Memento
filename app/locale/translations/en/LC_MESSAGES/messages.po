@@ -1,0 +1,421 @@
+# English translations for Memento.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the Memento project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-05-08 01:47+0400\n"
+"PO-Revision-Date: 2020-05-08 02:01+0400\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: app/locale/buttons.py:3
+msgid "My decks"
+msgstr ""
+
+#: app/locale/buttons.py:5
+msgid "Add deck"
+msgstr ""
+
+#: app/locale/buttons.py:7
+msgid "Question"
+msgstr ""
+
+#: app/locale/buttons.py:9
+msgid "Correct"
+msgstr ""
+
+#: app/locale/buttons.py:11
+msgid "Wrong"
+msgstr ""
+
+#: app/locale/buttons.py:13
+msgid "Delete"
+msgstr ""
+
+#: app/locale/buttons.py:15
+msgid "Cancel"
+msgstr ""
+
+#: app/locale/buttons.py:17
+msgid "Rename"
+msgstr ""
+
+#: app/locale/buttons.py:19
+msgid "Back"
+msgstr ""
+
+#: app/locale/buttons.py:21
+msgid "Add card"
+msgstr ""
+
+#: app/locale/buttons.py:23
+msgid "Learn"
+msgstr ""
+
+#: app/locale/buttons.py:25
+msgid "Edit"
+msgstr ""
+
+#: app/locale/buttons.py:27
+msgid "Tip"
+msgstr ""
+
+#: app/locale/buttons.py:29
+msgid "Submit"
+msgstr ""
+
+#: app/locale/buttons.py:31
+msgid "👎🏻"
+msgstr ""
+
+#: app/locale/buttons.py:31
+msgid "🖕🏻"
+msgstr ""
+
+#: app/locale/buttons.py:31
+msgid "👍🏻"
+msgstr ""
+
+#: app/locale/buttons.py:33
+msgid "Create a new deck"
+msgstr ""
+
+#: app/locale/buttons.py:35
+msgid "Add an existing one"
+msgstr ""
+
+#: app/locale/buttons.py:37 app/locale/replies.py:139
+msgid "Correct answers: "
+msgstr ""
+
+#: app/locale/buttons.py:39
+msgid "No correct answers"
+msgstr ""
+
+#: app/locale/buttons.py:41
+msgid "Wrong answers: "
+msgstr ""
+
+#: app/locale/buttons.py:43
+msgid "No wrong answers"
+msgstr ""
+
+#: app/locale/replies.py:5
+msgid ""
+"Hi, *{}*!\n"
+"I am gonna help you learn everything you've always wanted,\n"
+"no matter how hard it is!"
+msgstr ""
+
+#: app/locale/replies.py:11
+msgid "Welcome back, *{}*!"
+msgstr ""
+
+#: app/locale/replies.py:13
+#, python-format
+msgid "%(menu_command)s - use this command to navigate\n"
+msgstr ""
+
+#: app/locale/replies.py:17
+msgid "Sorry, I don't understand this command"
+msgstr ""
+
+#: app/locale/replies.py:19
+msgid "Deck *{title}* was successfully created!"
+msgstr ""
+
+#: app/locale/replies.py:21
+msgid "The card was successfully deleted!"
+msgstr ""
+
+#: app/locale/replies.py:23
+msgid "Deck *{deck_title}* was successfully deleted!"
+msgstr ""
+
+#: app/locale/replies.py:25
+msgid "Deck *{ex_deck_title}* was renamed to *{new_deck_title}*."
+msgstr ""
+
+#: app/locale/replies.py:29 app/locale/replies.py:34
+msgid ""
+"Sorry, but I can't find this deck.\n"
+"Type /decks to see your decks"
+msgstr ""
+
+#: app/locale/replies.py:39
+msgid "Your decks:"
+msgstr ""
+
+#: app/locale/replies.py:41
+msgid "Please, estimate your knowledge level:"
+msgstr ""
+
+#: app/locale/replies.py:43
+msgid ""
+"Choose correct answers (if there are any) and press *Submit*:\n"
+"\n"
+"Your answers:"
+msgstr ""
+
+#: app/locale/replies.py:47
+msgid "Choose one answer"
+msgstr ""
+
+#: app/locale/replies.py:49
+msgid ""
+"/show - show correct answer\n"
+"/cancel - stop learning"
+msgstr ""
+
+#: app/locale/replies.py:51
+msgid "It's too late to set knowledge level."
+msgstr ""
+
+#: app/locale/replies.py:53
+msgid "It's too late to edit the card."
+msgstr ""
+
+#: app/locale/replies.py:55
+msgid "It's too late to answer this question."
+msgstr ""
+
+#: app/locale/replies.py:57
+msgid "It's a start menu."
+msgstr ""
+
+#: app/locale/replies.py:59
+msgid "Do you want to create a new deck or add an existing one?"
+msgstr ""
+
+#: app/locale/replies.py:61
+msgid ""
+"Send me a name to your deck.\n"
+"P.S. Remember that it should be unique."
+msgstr ""
+
+#: app/locale/replies.py:66
+msgid "Deck *{}*"
+msgstr ""
+
+#: app/locale/replies.py:68
+msgid ""
+"Choose type of a card that you want to add to \"*{}*\".\n"
+"\n"
+"0: a card with no answer, just some fact;\n"
+"1: a question-answer card;\n"
+"2: a card with gaps \\_ that you need to fill;\n"
+"3: a card with multiple choice;\n"
+"4: a card with only one correct answer."
+msgstr ""
+
+#: app/locale/replies.py:77
+msgid ""
+"You chose card type *{}*.\n"
+"\n"
+"Send me a *question*, that should be on a card."
+msgstr ""
+
+#: app/locale/replies.py:82
+msgid ""
+"You chose card type *2*.\n"
+"\n"
+"Send me a *question*, that should be on a card.\n"
+"\n"
+"Remember that the question should contain gaps \"*_*\"."
+msgstr ""
+
+#: app/locale/replies.py:88
+msgid "Send me the *fact*, that should be on this card."
+msgstr ""
+
+#: app/locale/replies.py:90
+msgid ""
+"Your new card:\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:92
+msgid ""
+"Send me possible answers to this question.\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:96
+msgid ""
+"Send me {} comma-separated answers to this question.\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:101
+msgid ""
+"Send me comma-separated correct answers to this question:\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:105
+msgid ""
+"Send me the correct answer to this question:\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:107
+msgid ""
+"Send me comma-separated incorrect answers to this question:\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:111
+msgid "There are no correct answers."
+msgstr ""
+
+#: app/locale/replies.py:113
+msgid "There are no incorrect answers."
+msgstr ""
+
+#: app/locale/replies.py:115
+msgid ""
+"You are confusing me!\n"
+"\n"
+"Send me comma-separated incorrect answers to this question:\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:121
+msgid ""
+"You are confusing me!\n"
+"\n"
+"Send me comma-separated correct answers to this question:\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:127
+msgid ""
+"What do you want to change in this card?\n"
+"\n"
+"{}\n"
+"\n"
+"{}"
+msgstr ""
+
+#: app/locale/replies.py:129
+msgid "What do you want to change in this deck *{deck_title}*?"
+msgstr ""
+
+#: app/locale/replies.py:131
+msgid "Send me the name to the deck *{deck_title}*."
+msgstr ""
+
+#: app/locale/replies.py:135
+msgid "Are you sure you want to delete deck *{}*?"
+msgstr ""
+
+#: app/locale/replies.py:137
+msgid "Correct answer: "
+msgstr ""
+
+#: app/locale/replies.py:141
+msgid "Your choice:"
+msgstr ""
+
+#: app/locale/replies.py:144
+msgid "Correct!"
+msgstr ""
+
+#: app/locale/replies.py:145
+msgid "Absolutely correct!"
+msgstr ""
+
+#: app/locale/replies.py:146
+msgid "Perfect!"
+msgstr ""
+
+#: app/locale/replies.py:147
+msgid "Well done!"
+msgstr ""
+
+#: app/locale/replies.py:148
+msgid "Excellent!"
+msgstr ""
+
+#: app/locale/replies.py:152
+msgid "Wrong!"
+msgstr ""
+
+#: app/locale/replies.py:153
+msgid "Bad news, wrong!"
+msgstr ""
+
+#: app/locale/replies.py:154
+msgid "Sorry, incorrect!"
+msgstr ""
+
+#: app/locale/replies.py:157
+msgid ""
+"Your question is too long.\n"
+"Try to make it shorter."
+msgstr ""
+
+#: app/locale/replies.py:161
+msgid ""
+"The card of type {type} was successfully created:\n"
+"\n"
+"{question}\n"
+"\n"
+"{correct_answers}"
+msgstr ""
+
+#: app/locale/replies.py:163
+msgid ""
+"The card of type {type} was successfully created:\n"
+"\n"
+"{question}\n"
+"\n"
+"Correct: {correct_answers}\n"
+"\n"
+"Wrong: {wrong_answers}"
+msgstr ""
+
+#: app/locale/replies.py:170
+msgid "Sorry, but a card of type *2* should contain gaps \"*_*\""
+msgstr ""
+
+#: app/locale/replies.py:174
+msgid "Sorry, but I need {expected} answers, whereas you gave me {actual}."
+msgstr ""
+
+#: app/locale/replies.py:179
+msgid "What do you mean?"
+msgstr ""
+
+#: app/locale/replies.py:180
+msgid "Please type /help and get the available commands"
+msgstr ""
+
+#: app/locale/replies.py:181
+msgid "Sorry, I can't understand"
+msgstr ""
+
+#: app/locale/replies.py:182
+msgid ""
+"Sorry, but I can't reply...\n"
+"But I can help you learn something!"
+msgstr ""
+
