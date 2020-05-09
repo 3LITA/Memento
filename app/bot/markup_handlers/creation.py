@@ -42,11 +42,10 @@ def card_type_markup_handler(message: types.Message) -> None:
 
     if int(card_type) == 0:
         text = replies.SEND_FACT_REPLY
-    elif int(card_type) == 2:
-        text = replies.SEND_QUESTION_TYPE_2_REPLY
     else:
         text = replies.SEND_QUESTION_REPLY.format(card_type)
-
+        if int(card_type) == 2:
+            text += replies.NOTE_GAPS_FOR_TYPE_2_REPLY
     # TODO: move to markups.py
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(
@@ -82,8 +81,13 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
 
     user_deck = UserDeck.get_by_id(context['user_deck_id'])
 
-    text = replies.NO_CORRECT_ANSWERS_REPLY + replies.SEND_WRONG_ANSWERS_REPLY.format(
-        context['question']
+    text = (
+        replies.THERE_ARE_NO_REPLY.format(replies.CORRECT_ANSWERS) +
+        replies.replies.SEND_ANSWERS_REPLY.format(
+            "",
+            replies.WRONG_ANSWERS,
+            context['question'],
+        )
     )
 
     keyboard = markups.create_cancel_markup(user_deck=user_deck)
@@ -121,7 +125,7 @@ def no_wrong_answers_markup_handler(message: types.Message) -> None:
             type=card_type,
             question=question,
             correct_answers=correct_answers,
-            wrong_answers=replies.NO_WRONG_ANSWERS_REPLY,
+            wrong_answers=replies.THERE_ARE_NO_REPLY.format(replies.WRONG_ANSWERS),
         )
 
     bot.delete_message(user.chat_id, markup_message_id)

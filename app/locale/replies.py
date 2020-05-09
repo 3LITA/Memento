@@ -41,21 +41,6 @@ CHOOSE_DECK_REPLY = _("Your decks:")
 
 SET_KNOWLEDGE_REPLY = _("Please, estimate your knowledge level:")
 
-CHOOSE_MANY_REPLY = _(
-    "Choose correct answers (if there are any) and press *%(submit_btn)s*:\n\n"
-    "Your answers:", submit_btn=buttons.SUBMIT
-)
-
-CHOOSE_ONE_REPLY = _("Choose one answer")
-
-LEARN_REPLY = _("/show - show correct answer\n" "/cancel - stop learning")
-
-TOO_LATE_TO_SET_KNOWLEDGE_REPLY = _("It's too late to set knowledge level.")
-
-TOO_LATE_TO_EDIT_REPLY = _("It's too late to edit the card.")
-
-TOO_LATE_TO_ANSWER_REPLY = _("It's too late to answer this question.")
-
 MENU_REPLY = _("It's a start menu.")
 
 ADD_DECK_REPLY = _("Do you want to create a new deck or add an existing one?")
@@ -81,9 +66,8 @@ SEND_QUESTION_REPLY = _(
     'Send me a *question*, that should be on a card.'
 )
 
-SEND_QUESTION_TYPE_2_REPLY = _(
-    'You chose card type *2*.\n\n'
-    'Send me a *question*, that should be on a card.\n\n'
+NOTE_GAPS_FOR_TYPE_2_REPLY = _(
+    '\n\n'
     'Remember that the question should contain gaps "*_*".'
 )
 
@@ -95,40 +79,29 @@ SEND_ANSWERS_TYPE_1_REPLY = _(
     'Send me possible answers to this question.\n\n' '{}'
 )
 
-SEND_ANSWERS_TYPE_2_REPLY = _(
-    'Send me {} comma-separated answers to this question.\n\n'
-    '{}'
-)
+ALL_POSSIBLE = "all possible"
 
-SEND_CORRECT_ANSWERS_REPLY = _(
-    'Send me comma-separated correct answers to this question:\n\n' '{}'
+CORRECT_ANSWERS = "correct answers"
+
+WRONG_ANSWERS = "wrong answers"
+
+SEND_ANSWERS_REPLY = _(
+    'Send me {}comma-separated {} to this question:\n\n' '{}'
 )
 
 SEND_CORRECT_ANSWER_REPLY = _('Send me the correct answer to this question:\n\n' '{}')
 
-SEND_WRONG_ANSWERS_REPLY = _(
-    'Send me comma-separated incorrect answers to this question:\n\n' '{}'
-)
+THERE_ARE_NO_REPLY = _("There are no {}.")
 
-NO_CORRECT_ANSWERS_REPLY = _("There are no correct answers.")
-
-NO_WRONG_ANSWERS_REPLY = _("There are no incorrect answers.")
-
-INCORRECT_NUMBER_OF_WRONG_ANSWERS_REPLY = _(
+INCORRECT_NUMBER_OF_REPLY = _(
     'You are confusing me!\n\n'
-    'Send me comma-separated incorrect answers to this question:\n\n'
-    '{}'
-)
-
-INCORRECT_NUMBER_OF_CORRECT_ANSWERS_REPLY = _(
-    'You are confusing me!\n\n'
-    'Send me comma-separated correct answers to this question:\n\n'
+    'Send me comma-separated {} to this question:\n\n'
     '{}'
 )
 
 EDIT_CARD_REPLY = _('What do you want to change in this card?\n\n' '{}\n\n' '{}')
 
-EDIT_USER_DECK_REPLY = _("What do you want to change in this deck *{deck_title}*?")
+EDIT_USER_DECK_REPLY = _("What do you want to change in the deck *{deck_title}*?")
 
 RENAME_USER_DECK_REPLY = _(
     'Send me the name to the deck *{deck_title}*.'
@@ -169,7 +142,7 @@ CARD_WITH_CHOICE_CREATED_REPLY = _(
     "Wrong: {wrong_answers}"
 )
 
-INCORRECT_GAPS_NUMBER_IN_QUESTION_REPLY = _(
+NO_GAPS_IN_TYPE_2_REPLY = _(
     'Sorry, but a card of type *2* should contain gaps "*_*"'
 )
 

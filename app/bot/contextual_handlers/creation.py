@@ -108,11 +108,15 @@ def send_question_handler(message: types.Message) -> None:
                 'question': question,
             }
             if card_type == 1:
-                text = replies.SEND_ANSWERS_TYPE_1_REPLY.format(question)
+                text = replies.SEND_ANSWERS_REPLY.format(
+                    f"{replies.ALL_POSSIBLE} ",
+                    replies.CORRECT_ANSWERS,
+                    question
+                )
             elif card_type == 2:
                 gaps = utils.count_gaps(question)
                 if gaps == 0:
-                    text = replies.INCORRECT_GAPS_NUMBER_IN_QUESTION_REPLY
+                    text = replies.NO_GAPS_IN_TYPE_2_REPLY
                     try:
                         bot.delete_message(user.chat_id, markup_message_id)
                     except Exception as err:
@@ -126,15 +130,23 @@ def send_question_handler(message: types.Message) -> None:
                     user.set_inline_keyboard(message_id)
                     return
                 metadata['gaps'] = gaps
-                text = replies.SEND_ANSWERS_TYPE_2_REPLY.format(gaps, question)
+                text = replies.SEND_ANSWERS_REPLY.format(
+                    f"{gaps} ",
+                    replies.CORRECT_ANSWERS,
+                    question)
             elif card_type == 3:
+                # TODO: move to markups.py
                 keyboard.add(
                     types.InlineKeyboardButton(
                         text=buttons.NO_CORRECT_ANSWERS,
                         callback_data=f'no_correct_answers',
                     )
                 )
-                text = replies.SEND_CORRECT_ANSWERS_REPLY.format(question)
+                text = replies.SEND_ANSWERS_REPLY.format(
+                    "",
+                    replies.CORRECT_ANSWERS,
+                    question,
+                )
             elif card_type == 4:
                 text = replies.SEND_CORRECT_ANSWER_REPLY.format(question)
             else:
@@ -171,7 +183,7 @@ def correct_answers_handler(message: types.Message) -> None:
         ]
 
         if len(correct_answers) == 0:
-            text = replies.INCORRECT_NUMBER_OF_CORRECT_ANSWERS_REPLY.format(question)
+            text = replies.INCORRECT_NUMBER_OF_REPLY.format(replies.CORRECT_ANSWERS, question)
             keyboard = markups.create_cancel_markup(user_deck)
         else:
             if card_type == 2 and len(correct_answers) != context.get('gaps'):
@@ -186,7 +198,11 @@ def correct_answers_handler(message: types.Message) -> None:
                 metadata.pop('command')
                 utils.set_context(user, command='wrong_answers', metadata=metadata)
 
-                text = replies.SEND_WRONG_ANSWERS_REPLY.format(question)
+                text = replies.SEND_ANSWERS_REPLY.format(
+                    "",
+                    replies.WRONG_ANSWERS,
+                    question,
+                )
                 keyboard.add(
                     types.InlineKeyboardButton(
                         text=buttons.NO_WRONG_ANSWERS,
@@ -213,7 +229,11 @@ def correct_answers_handler(message: types.Message) -> None:
         metadata.pop('command')
         utils.set_context(user, command='wrong_answers', metadata=metadata)
 
-        text = replies.SEND_WRONG_ANSWERS_REPLY.format(question)
+        text = replies.SEND_ANSWERS_REPLY.format(
+            "",
+            replies.WRONG_ANSWERS,
+            question,
+        )
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(
@@ -244,7 +264,7 @@ def wrong_answers_handler(message: types.Message) -> None:
     correct_answers = context.get('correct_answers')
 
     if len(wrong_answers) == 0:
-        text = replies.INCORRECT_NUMBER_OF_WRONG_ANSWERS_REPLY.format(question)
+        text = replies.INCORRECT_NUMBER_OF_REPLY.format(replies.WRONG_ANSWERS, question)
         keyboard = markups.create_cancel_markup(user_deck)
         if correct_answers and len(correct_answers) > 0:
             keyboard.add(
@@ -264,7 +284,7 @@ def wrong_answers_handler(message: types.Message) -> None:
         keyboard = markups.create_created_card_markup(user_card, user_deck)
 
         if correct_answers and len(correct_answers) == 0:
-            correct_answers = replies.NO_CORRECT_ANSWERS_REPLY
+            correct_answers = replies.THERE_ARE_NO_REPLY.format(replies.CORRECT_ANSWERS)
 
         text = replies.CARD_WITH_CHOICE_CREATED_REPLY.format(
             type=card_type,
