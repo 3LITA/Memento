@@ -4,6 +4,7 @@ from app.settings import COMMANDS
 
 from . import buttons
 
+
 START_REPLY = _(
     "Hi, *{}*!\n"
     "I am gonna help you learn everything you've always wanted,\n"

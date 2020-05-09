@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app import settings
 
+
 server = Flask(__name__)
 server.config.from_object(settings)
 db = SQLAlchemy(server)

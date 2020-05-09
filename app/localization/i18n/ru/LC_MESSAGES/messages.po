@@ -1,4 +1,4 @@
-# Russian translations for Memento.
+# Russian i18n for Memento.
 # Copyright (C) 2020 ORGANIZATION
 # This file is distributed under the same license as the Memento project.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-09 22:21+0400\n"
+"POT-Creation-Date: 2020-05-09 22:54+0400\n"
 "PO-Revision-Date: 2020-05-08 01:50+0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,99 +19,99 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: app/locale/buttons.py:3
+#: app/localization/buttons.py:3
 msgid "My decks"
 msgstr "Мои колоды"
 
-#: app/locale/buttons.py:5
+#: app/localization/buttons.py:5
 msgid "Add deck"
 msgstr "Добавить колоду"
 
-#: app/locale/buttons.py:7
+#: app/localization/buttons.py:7
 msgid "Question"
 msgstr "Вопрос"
 
-#: app/locale/buttons.py:9
+#: app/localization/buttons.py:9
 msgid "Correct"
 msgstr "Правильные"
 
-#: app/locale/buttons.py:11
+#: app/localization/buttons.py:11
 msgid "Wrong"
 msgstr "Неправильные"
 
-#: app/locale/buttons.py:13
+#: app/localization/buttons.py:13
 msgid "Delete"
 msgstr "Удалить"
 
-#: app/locale/buttons.py:15
+#: app/localization/buttons.py:15
 msgid "Cancel"
 msgstr "Отмена"
 
-#: app/locale/buttons.py:17
+#: app/localization/buttons.py:17
 msgid "Rename"
 msgstr "Переименовать"
 
-#: app/locale/buttons.py:19
+#: app/localization/buttons.py:19
 msgid "Back"
 msgstr "Назад"
 
-#: app/locale/buttons.py:21
+#: app/localization/buttons.py:21
 msgid "Add card"
 msgstr "Добавить карту"
 
-#: app/locale/buttons.py:23
+#: app/localization/buttons.py:23
 msgid "Learn"
 msgstr "Учить"
 
-#: app/locale/buttons.py:25
+#: app/localization/buttons.py:25
 msgid "Edit"
 msgstr "Редактировать"
 
-#: app/locale/buttons.py:27
+#: app/localization/buttons.py:27
 msgid "Tip"
 msgstr "Подсказка"
 
-#: app/locale/buttons.py:29
+#: app/localization/buttons.py:29
 msgid "Submit"
 msgstr "Подтвердить"
 
-#: app/locale/buttons.py:31
+#: app/localization/buttons.py:31
 msgid "👎🏻"
 msgstr ""
 
-#: app/locale/buttons.py:31
+#: app/localization/buttons.py:31
 msgid "🖕🏻"
 msgstr ""
 
-#: app/locale/buttons.py:31
+#: app/localization/buttons.py:31
 msgid "👍🏻"
 msgstr ""
 
-#: app/locale/buttons.py:33
+#: app/localization/buttons.py:33
 msgid "Create a new deck"
 msgstr "Создать новую колоду"
 
-#: app/locale/buttons.py:35
+#: app/localization/buttons.py:35
 msgid "Add an existing one"
 msgstr "Добавить существующую"
 
-#: app/locale/buttons.py:37 app/locale/replies.py:114
+#: app/localization/buttons.py:37 app/localization/replies.py:99
 msgid "Correct answers: "
 msgstr "Правильные ответы: "
 
-#: app/locale/buttons.py:39
+#: app/localization/buttons.py:39
 msgid "No correct answers"
 msgstr "Правильных ответов нет"
 
-#: app/locale/buttons.py:41
+#: app/localization/buttons.py:41
 msgid "Wrong answers: "
 msgstr "Неправильные ответы: "
 
-#: app/locale/buttons.py:43
+#: app/localization/buttons.py:43
 msgid "No wrong answers"
 msgstr "Неправильных ответов нет"
 
-#: app/locale/replies.py:7
+#: app/localization/replies.py:7
 msgid ""
 "Hi, *{}*!\n"
 "I am gonna help you learn everything you've always wanted,\n"
@@ -120,62 +120,62 @@ msgstr ""
 "Привет, *{}*!\n"
 "Я бот, который поможет тебе в игровой форме учить термины."
 
-#: app/locale/replies.py:13
+#: app/localization/replies.py:13
 msgid "Welcome back, *{}*!"
 msgstr "Привет снова, *{}*!"
 
-#: app/locale/replies.py:15
+#: app/localization/replies.py:15
 #, python-format
 msgid "%(menu_command)s - use this command to navigate\n"
 msgstr "%(menu_command)s - используй эту команду для навигации\n"
 
-#: app/locale/replies.py:19
+#: app/localization/replies.py:20
 msgid "Sorry, I don't understand this command"
 msgstr "Извини, я не знаю такой команды"
 
-#: app/locale/replies.py:21
+#: app/localization/replies.py:22
 msgid "Deck *{title}* was successfully created!"
 msgstr "Колода *{title}* была успешно создана!"
 
-#: app/locale/replies.py:23
+#: app/localization/replies.py:24
 msgid "The card was successfully deleted!"
 msgstr "Карта была успешно удалена!"
 
-#: app/locale/replies.py:25
+#: app/localization/replies.py:26
 msgid "Deck *{deck_title}* was successfully deleted!"
 msgstr "Колода *{deck_title}* была успешно удалена!"
 
-#: app/locale/replies.py:27
+#: app/localization/replies.py:28
 msgid "Deck *{ex_deck_title}* was renamed to *{new_deck_title}*."
 msgstr "Колода *{ex_deck_title}* теперь называется *{new_deck_title}*."
 
-#: app/locale/replies.py:31
+#: app/localization/replies.py:30
 msgid ""
 "Sorry, but I can't find this deck.\n"
 "Type /decks to see your decks"
 msgstr ""
 
-#: app/locale/replies.py:36
+#: app/localization/replies.py:34
 msgid "Sorry, but I can't find this deck.\n"
 msgstr "Извини, но я не могу найти эту колоду.\n"
 
-#: app/locale/replies.py:40
+#: app/localization/replies.py:36
 msgid "Your decks:"
 msgstr "Твои колоды:"
 
-#: app/locale/replies.py:42
+#: app/localization/replies.py:38
 msgid "Please, estimate your knowledge level:"
 msgstr "Пожалуйста, оцени свои знания:"
 
-#: app/locale/replies.py:44
+#: app/localization/replies.py:40
 msgid "It's a start menu."
 msgstr "Главное меню."
 
-#: app/locale/replies.py:46
+#: app/localization/replies.py:42
 msgid "Do you want to create a new deck or add an existing one?"
 msgstr "Создать новую колоду или добавить существующую?"
 
-#: app/locale/replies.py:48
+#: app/localization/replies.py:44
 msgid ""
 "Send me a name to your deck.\n"
 "P.S. Remember that it should be unique."
@@ -183,11 +183,11 @@ msgstr ""
 "Пришли название будущей колоды.\n"
 "P.S. Учти, что оно должно быть уникальным."
 
-#: app/locale/replies.py:53
+#: app/localization/replies.py:48
 msgid "Deck *{}*"
 msgstr "Колода *{}*"
 
-#: app/locale/replies.py:55
+#: app/localization/replies.py:50
 msgid ""
 "Choose type of a card that you want to add to \"*{}*\".\n"
 "\n"
@@ -205,7 +205,7 @@ msgstr ""
 "3: карта с множественным выбором;\n"
 "4: карта с выбором одного правильного ответа."
 
-#: app/locale/replies.py:64
+#: app/localization/replies.py:59
 msgid ""
 "You chose card type *{}*.\n"
 "\n"
@@ -215,7 +215,7 @@ msgstr ""
 "\n"
 "Пришли *вопрос*, который будет на карте."
 
-#: app/locale/replies.py:69
+#: app/localization/replies.py:63
 msgid ""
 "\n"
 "\n"
@@ -225,11 +225,11 @@ msgstr ""
 "\n"
 "Учти, что вопрос должен содержать поля для ввода \"*_*\"."
 
-#: app/locale/replies.py:74
+#: app/localization/replies.py:67
 msgid "Send me the *fact*, that should be on this card."
 msgstr "Пришли *факт*, который будет на карте."
 
-#: app/locale/replies.py:76
+#: app/localization/replies.py:69
 msgid ""
 "Your new card:\n"
 "\n"
@@ -239,7 +239,7 @@ msgstr ""
 "\n"
 "{}"
 
-#: app/locale/replies.py:78
+#: app/localization/replies.py:71
 msgid ""
 "Send me possible answers to this question.\n"
 "\n"
@@ -249,7 +249,7 @@ msgstr ""
 "\n"
 "{}"
 
-#: app/locale/replies.py:88
+#: app/localization/replies.py:79
 msgid ""
 "Send me {}comma-separated {} to this question:\n"
 "\n"
@@ -259,7 +259,7 @@ msgstr ""
 "\n"
 "{}"
 
-#: app/locale/replies.py:92
+#: app/localization/replies.py:81
 msgid ""
 "Send me the correct answer to this question:\n"
 "\n"
@@ -269,11 +269,11 @@ msgstr ""
 "\n"
 "{}"
 
-#: app/locale/replies.py:94
+#: app/localization/replies.py:83
 msgid "There are no {}."
 msgstr "{} нет."
 
-#: app/locale/replies.py:96
+#: app/localization/replies.py:85
 msgid ""
 "You are confusing me!\n"
 "\n"
@@ -287,7 +287,7 @@ msgstr ""
 "\n"
 "{}"
 
-#: app/locale/replies.py:102
+#: app/localization/replies.py:89
 msgid ""
 "What do you want to change in this card?\n"
 "\n"
@@ -301,59 +301,59 @@ msgstr ""
 "\n"
 "{}"
 
-#: app/locale/replies.py:104
+#: app/localization/replies.py:91
 msgid "What do you want to change in the deck *{deck_title}*?"
 msgstr "Что ты хочешь изменить в колоде *{deck_title}*?"
 
-#: app/locale/replies.py:106
+#: app/localization/replies.py:93
 msgid "Send me the name to the deck *{deck_title}*."
 msgstr "Пришли мне новое название для колоды *{}*."
 
-#: app/locale/replies.py:110
+#: app/localization/replies.py:95
 msgid "Are you sure you want to delete deck *{}*?"
 msgstr "Удаляем колоду *{}*?"
 
-#: app/locale/replies.py:112
+#: app/localization/replies.py:97
 msgid "Correct answer: "
 msgstr "Правильный ответ: "
 
-#: app/locale/replies.py:116
+#: app/localization/replies.py:101
 msgid "Your choice:"
 msgstr "Твой выбор:"
 
-#: app/locale/replies.py:119
+#: app/localization/replies.py:104
 msgid "Correct!"
 msgstr "Правильно!"
 
-#: app/locale/replies.py:120
+#: app/localization/replies.py:105
 msgid "Absolutely correct!"
 msgstr "Совершенно верно!"
 
-#: app/locale/replies.py:121
+#: app/localization/replies.py:106
 msgid "Perfect!"
 msgstr "Отлично!"
 
-#: app/locale/replies.py:122
+#: app/localization/replies.py:107
 msgid "Well done!"
 msgstr "Именно так!"
 
-#: app/locale/replies.py:123
+#: app/localization/replies.py:108
 msgid "Excellent!"
 msgstr "Великолепно!"
 
-#: app/locale/replies.py:127
+#: app/localization/replies.py:112
 msgid "Wrong!"
 msgstr "Неправильно!"
 
-#: app/locale/replies.py:128
+#: app/localization/replies.py:113
 msgid "Bad news, wrong!"
 msgstr "К сожалению, ты ошибаешься!"
 
-#: app/locale/replies.py:129
+#: app/localization/replies.py:114
 msgid "Sorry, incorrect!"
 msgstr "Извини, но это неверный ответ!"
 
-#: app/locale/replies.py:132
+#: app/localization/replies.py:117
 msgid ""
 "Your question is too long.\n"
 "Try to make it shorter."
@@ -361,7 +361,7 @@ msgstr ""
 "Вопрос слишком длинный.\n"
 "Попробуй его укоротить."
 
-#: app/locale/replies.py:136
+#: app/localization/replies.py:121
 msgid ""
 "The card of type {type} was successfully created:\n"
 "\n"
@@ -375,7 +375,7 @@ msgstr ""
 "\n"
 "{correct_answers}"
 
-#: app/locale/replies.py:138
+#: app/localization/replies.py:127
 msgid ""
 "The card of type {type} was successfully created:\n"
 "\n"
@@ -393,27 +393,27 @@ msgstr ""
 "\n"
 "Неправильные: {wrong_answers}"
 
-#: app/locale/replies.py:145
+#: app/localization/replies.py:134
 msgid "Sorry, but a card of type *2* should contain gaps \"*_*\""
 msgstr "Извини, но карта типа *2* должна содержать поля для ввода \"*_*\""
 
-#: app/locale/replies.py:149
+#: app/localization/replies.py:136
 msgid "Sorry, but I need {expected} answers, whereas you gave me {actual}."
 msgstr "Прости, но мне необходимо {expected} ответов, а у тебя их {actual}.'"
 
-#: app/locale/replies.py:154
+#: app/localization/replies.py:141
 msgid "What do you mean?"
 msgstr "Что ты имеешь в виду?"
 
-#: app/locale/replies.py:155
+#: app/localization/replies.py:142
 msgid "Please type /help and get the available commands"
 msgstr "Советую ввести /help и посмотреть список доступных команд"
 
-#: app/locale/replies.py:156
+#: app/localization/replies.py:143
 msgid "Sorry, I can't understand"
 msgstr "К сожалению, я не понимаю о чём ты"
 
-#: app/locale/replies.py:157
+#: app/localization/replies.py:144
 msgid ""
 "Sorry, but I can't reply...\n"
 "But I can help you learn something!"

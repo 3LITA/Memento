@@ -1,11 +1,9 @@
 import re
 import typing
 
-# from pprint import pprint
-
 from telebot import types
 
-from app.localization import replies, buttons
+from app.localization import buttons, replies
 from app.models import utils
 from app.models.Card import Card
 from app.models.User import User

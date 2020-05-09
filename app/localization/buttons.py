@@ -1,5 +1,6 @@
 from flask_babel import _
 
+
 MY_DECKS = _('My decks')
 
 ADD_DECK = _('Add deck')
