@@ -121,7 +121,7 @@ class Card(db.Model):  # type: ignore
             if (
                 card_type == 3
                 and (not correct_answers or len(correct_answers) == 0)
-                and (not correct_answers or len(correct_answers) == 0)
+                and (not wrong_answers or len(wrong_answers) == 0)
             ):
                 raise ValueError(
                     'card with type 3 must have at least one answer in total'
@@ -141,7 +141,7 @@ class Card(db.Model):  # type: ignore
 
             question = Question.Question(
                 card_type=card_type,
-                text=question_string.lower(),
+                text=question_string,
                 correct_answers=correct_answers,
                 wrong_answers=wrong_answers,
             )

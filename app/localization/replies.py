@@ -2,8 +2,6 @@ from flask_babel import _
 
 from app.settings import COMMANDS
 
-from . import buttons
-
 
 START_REPLY = _(
     "Hi, *{}*!\n"
@@ -27,10 +25,6 @@ CARD_DELETED_REPLY = _("The card was successfully deleted!")
 USER_DECK_DELETED_REPLY = _("Deck *{deck_title}* was successfully deleted!")
 
 USER_DECK_RENAMED_REPLY = _("Deck *{ex_deck_title}* was renamed to *{new_deck_title}*.")
-
-DELETE_DECK_NOT_FOUND_MESSAGE = _(
-    "Sorry, but I can't find this deck.\n" "Type /decks to see your decks"
-)
 
 USER_DECK_NOT_FOUND_REPLY = _("Sorry, but I can't find this deck.\n")
 
@@ -98,6 +92,8 @@ DELETE_USER_DECK_REPLY = _('Are you sure you want to delete deck *{}*?')
 CORRECT_ANSWER_IS_REPLY = _('Correct answer: ')
 
 CORRECT_ANSWERS_ARE_REPLY = _('Correct answers: ')
+
+WRONG_ANSWERS_ARE_REPLY = _('Wrong answers: ')
 
 USER_CHOSEN_REPLY = _('Your choice:')
 

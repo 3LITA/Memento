@@ -21,7 +21,7 @@ def edit_card_markup_handler(message: types.Message) -> None:
 
     question_text = card.question.text
     if card.question.correct_answers and len(card.question.correct_answers) > 0:
-        answers = buttons.CORRECT_ANSWERS
+        answers = replies.CORRECT_ANSWERS_ARE_REPLY
         for ans in card.question.correct_answers:
             answers += ans + ', '
         answers = answers[:-2]
@@ -29,7 +29,7 @@ def edit_card_markup_handler(message: types.Message) -> None:
         answers = buttons.NO_CORRECT_ANSWERS
     answers += '\n\n'
     if card.question.wrong_answers and len(card.question.wrong_answers) > 0:
-        answers += buttons.WRONG_ANSWERS
+        answers += replies.WRONG_ANSWERS_ARE_REPLY
         for ans in card.question.wrong_answers:
             answers += ans + ', '
         answers = answers[:-2]
@@ -159,7 +159,7 @@ def delete_card_markup_handler(message: types.Message) -> None:
     card.delete()
 
     text = (
-        replies.DECK_MENU_REPLY.format(humanize_title(deck.title))
+        replies.DECK_MENU_REPLY.format(humanize_title(deck.title).upper())
         + '\n\n'
         + replies.CARD_DELETED_REPLY
     )

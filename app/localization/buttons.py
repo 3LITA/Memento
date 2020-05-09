@@ -31,14 +31,10 @@ SUBMIT = _('Submit')
 
 KNOWLEDGE_RATES = [_('👎🏻'), _('🖕🏻'), _('👍🏻')]
 
-CREATE_NEW_DECK = _('Create a new deck')
+CREATE_NEW_DECK = _('Create')
 
-ADD_EXISTING_DECK = _('Add an existing one')
-
-CORRECT_ANSWERS = _('Correct answers: ')
+ADD_EXISTING_DECK = _('Add')
 
 NO_CORRECT_ANSWERS = _('No correct answers')
-
-WRONG_ANSWERS = _('Wrong answers: ')
 
 NO_WRONG_ANSWERS = _('No wrong answers')
