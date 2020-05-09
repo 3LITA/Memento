@@ -4,7 +4,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies
+from app.localization import replies
 from app.models.Card import Card
 
 
@@ -19,7 +19,8 @@ def learn_contextual_handler(message: types.Message) -> None:
     card = Card.get_by_id(card_id)
 
     answer = (
-        message.text if card.question.card_type == 1
+        message.text
+        if card.question.card_type == 1
         else [ans.strip() for ans in message.text.split(',')]
     )
 

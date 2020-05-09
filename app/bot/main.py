@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 
-from app.locale import replies
+from app.localization import replies
 from app.settings import dist
 from app.settings.local import TOKEN
 
@@ -18,7 +18,9 @@ def start_handler(message: types.Message) -> None:
         try:
             bot.delete_message(user.chat_id, user.inline_keyboard_id)
         except telebot.apihelper.ApiException:
-            print("Not found message %s for user %s" % (user.inline_keyboard_id, user.id))  # logging
+            print(
+                "Not found message %s for user %s" % (user.inline_keyboard_id, user.id)
+            )  # logging
         user.forget_keyboard()
         text = replies.START_AGAIN.format(message.from_user.first_name)
     else:
@@ -45,7 +47,9 @@ def menu_handler(message: types.Message) -> None:
         try:
             bot.delete_message(message.chat.id, user.inline_keyboard_id)
         except telebot.apihelper.ApiException:
-            print("Not found message %s for user %s" % (user.inline_keyboard_id, user.id))  # logging
+            print(
+                "Not found message %s for user %s" % (user.inline_keyboard_id, user.id)
+            )  # logging
             user.forget_keyboard()
 
     text = replies.MENU_REPLY
@@ -65,5 +69,7 @@ def expectations_handler(message: types.Message) -> None:
 @bot.message_handler(regexp=r'^/.*')
 def unknown_handler(message: types.Message) -> None:
     text = replies.UNKNOWN_COMMAND_REPLY
-    print("%s tried to send a non-existing command %s" % (message.chat.id, message.text))
+    print(
+        "%s tried to send a non-existing command %s" % (message.chat.id, message.text)
+    )
     bot.send_message(message.chat.id, text)

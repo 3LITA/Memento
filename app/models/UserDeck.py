@@ -22,7 +22,9 @@ class UserDeck(db.Model):  # type: ignore
     user_id = db.Column(
         db.Integer, db.ForeignKey('user.id'), nullable=False
     )  # M-O to User
-    cards = db.relationship('Card', backref='user_deck', lazy=True, cascade='all, delete-orphan')  # O-M to UserCard
+    cards = db.relationship(
+        'Card', backref='user_deck', lazy=True, cascade='all, delete-orphan'
+    )  # O-M to UserCard
 
     def __repr__(self) -> str:
         return '<UserDeck %r>' % self.title

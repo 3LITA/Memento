@@ -2,7 +2,7 @@ from random import shuffle
 
 from telebot import types
 
-from app.locale import buttons
+from app.localization import buttons
 from app.models.Card import Card
 from app.models.User import User
 from app.models.UserDeck import UserDeck
@@ -64,7 +64,9 @@ def create_edit_user_deck_markup(deck: UserDeck) -> types.InlineKeyboardMarkup:
     delete_btn = types.InlineKeyboardButton(
         text=buttons.DELETE, callback_data=f'delete_user_deck.{deck.id}'
     )
-    back_btn = types.InlineKeyboardButton(text=buttons.BACK, callback_data=f'deck.{deck.id}')
+    back_btn = types.InlineKeyboardButton(
+        text=buttons.BACK, callback_data=f'deck.{deck.id}'
+    )
 
     inline_keyboard.add(rename_btn, delete_btn, back_btn)
     return inline_keyboard
@@ -140,7 +142,9 @@ def create_choose_card_type_markup(user_deck_id: int) -> types.InlineKeyboardMar
         for i in range(dist.CARD_TYPES_RANGE)
     ]
     btns.append(
-        types.InlineKeyboardButton(text=buttons.BACK, callback_data=f'deck.{user_deck_id}')
+        types.InlineKeyboardButton(
+            text=buttons.BACK, callback_data=f'deck.{user_deck_id}'
+        )
     )
 
     keyboard.add(*btns)

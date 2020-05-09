@@ -2,5 +2,5 @@
 
 cd ../../../
 pybabel extract -F babel.cfg -k _l -o messages.pot .
-pybabel update -i messages.pot -d app/locale/translations
+pybabel update -i messages.pot -d app/localization/translations
 rm messages.pot

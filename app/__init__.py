@@ -1,5 +1,6 @@
 import importlib
 import json
+import typing
 
 import telebot
 from flask import Flask, request
@@ -15,11 +16,14 @@ babel = Babel(server)
 
 
 @babel.localeselector
-def get_locale() -> str:
+def get_locale() -> typing.Optional[str]:
     if request.path == f'/{settings.BOT_SECRET_URL}':
         json_string = request.get_data().decode('utf-8')
         info = json.loads(json_string)
-        lang = info['message']['from']['language_code']
+        try:
+            lang = info['callback_query']['from']['language_code']
+        except KeyError:
+            lang = info['message']['from']['language_code']
         return lang if lang in settings.LANGUAGES else settings.DEFAULT_LOCALE
     else:
         return request.accept_languages.best_match(settings.LANGUAGES)

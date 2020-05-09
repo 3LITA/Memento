@@ -13,7 +13,8 @@ START_REPLY = _(
 START_AGAIN = _("Welcome back, *{}*!")
 
 HELP_REPLY = _(
-    "%(menu_command)s - use this command to navigate\n", menu_command=COMMANDS['menu_commands'][-1]
+    "%(menu_command)s - use this command to navigate\n",
+    menu_command=COMMANDS['menu_commands'][-1],
 )
 
 UNKNOWN_COMMAND_REPLY = _("Sorry, I don't understand this command")
@@ -24,18 +25,13 @@ CARD_DELETED_REPLY = _("The card was successfully deleted!")
 
 USER_DECK_DELETED_REPLY = _("Deck *{deck_title}* was successfully deleted!")
 
-USER_DECK_RENAMED_REPLY = _(
-    "Deck *{ex_deck_title}* was renamed to *{new_deck_title}*."
-)
+USER_DECK_RENAMED_REPLY = _("Deck *{ex_deck_title}* was renamed to *{new_deck_title}*.")
 
 DELETE_DECK_NOT_FOUND_MESSAGE = _(
-    "Sorry, but I can't find this deck.\n"
-    "Type /decks to see your decks"
+    "Sorry, but I can't find this deck.\n" "Type /decks to see your decks"
 )
 
-USER_DECK_NOT_FOUND_REPLY = _(
-    "Sorry, but I can't find this deck.\n"
-)
+USER_DECK_NOT_FOUND_REPLY = _("Sorry, but I can't find this deck.\n")
 
 CHOOSE_DECK_REPLY = _("Your decks:")
 
@@ -46,8 +42,7 @@ MENU_REPLY = _("It's a start menu.")
 ADD_DECK_REPLY = _("Do you want to create a new deck or add an existing one?")
 
 CREATE_NEW_DECK_REPLY = _(
-    "Send me a name to your deck.\n"
-    "P.S. Remember that it should be unique."
+    "Send me a name to your deck.\n" "P.S. Remember that it should be unique."
 )
 
 DECK_MENU_REPLY = _("Deck *{}*")
@@ -62,22 +57,18 @@ CHOOSE_CARD_TYPE_REPLY = _(
 )
 
 SEND_QUESTION_REPLY = _(
-    'You chose card type *{}*.\n\n'
-    'Send me a *question*, that should be on a card.'
+    'You chose card type *{}*.\n\n' 'Send me a *question*, that should be on a card.'
 )
 
 NOTE_GAPS_FOR_TYPE_2_REPLY = _(
-    '\n\n'
-    'Remember that the question should contain gaps "*_*".'
+    '\n\n' 'Remember that the question should contain gaps "*_*".'
 )
 
 SEND_FACT_REPLY = _('Send me the *fact*, that should be on this card.')
 
 FACT_CREATED_REPLY = _('Your new card:\n\n' '{}')
 
-SEND_ANSWERS_TYPE_1_REPLY = _(
-    'Send me possible answers to this question.\n\n' '{}'
-)
+SEND_ANSWERS_TYPE_1_REPLY = _('Send me possible answers to this question.\n\n' '{}')
 
 ALL_POSSIBLE = "all possible"
 
@@ -85,27 +76,21 @@ CORRECT_ANSWERS = "correct answers"
 
 WRONG_ANSWERS = "wrong answers"
 
-SEND_ANSWERS_REPLY = _(
-    'Send me {}comma-separated {} to this question:\n\n' '{}'
-)
+SEND_ANSWERS_REPLY = _('Send me {}comma-separated {} to this question:\n\n' '{}')
 
 SEND_CORRECT_ANSWER_REPLY = _('Send me the correct answer to this question:\n\n' '{}')
 
 THERE_ARE_NO_REPLY = _("There are no {}.")
 
 INCORRECT_NUMBER_OF_REPLY = _(
-    'You are confusing me!\n\n'
-    'Send me comma-separated {} to this question:\n\n'
-    '{}'
+    'You are confusing me!\n\n' 'Send me comma-separated {} to this question:\n\n' '{}'
 )
 
 EDIT_CARD_REPLY = _('What do you want to change in this card?\n\n' '{}\n\n' '{}')
 
 EDIT_USER_DECK_REPLY = _("What do you want to change in the deck *{deck_title}*?")
 
-RENAME_USER_DECK_REPLY = _(
-    'Send me the name to the deck *{deck_title}*.'
-)
+RENAME_USER_DECK_REPLY = _('Send me the name to the deck *{deck_title}*.')
 
 DELETE_USER_DECK_REPLY = _('Are you sure you want to delete deck *{}*?')
 
@@ -133,7 +118,11 @@ CARD_QUESTION_TOO_LONG_REPLY = _(
     "Your question is too long.\n" "Try to make it shorter."
 )
 
-CARD_CREATED_REPLY = _("The card of type {type} was successfully created:\n\n" "{question}\n\n" "{correct_answers}")
+CARD_CREATED_REPLY = _(
+    "The card of type {type} was successfully created:\n\n"
+    "{question}\n\n"
+    "{correct_answers}"
+)
 
 CARD_WITH_CHOICE_CREATED_REPLY = _(
     "The card of type {type} was successfully created:\n\n"
@@ -142,9 +131,7 @@ CARD_WITH_CHOICE_CREATED_REPLY = _(
     "Wrong: {wrong_answers}"
 )
 
-NO_GAPS_IN_TYPE_2_REPLY = _(
-    'Sorry, but a card of type *2* should contain gaps "*_*"'
-)
+NO_GAPS_IN_TYPE_2_REPLY = _('Sorry, but a card of type *2* should contain gaps "*_*"')
 
 INCORRECT_GAPS_NUMBER_IN_ANSWER_REPLY = _(
     "Sorry, but I need {expected} answers, whereas you gave me {actual}."

@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies, buttons
+from app.localization import replies, buttons
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
 
@@ -75,9 +75,7 @@ def deck_menu_markup_handler(message: types.Message) -> None:
     user_deck_id = message.data.split('.')[-1]
     user_deck = UserDeck.get_by_id(user_deck_id)
 
-    text = replies.DECK_MENU_REPLY.format(
-        humanize_title(user_deck.title).upper()
-    )
+    text = replies.DECK_MENU_REPLY.format(humanize_title(user_deck.title).upper())
 
     keyboard = markups.create_deck_menu_markup(user_deck)
 

@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies, buttons
+from app.localization import replies, buttons
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
@@ -105,9 +105,7 @@ def delete_user_deck_markup_handler(message: types.Message) -> None:
     deck_id = message.data.split('.')[-1]
     deck = UserDeck.get_by_id(deck_id)
 
-    text = replies.DELETE_USER_DECK_REPLY.format(
-        humanize_title(deck.title).upper()
-    )
+    text = replies.DELETE_USER_DECK_REPLY.format(humanize_title(deck.title).upper())
     keyboard = markups.create_delete_user_deck_markup(deck)
 
     bot.edit_message_text(
@@ -161,9 +159,9 @@ def delete_card_markup_handler(message: types.Message) -> None:
     card.delete()
 
     text = (
-        replies.DECK_MENU_REPLY.format(humanize_title(deck.title)) +
-        '\n\n' +
-        replies.CARD_DELETED_REPLY
+        replies.DECK_MENU_REPLY.format(humanize_title(deck.title))
+        + '\n\n'
+        + replies.CARD_DELETED_REPLY
     )
     keyboard = markups.create_deck_menu_markup(deck)
 

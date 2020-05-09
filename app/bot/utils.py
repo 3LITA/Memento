@@ -1,10 +1,11 @@
 import re
 import typing
+
 # from pprint import pprint
 
 from telebot import types
 
-from app.locale import replies, buttons
+from app.localization import replies, buttons
 from app.models import utils
 from app.models.Card import Card
 from app.models.User import User
@@ -96,7 +97,9 @@ def build_learn_text_and_keyboard(
     return text, keyboard
 
 
-def repeat_keyboard(js: dict, exclude: typing.Optional[typing.List] = None) -> types.InlineKeyboardMarkup:
+def repeat_keyboard(
+    js: dict, exclude: typing.Optional[typing.List] = None
+) -> types.InlineKeyboardMarkup:
     if exclude is None:
         exclude = []
     inline_keyboard = js.get('reply_markup', {}).get('inline_keyboard')
@@ -108,10 +111,7 @@ def repeat_keyboard(js: dict, exclude: typing.Optional[typing.List] = None) -> t
             callback_data = btn.get('callback_data')
             if text not in exclude:
                 keyboard.add(
-                    types.InlineKeyboardButton(
-                        text=text,
-                        callback_data=callback_data,
-                    )
+                    types.InlineKeyboardButton(text=text, callback_data=callback_data,)
                 )
     return keyboard
 

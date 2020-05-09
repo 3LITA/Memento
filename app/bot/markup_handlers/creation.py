@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.locale import replies, buttons
+from app.localization import replies, buttons
 from app.models.Card import Card
 from app.models.User import User
 from app.models.UserDeck import UserDeck
@@ -81,13 +81,10 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
 
     user_deck = UserDeck.get_by_id(context['user_deck_id'])
 
-    text = (
-        replies.THERE_ARE_NO_REPLY.format(replies.CORRECT_ANSWERS) +
-        replies.replies.SEND_ANSWERS_REPLY.format(
-            "",
-            replies.WRONG_ANSWERS,
-            context['question'],
-        )
+    text = replies.THERE_ARE_NO_REPLY.format(
+        replies.CORRECT_ANSWERS
+    ) + replies.SEND_ANSWERS_REPLY.format(
+        "", replies.WRONG_ANSWERS, context['question'],
     )
 
     keyboard = markups.create_cancel_markup(user_deck=user_deck)
@@ -122,11 +119,11 @@ def no_wrong_answers_markup_handler(message: types.Message) -> None:
     utils.forget_context(user)
 
     text = replies.CARD_WITH_CHOICE_CREATED_REPLY.format(
-            type=card_type,
-            question=question,
-            correct_answers=correct_answers,
-            wrong_answers=replies.THERE_ARE_NO_REPLY.format(replies.WRONG_ANSWERS),
-        )
+        type=card_type,
+        question=question,
+        correct_answers=correct_answers,
+        wrong_answers=replies.THERE_ARE_NO_REPLY.format(replies.WRONG_ANSWERS),
+    )
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(

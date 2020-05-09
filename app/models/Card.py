@@ -76,10 +76,16 @@ class Card(db.Model):  # type: ignore
         db.session.commit()
         return self
 
-    def _is_answer_correct(self: 'Card', user_answer: typing.Union[str, typing.List]) -> bool:
+    def _is_answer_correct(
+        self: 'Card', user_answer: typing.Union[str, typing.List]
+    ) -> bool:
         question = self.question
 
         if question.card_type == 1:
+            if not isinstance(user_answer, str):
+                raise AttributeError(
+                    f"{user_answer} is {type(user_answer)} instead of str"
+                )
             return user_answer.lower() in question.correct_answers
 
         elif question.card_type == 2:
@@ -90,7 +96,7 @@ class Card(db.Model):  # type: ignore
 
         return False  # mypy forced my to write it
 
-    def delete(self):
+    def delete(self) -> None:
         db.session.delete(self)
         db.session.commit()
 
