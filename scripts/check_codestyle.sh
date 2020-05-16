@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ../
+
 printf "ISORT:\n"
 isort app -rc
 

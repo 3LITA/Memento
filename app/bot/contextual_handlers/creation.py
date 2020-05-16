@@ -133,7 +133,7 @@ def send_question_handler(message: types.Message) -> None:
                 keyboard.add(
                     types.InlineKeyboardButton(
                         text=buttons.NO_CORRECT_ANSWERS,
-                        callback_data=f'no_correct_answers',
+                        callback_data='no_correct_answers',
                     )
                 )
                 text = replies.SEND_ANSWERS_REPLY.format(

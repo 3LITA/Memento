@@ -1,4 +1,3 @@
-from flask import session
 from telebot import types
 
 from app.bot import markups, utils
