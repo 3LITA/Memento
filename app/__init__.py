@@ -18,14 +18,26 @@ babel = Babel(server)
 
 @babel.localeselector
 def get_locale() -> typing.Optional[str]:
+    print('selecting locale')
     if request.path == f'/{settings.BOT_SECRET_URL}':
+        from app.models.User import User
+
         json_string = request.get_data().decode('utf-8')
-        info = json.loads(json_string)
+        js = json.loads(json_string)
         try:
-            lang = info['callback_query']['from']['language_code']
+            info = js['callback_query']
         except KeyError:
-            lang = info['message']['from']['language_code']
-        return lang if lang in settings.LANGUAGES else settings.DEFAULT_LOCALE
+            info = js['message']
+        chat_id = info['from']['id']
+        user = User.get_or_create(chat_id)
+        if user.preferred_language:
+            lang = user.preferred_language
+        else:
+            lang = info['from']['language_code']
+            if lang not in settings.LANGUAGES:
+                lang = settings.DEFAULT_LOCALE
+        user.set_preferred_language(lang)
+        return lang
     else:
         return request.accept_languages.best_match(settings.LANGUAGES)
 

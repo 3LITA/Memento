@@ -27,7 +27,7 @@ class Card(db.Model):  # type: ignore
 
     def __init__(
         self,
-        deck: UserDeck.UserDeck,
+        deck: 'UserDeck.UserDeck',
         question: Question.Question,
         need_commit: bool = True,
     ) -> None:
@@ -103,7 +103,7 @@ class Card(db.Model):  # type: ignore
     @classmethod
     def fromQuestion(
         cls,
-        deck: UserDeck.UserDeck,
+        deck: 'UserDeck.UserDeck',
         card_type: int,
         question_string: str,
         correct_answers: list = None,

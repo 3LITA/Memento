@@ -2,11 +2,11 @@ from random import shuffle
 
 from telebot import types
 
+from app import settings
 from app.localization import buttons
 from app.models.Card import Card
 from app.models.User import User
 from app.models.UserDeck import UserDeck
-from app.settings import dist
 
 
 def create_menu_markup(user: User) -> types.InlineKeyboardMarkup:
@@ -17,9 +17,13 @@ def create_menu_markup(user: User) -> types.InlineKeyboardMarkup:
     add_deck_btn = types.InlineKeyboardButton(
         text=buttons.ADD_DECK, callback_data='add_deck'
     )
+    language_btn = types.InlineKeyboardButton(
+        text=buttons.LANGUAGE, callback_data='language'
+    )
     if user.decks and len(user.decks) > 0:
         keyboard.add(decks_btn)
     keyboard.add(add_deck_btn)
+    keyboard.add(language_btn)
 
     return keyboard
 
@@ -133,13 +137,13 @@ def create_new_deck_markup() -> types.InlineKeyboardMarkup:
 
 
 def create_choose_card_type_markup(user_deck_id: int) -> types.InlineKeyboardMarkup:
-    keyboard = types.InlineKeyboardMarkup(row_width=dist.CARD_TYPES_RANGE)
+    keyboard = types.InlineKeyboardMarkup(row_width=settings.CARD_TYPES_RANGE)
 
     btns = [
         types.InlineKeyboardButton(
             text=f'{i}', callback_data=f'card_type.{user_deck_id}.{i}'
         )
-        for i in range(dist.CARD_TYPES_RANGE)
+        for i in range(settings.CARD_TYPES_RANGE)
     ]
     btns.append(
         types.InlineKeyboardButton(
@@ -260,5 +264,26 @@ def create_set_knowledge_markup(card: Card) -> types.InlineKeyboardMarkup:
 
     keyboard.add(good_btn, ok_btn, bad_btn)
     keyboard.add(edit_btn)
+
+    return keyboard
+
+
+def create_language_choice_markup(current_language: str) -> types.InlineKeyboardMarkup:
+
+    keyboard = types.InlineKeyboardMarkup(row_width=1)
+
+    languages = settings.LANGUAGES
+    keyboard.add(
+        *[
+            types.InlineKeyboardButton(
+                text=languages[lang], callback_data=f"set_language.{lang}",
+            )
+            for lang in languages.keys()
+            if lang != current_language
+        ]
+    )
+
+    cancel_btn = types.InlineKeyboardButton(text=buttons.CANCEL, callback_data='menu')
+    keyboard.add(cancel_btn)
 
     return keyboard

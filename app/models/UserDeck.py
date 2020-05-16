@@ -29,7 +29,7 @@ class UserDeck(db.Model):  # type: ignore
     def __repr__(self) -> str:
         return '<UserDeck %r>' % self.title
 
-    def __init__(self, user: User.User, deck_title: str) -> None:
+    def __init__(self, user: 'User.User', deck_title: str) -> None:
         search = self.search_by_title(user, deck_title)
 
         if search:
@@ -95,7 +95,7 @@ class UserDeck(db.Model):  # type: ignore
 
     @classmethod
     def search_by_title(
-        cls, user: User.User, user_deck_title: str
+        cls, user: 'User.User', user_deck_title: str
     ) -> typing.Optional['UserDeck']:
         proper_title = utils.generate_title(user.id, user_deck_title)
         return cls.query.filter_by(title=proper_title).first()

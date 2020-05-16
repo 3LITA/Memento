@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-09 23:55+0400\n"
+"POT-Creation-Date: 2020-05-10 04:49+0400\n"
 "PO-Revision-Date: 2020-05-08 01:50+0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -76,30 +76,34 @@ msgid "Submit"
 msgstr "Подтвердить"
 
 #: app/localization/buttons.py:32
+msgid "Change language"
+msgstr "Сменить язык"
+
+#: app/localization/buttons.py:34
 msgid "👎🏻"
 msgstr ""
 
-#: app/localization/buttons.py:32
+#: app/localization/buttons.py:34
 msgid "🖕🏻"
 msgstr ""
 
-#: app/localization/buttons.py:32
+#: app/localization/buttons.py:34
 msgid "👍🏻"
 msgstr ""
 
-#: app/localization/buttons.py:34
+#: app/localization/buttons.py:36
 msgid "Create"
 msgstr "Создать"
 
-#: app/localization/buttons.py:36
+#: app/localization/buttons.py:38
 msgid "Add"
 msgstr "Добавить"
 
-#: app/localization/buttons.py:38
+#: app/localization/buttons.py:40
 msgid "No correct answers"
 msgstr "Правильных ответов нет"
 
-#: app/localization/buttons.py:40
+#: app/localization/buttons.py:42
 msgid "No wrong answers"
 msgstr "Неправильных ответов нет"
 
@@ -395,19 +399,27 @@ msgstr "Извини, но карта типа *2* должна содержат
 msgid "Sorry, but I need {expected} answers, whereas you gave me {actual}."
 msgstr "Прости, но мне необходимо {expected} ответов, а у тебя их {actual}.'"
 
-#: app/localization/replies.py:138
+#: app/localization/replies.py:137
+msgid "Choose the language you want to set"
+msgstr "Выбери язык"
+
+#: app/localization/replies.py:141
+msgid "The language was successfully changed!"
+msgstr "Язык был успешно изменен!"
+
+#: app/localization/replies.py:146
 msgid "What do you mean?"
 msgstr "Что ты имеешь в виду?"
 
-#: app/localization/replies.py:139
+#: app/localization/replies.py:147
 msgid "Please type /help and get the available commands"
 msgstr "Советую ввести /help и посмотреть список доступных команд"
 
-#: app/localization/replies.py:140
+#: app/localization/replies.py:148
 msgid "Sorry, I can't understand"
 msgstr "К сожалению, я не понимаю о чём ты"
 
-#: app/localization/replies.py:141
+#: app/localization/replies.py:149
 msgid ""
 "Sorry, but I can't reply...\n"
 "But I can help you learn something!"

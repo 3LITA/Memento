@@ -134,6 +134,10 @@ INCORRECT_GAPS_NUMBER_IN_ANSWER_REPLY = _(
     "Sorry, but I need {expected} answers, whereas you gave me {actual}."
 )
 
+CHANGE_LANGUAGE_REPLY = _("Choose the language you want to set")
+
+LANGUAGE_WAS_CHANGED_REPLY = _("The language was successfully changed!")
+
 WTF_MESSAGES = [
     _('What do you mean?'),
     _('Please type /help and get the available commands'),

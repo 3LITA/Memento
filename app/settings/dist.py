@@ -8,7 +8,7 @@ CARD_TYPES_RANGE = 5  # 0 - 4
 KNOWLEDGE_RANGE = 3
 
 DEFAULT_LOCALE = 'en'
-LANGUAGES = ['en', 'ru']
+LANGUAGES = {'en': '🇬🇧', 'ru': '🇷🇺'}
 BABEL_TRANSLATION_DIRECTORIES = 'localization/i18n'
 
 COMMANDS = {

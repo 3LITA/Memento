@@ -11,6 +11,7 @@ class User(db.Model):  # type: ignore
     chat_id = db.Column(db.Integer, unique=True, nullable=False)
     username = db.Column(db.String(100), unique=True)
     inline_keyboard_id = db.Column(db.Integer)
+    preferred_language = db.Column(db.String(2))
     decks = db.relationship('UserDeck', backref='user', lazy=True)  # O-M to UserDeck
     administrations = db.relationship(
         Admin.Admin, backref='user', lazy=True
@@ -29,6 +30,11 @@ class User(db.Model):  # type: ignore
 
     def set_inline_keyboard(self: 'User', inline_keyboard_id: int) -> None:
         self.inline_keyboard_id = inline_keyboard_id
+        db.session.add(self)
+        db.session.commit()
+
+    def set_preferred_language(self, language: str) -> None:
+        self.preferred_language = language
         db.session.add(self)
         db.session.commit()
 
@@ -51,11 +57,13 @@ class User(db.Model):  # type: ignore
             return []
 
     @classmethod
-    def search_user_by_username(cls, username: str) -> 'User':
+    def search_by_username(cls, username: str) -> 'User':
         return cls.query.filter_by(username=username).first()
 
     @classmethod
-    def get_or_create(cls, chat_id: int, username: str) -> 'User':
+    def get_or_create(
+        cls, chat_id: int, username: typing.Optional[str] = None
+    ) -> 'User':
         if username:
             named_user = cls.query.filter_by(username=username).first()
             if named_user:
@@ -80,6 +88,11 @@ class User(db.Model):  # type: ignore
 
         db.session.commit()
         return unnamed_user
+
+    @classmethod
+    def search_by_chat_id(cls, chat_id: str) -> typing.Optional['User']:
+        user = cls.query.filter_by(chat_id=chat_id).first()
+        return user
 
     @staticmethod
     def _delete_user_deck(deck: 'UserDeck.UserDeck') -> bool:

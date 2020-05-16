@@ -1,3 +1,4 @@
+from flask import session
 from telebot import types
 
 from app.bot import markups, utils
@@ -103,3 +104,40 @@ def new_markup_handler(message: types.Message) -> None:
         reply_markup=keyboard,
     )
     utils.set_context(user, command='new')
+
+
+@bot.callback_query_handler(func=lambda message: message.data.startswith('language'))
+def language_markup_handler(message: types.Message) -> None:
+    user = utils.get_user(message)
+    markup_message_id = user.inline_keyboard_id
+
+    text = replies.CHANGE_LANGUAGE_REPLY
+    keyboard = markups.create_language_choice_markup(user.preferred_language)
+
+    bot.edit_message_text(
+        text=text,
+        chat_id=user.chat_id,
+        message_id=markup_message_id,
+        reply_markup=keyboard,
+    )
+
+
+@bot.callback_query_handler(
+    func=lambda message: message.data.startswith('set_language')
+)
+def set_language_markup_handler(message: types.Message) -> None:
+    user = utils.get_user(message)
+    markup_message_id = user.inline_keyboard_id
+
+    language = message.data.split('.')[1]
+    user.set_preferred_language(language)
+
+    text = replies.LANGUAGE_WAS_CHANGED_REPLY
+    keyboard = markups.create_menu_markup(user)
+
+    bot.edit_message_text(
+        text=text,
+        chat_id=user.chat_id,
+        message_id=markup_message_id,
+        reply_markup=keyboard,
+    )

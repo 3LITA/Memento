@@ -89,7 +89,10 @@ def submit_answer_markup_handler(message: types.Message) -> None:
 
     card_id, correct_answers = message.data.split('.')[1:]
 
-    chosen = [int(num) for num in utils.parse_chosen_nums(message.message.json)]
+    try:
+        chosen = [int(num) for num in utils.parse_chosen_nums(message.message.json)]
+    except ValueError:
+        chosen = []
     answers = utils.convert_chosen_to_answers(message.message.json, chosen)
 
     card = Card.get_by_id(card_id)
