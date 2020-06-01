@@ -1,4 +1,4 @@
-from app.__init__ import db
+from app import db
 
 
 class Invite(db.Model):  # type: ignore

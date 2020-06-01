@@ -1,6 +1,6 @@
 from sqlalchemy.dialects.postgresql import ARRAY
 
-from app.__init__ import db
+from app import db
 from app.settings import MAX_ANSWER_LENGTH, MAX_QUESTION_LENGTH
 
 

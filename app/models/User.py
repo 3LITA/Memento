@@ -1,6 +1,6 @@
 import typing
 
-from app.__init__ import db
+from app import db
 
 from . import Admin, Invite, UserDeck
 
