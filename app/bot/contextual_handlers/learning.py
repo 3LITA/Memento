@@ -4,7 +4,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.localization import replies
+from app.bot.messages import replies
 from app.models.Card import Card
 
 

@@ -4,7 +4,7 @@ from telebot import types
 
 from app.bot import markups, utils
 from app.bot.main import bot
-from app.localization import buttons, replies
+from app.bot.messages import buttons, replies
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 

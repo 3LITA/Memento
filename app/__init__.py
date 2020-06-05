@@ -48,7 +48,7 @@ def index() -> str:
 
 
 @server.route(f'/{settings.BOT_SECRET_URL}', methods=['POST'])
-def webhook() -> str:
+def bot_message() -> str:
     importlib.import_module('bot.contextual_handlers')
     importlib.import_module('bot.markup_handlers')
     from app.bot.main import bot

@@ -3,7 +3,7 @@ from random import shuffle
 from telebot import types
 
 from app import settings
-from app.localization import buttons
+from app.bot.messages import buttons
 from app.models.Card import Card
 from app.models.User import User
 from app.models.UserDeck import UserDeck

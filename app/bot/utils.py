@@ -3,7 +3,7 @@ import typing
 
 from telebot import types
 
-from app.localization import buttons, replies
+from app.bot.messages import buttons, replies
 from app.models import utils
 from app.models.Card import Card
 from app.models.User import User

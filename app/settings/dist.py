@@ -11,7 +11,7 @@ DEFAULT_LOCALE = 'en'
 LANGUAGES = {'en': '🇬🇧', 'ru': '🇷🇺'}
 BABEL_TRANSLATION_DIRECTORIES = 'localization/i18n'
 
-COMMANDS = {
+BOT_COMMANDS = {
     'start_commands': ['start'],
     'help_commands': ['help'],
     'decks_commands': ['decks'],
