@@ -1,8 +1,8 @@
 from telebot import types
 
-from app.bot import markups, utils
+from app.bot import utils, replies
 from app.bot.main import bot
-from app.bot.messages import buttons, replies
+from app.bot.keyboard import button_texts, markups
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
@@ -83,7 +83,7 @@ def send_question_handler(message: types.Message) -> None:
 
     keyboard = types.InlineKeyboardMarkup()
     cancel_btn = types.InlineKeyboardButton(
-        text=buttons.CANCEL, callback_data=f'deck.{user_deck_id}'
+        text=button_texts.CANCEL, callback_data=f'deck.{user_deck_id}'
     )
     keyboard.add(cancel_btn)
 
@@ -132,7 +132,7 @@ def send_question_handler(message: types.Message) -> None:
                 # TODO: move to markups.py
                 keyboard.add(
                     types.InlineKeyboardButton(
-                        text=buttons.NO_CORRECT_ANSWERS,
+                        text=button_texts.NO_CORRECT_ANSWERS,
                         callback_data='no_correct_answers',
                     )
                 )
@@ -196,7 +196,7 @@ def correct_answers_handler(message: types.Message) -> None:
                 )
                 keyboard.add(
                     types.InlineKeyboardButton(
-                        text=buttons.NO_WRONG_ANSWERS, callback_data='no_wrong_answers',
+                        text=button_texts.NO_WRONG_ANSWERS, callback_data='no_wrong_answers',
                     )
                 )
             else:
@@ -217,7 +217,7 @@ def correct_answers_handler(message: types.Message) -> None:
         metadata.pop('command')
         utils.set_context(user, command='wrong_answers', metadata=metadata)
 
-        text = replies.SEND_ANSWERS_REPLY.format("", replies.WRONG_ANSWERS, question,)
+        text = replies.SEND_ANSWERS_REPLY.format("", replies.WRONG_ANSWERS, question, )
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(

@@ -3,13 +3,11 @@ import typing
 
 from telebot import types
 
-from app.bot.messages import buttons, replies
+from . import replies
+from .keyboard import button_texts, markups
 from app.models import utils
 from app.models.Card import Card
 from app.models.User import User
-
-from . import markups
-
 
 expectations: typing.Dict[
     int, typing.Dict[str, typing.Any]
@@ -71,7 +69,7 @@ def decks_inline_keyboard(user: User) -> typing.Optional[types.InlineKeyboardMar
             for deck in decks
         ]
         markup.add(*markuped)
-        markup.add(types.InlineKeyboardButton(text=buttons.BACK, callback_data='menu'))
+        markup.add(types.InlineKeyboardButton(text=button_texts.BACK, callback_data='menu'))
         return markup
     return None  # probably it is wrong
 
@@ -96,7 +94,7 @@ def build_learn_text_and_keyboard(
 
 
 def repeat_keyboard(
-    js: dict, exclude: typing.Optional[typing.List] = None
+    js: dict, exclude: typing.Optional[typing.List] = None, delete_btn: bool = False
 ) -> types.InlineKeyboardMarkup:
     if exclude is None:
         exclude = []
@@ -111,6 +109,8 @@ def repeat_keyboard(
                 keyboard.add(
                     types.InlineKeyboardButton(text=text, callback_data=callback_data,)
                 )
+    if delete_btn:
+        keyboard.add(types.InlineKeyboardButton(text=button_texts.DELETE, callback_data=f'delete_user_card.{card.id}'))
     return keyboard
 
 

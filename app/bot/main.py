@@ -1,14 +1,11 @@
-from random import choice
-
 import telebot
 from telebot import types
 
-from app.bot.messages import replies
 from app.settings import dist
 from app.settings.local import TOKEN
 
-from . import markups, utils
-
+from . import utils, replies
+from .keyboard import markups
 
 bot = telebot.TeleBot(TOKEN)
 

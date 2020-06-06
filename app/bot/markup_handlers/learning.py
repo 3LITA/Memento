@@ -2,9 +2,9 @@ from random import shuffle
 
 from telebot import types
 
-from app.bot import markups, utils
+from app.bot import utils, replies
 from app.bot.main import bot
-from app.bot.messages import buttons, replies
+from app.bot.keyboard import button_texts, markups
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 
@@ -72,7 +72,7 @@ def show_answers_markup_handler(message: types.Message) -> None:
         text = text[:-2]
         text += '\n\n' + message.message.text
 
-    keyboard = utils.repeat_keyboard(js, exclude=[buttons.TIP])
+    keyboard = utils.repeat_keyboard(js, exclude=[button_texts.TIP])
 
     bot.edit_message_text(
         text=text,

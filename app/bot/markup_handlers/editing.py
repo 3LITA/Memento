@@ -1,8 +1,8 @@
 from telebot import types
 
-from app.bot import markups, utils
+from app.bot import utils, replies
 from app.bot.main import bot
-from app.bot.messages import buttons, replies
+from app.bot.keyboard import button_texts, markups
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
@@ -26,7 +26,7 @@ def edit_card_markup_handler(message: types.Message) -> None:
             answers += ans + ', '
         answers = answers[:-2]
     else:
-        answers = buttons.NO_CORRECT_ANSWERS
+        answers = button_texts.NO_CORRECT_ANSWERS
     answers += '\n\n'
     if card.question.wrong_answers and len(card.question.wrong_answers) > 0:
         answers += replies.WRONG_ANSWERS_ARE_REPLY
@@ -34,7 +34,7 @@ def edit_card_markup_handler(message: types.Message) -> None:
             answers += ans + ', '
         answers = answers[:-2]
     elif card.question.card_type == 3 or card.question.card_type == 4:
-        answers += buttons.NO_WRONG_ANSWERS
+        answers += button_texts.NO_WRONG_ANSWERS
 
     text = replies.EDIT_CARD_REPLY.format(question_text, answers)
 
@@ -159,9 +159,9 @@ def delete_card_markup_handler(message: types.Message) -> None:
     card.delete()
 
     text = (
-        replies.DECK_MENU_REPLY.format(humanize_title(deck.title).upper())
-        + '\n\n'
-        + replies.CARD_DELETED_REPLY
+            replies.DECK_MENU_REPLY.format(humanize_title(deck.title).upper())
+            + '\n\n'
+            + replies.CARD_DELETED_REPLY
     )
     keyboard = markups.create_deck_menu_markup(deck)
 

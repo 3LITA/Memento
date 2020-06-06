@@ -1,8 +1,8 @@
 from telebot import types
 
-from app.bot import markups, utils
+from app.bot import utils, replies
 from app.bot.main import bot
-from app.bot.messages import buttons, replies
+from app.bot.keyboard import button_texts, markups
 from app.models.Card import Card
 from app.models.User import User
 from app.models.UserDeck import UserDeck
@@ -50,7 +50,7 @@ def card_type_markup_handler(message: types.Message) -> None:
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(
         types.InlineKeyboardButton(
-            text=buttons.BACK, callback_data=f'add_card.{user_deck_id}'
+            text=button_texts.BACK, callback_data=f'add_card.{user_deck_id}'
         )
     )
     metadata = {'card_type': int(card_type), 'user_deck_id': int(user_deck_id)}
