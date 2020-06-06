@@ -75,10 +75,3 @@ def unknown_command_handler(message: types.Message) -> None:
         "%s tried to send a non-existing command %s" % (message.chat.id, message.text)
     )
     bot.send_message(message.chat.id, text)
-
-
-@bot.message_handler(func=lambda message: True)
-def no_context_message_handler(message: types.Message) -> None:
-    options = replies.WTF_MESSAGES
-    text = choice(options)
-    bot.send_message(message.chat.id, text)
