@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Union
 
 from telebot.types import InlineKeyboardButton
 
@@ -44,7 +44,7 @@ class CreateNewDeckButton(Button):
 
     def __init__(self) -> None:
         text = button_texts.CREATE_NEW_DECK
-        super().__init__(cd.create_new_deck())
+        super().__init__(text, cd.create_new_deck())
 
 
 class AddDeckButton(Button):
