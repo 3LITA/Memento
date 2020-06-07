@@ -26,7 +26,10 @@ class User(db.Model):  # type: ignore
         db.session.commit()
 
     def __repr__(self) -> str:
-        return '<User %r>' % self.chat_id
+        return '<User %r>' % self.id
+
+    def has_decks(self) -> bool:
+        return self.decks and len(self.decks) > 0
 
     def set_inline_keyboard(self: 'User', inline_keyboard_id: int) -> None:
         self.inline_keyboard_id = inline_keyboard_id
