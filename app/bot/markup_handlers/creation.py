@@ -62,7 +62,7 @@ def card_type_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(
-    func=lambda msg: msg.data.startswith('no_correct_answers')  # TODO: where the fuck does it come from?
+    func=lambda msg: utils.button_pressed(msg, cd.no_correct_answers())
 )
 def no_correct_answers_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
@@ -95,7 +95,7 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(
-    func=lambda message: message.data.startswith('no_wrong_answers')  # TODO: where the fuck does it come from?
+    func=lambda msg: utils.button_pressed(msg, cd.no_wrong_answers())
 )
 def no_wrong_answers_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
@@ -124,4 +124,4 @@ def no_wrong_answers_markup_handler(message: types.Message) -> None:
     message_id = bot.send_message(
         chat_id=user.chat_id, text=text, reply_markup=keyboard
     ).message_id
-    User.set_inline_keyboard(user, message_id)
+    user.set_inline_keyboard(message_id)
