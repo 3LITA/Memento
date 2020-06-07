@@ -43,6 +43,10 @@ class CallbackData:
 
     _SET_LANGUAGE = 'set_language.{language}'
 
+    _ANSWER = 'answer.{option_number}'
+
+    _SUBMIT = 'submit.{card_id}.{correct_answers}'
+
     __instance = None
 
     def __new__(cls):
@@ -121,3 +125,13 @@ class CallbackData:
 
     def set_language(self, language: Optional[str] = None) -> str:
         return self._get_callback(self._SET_LANGUAGE, language=language)
+
+    def answer(self, option_number: Optional[int] = None) -> str:
+        return self._get_callback(self._ANSWER, option_number=option_number)
+
+    def submit(
+            self, card_id: Optional[int] = None, correct_answers: Optional[str] = None
+    ) -> str:
+        return self._get_callback(
+            self._SUBMIT, card_id=card_id, correct_answers=correct_answers
+        )

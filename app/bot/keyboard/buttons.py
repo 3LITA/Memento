@@ -1,4 +1,4 @@
-from typing import Union
+from typing import List, Union
 
 from telebot.types import InlineKeyboardButton
 
@@ -173,3 +173,19 @@ class SetLanguageButton(Button):
     def __init__(self, language: str) -> None:
         text = LANGUAGES[language]
         super().__init__(text, cd.set_language(language))
+
+
+class AnswerButton(Button):
+
+    def __init__(self, option_number: int, option_text: str) -> None:
+        text = f'{option_number}: {option_text}'
+        super().__init__(text, cd.answer(option_number))
+
+
+class SubmitButton(Button):
+
+    def __init__(self, card_id: int, correct_answers: List[int]) -> None:
+        text = button_texts.SUBMIT
+        answers = [str(answer) for answer in correct_answers]
+        answers = '0' if not answers else ','.join(answers)
+        super().__init__(text, cd.submit(card_id, answers))

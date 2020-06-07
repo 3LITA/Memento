@@ -136,50 +136,30 @@ def basic_learn_markup(card_id: int, deck_id: int) -> InlineKeyboardMarkup:
     return markup.keyboard
 
 
-def answer_sheet_markup(card: Card) -> InlineKeyboardMarkup:
-    keyboard = InlineKeyboardMarkup(row_width=1)
-    answers = [[ans, True] for ans in card.question.correct_answers]
-    answers.extend([[ans, False] for ans in card.question.wrong_answers])
+def multiple_choice_markup(
+        card_id: int, deck_id: int, correct_answers: List[str], wrong_answers: List[str]
+) -> InlineKeyboardMarkup:
+    answers = [(ans, True) for ans in correct_answers]
+    answers.extend([(ans, False) for ans in wrong_answers])
 
     shuffle(answers)
+    answers_btns = [
+        buttons.AnswerButton(i + 1, answers[i][0]) for i in range(len(answers))
+    ]
 
-    corrects = [i for i in range(len(answers)) if answers[i][1]]
+    correct_options = [i + 1 for i in range(len(answers)) if answers[i][1]]
+    submit_btn = buttons.SubmitButton(card_id, correct_options)
 
-    cor = ''
-    for num in corrects:
-        cor += str(num + 1) + ','
-    cor = cor[:-1]
+    tip_btn = buttons.TipButton(card_id)
 
-    if cor == '':
-        cor = '0'
+    cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    keyboard.add(
-        *[
-            InlineKeyboardButton(
-                text=f'{i + 1}) ' + answers[i][0],
-                callback_data=f'answer.{card.id}.{cor}.{i + 1}',
-            )
-            for i in range(len(answers))
-        ]
-    )
+    markup = Markup(*answers_btns, [submit_btn], [tip_btn], [cancel_btn])
+    return markup.keyboard
 
-    if card.question.card_type == 3:
-        keyboard.add(
-            InlineKeyboardButton(
-                text=button_texts.SUBMIT, callback_data=f'submit.{card.id}.{cor}'
-            )
-        )
 
-    show_btn = InlineKeyboardButton(
-        text=button_texts.TIP, callback_data=f'show.{card.id}.{cor}'
-    )
-
-    cancel_btn = InlineKeyboardButton(
-        text=button_texts.CANCEL, callback_data=f'deck.{card.user_deck.id}'
-    )
-    keyboard.add(show_btn, cancel_btn)
-
-    return keyboard
+def radiobutton_markup():
+    pass
 
 
 def rate_knowledge_markup(card_id: int) -> InlineKeyboardMarkup:
