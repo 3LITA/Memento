@@ -84,7 +84,7 @@ def rename_user_deck_markup_handler(message: types.Message) -> None:
     text = replies.RENAME_USER_DECK_REPLY.format(
         deck_title=humanize_title(deck.title).upper()
     )
-    keyboard = markups.rename_user_deck_markup(deck)
+    keyboard = markups.cancel_to_deck_menu_markup(deck)
 
     metadata = {'deck_id': deck.id}
     utils.set_context(user, 'rename_user_deck', metadata)

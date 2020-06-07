@@ -217,5 +217,19 @@ class RadioAnswerButton(Button):
         super().__init__(text, cd.radio_answer(card_id, correct_mark))
 
 
+class NoCorrectAnswersButton(Button):
+
+    def __init__(self):
+        text = button_texts.NO_CORRECT_ANSWERS
+        super().__init__(text, cd.no_correct_answers())
+
+
+class NoWrongAnswersButton(Button):
+
+    def __init__(self):
+        text = button_texts.NO_WRONG_ANSWERS
+        super().__init__(text, cd.no_wrong_answers())
+
+
 def _render_option(option_number: int, option_text: str) -> str:
     return f'{option_number}: {option_text}'

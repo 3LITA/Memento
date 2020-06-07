@@ -105,7 +105,7 @@ def edit_user_deck_markup(deck_id: int) -> InlineKeyboardMarkup:
     return markup.keyboard
 
 
-def rename_user_deck_markup(deck_id: int) -> InlineKeyboardMarkup:
+def cancel_to_deck_menu_markup(deck_id: int) -> InlineKeyboardMarkup:
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
     markup = _Markup([cancel_btn])
@@ -155,6 +155,22 @@ def choose_card_type_markup(deck_id: int) -> InlineKeyboardMarkup:
 def question_await_markup(deck_id: int) -> InlineKeyboardMarkup:
     back_btn = buttons.BackButton(cd.add_card(deck_id))
     markup = _Markup([back_btn])
+    return markup.keyboard
+
+
+def correct_answers_await_markup(deck_id: int) -> InlineKeyboardMarkup:
+    no_correct_answers_btn = buttons.NoCorrectAnswersButton()
+    cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
+
+    markup = _Markup([no_correct_answers_btn], [cancel_btn])
+    return markup.keyboard
+
+
+def wrong_answers_await_markup(deck_id: int) -> InlineKeyboardMarkup:
+    no_wrong_answers_btn = buttons.NoWrongAnswersButton()
+    cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
+
+    markup = _Markup([no_wrong_answers_btn], [cancel_btn])
     return markup.keyboard
 
 

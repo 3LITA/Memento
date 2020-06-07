@@ -47,6 +47,9 @@ class UserDeck(db.Model):  # type: ignore
             db.session.add(self)
             db.session.commit()
 
+    def has_cards(self) -> bool:
+        return self.cards and len(self.cards) > 0
+
     def rename(self: 'UserDeck', deck_title: str) -> 'UserDeck':
 
         if not utils.is_title_correct(deck_title):

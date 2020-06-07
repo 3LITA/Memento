@@ -51,6 +51,10 @@ class CallbackData:
 
     _RADIO_ANSWER = 'radio_answer.{card_id}.{mark}'
 
+    _NO_CORRECT_ANSWERS = 'no_correct_answers'
+
+    _NO_WRONG_ANSWERS = 'no_wrong_answers'
+
     __instance = None
 
     def __new__(cls):
@@ -142,3 +146,9 @@ class CallbackData:
     def radio_answer(
             self, card_id: Optional[int] = None, mark: Optional[str] = None) -> str:
         return self._get_callback(self._RADIO_ANSWER, card_id=card_id, mark=mark)
+
+    def no_correct_answers(self) -> str:
+        return self._get_callback(self._NO_CORRECT_ANSWERS)
+
+    def no_wrong_answers(self) -> str:
+        return self._get_callback(self._NO_WRONG_ANSWERS)

@@ -2,7 +2,7 @@ from telebot import types
 
 from app.bot import utils, replies
 from app.bot.main import bot
-from app.bot.keyboard import button_texts, markups
+from app.bot.keyboard import markups
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
@@ -52,12 +52,12 @@ def rename_user_deck_handler(message: types.Message) -> None:
         deck.rename(title)
     except ValueError as err:
         text = str(err)
-        keyboard = markups.rename_user_deck_markup(deck)
+        keyboard = markups.cancel_to_deck_menu_markup(deck)
     else:
         text = replies.USER_DECK_RENAMED_REPLY.format(
             ex_deck_title=ex_title.upper(), new_deck_title=title.upper(),
         )
-        keyboard = markups.deck_menu_markup(deck)
+        keyboard = markups.deck_menu_markup(deck.id, deck.has_cards())
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(
@@ -71,7 +71,6 @@ def rename_user_deck_handler(message: types.Message) -> None:
     func=lambda message: utils.get_expected(message) == 'send_question'
 )
 def send_question_handler(message: types.Message) -> None:
-    # TODO: move keyboard generation to markups.py
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -79,18 +78,13 @@ def send_question_handler(message: types.Message) -> None:
 
     context = utils.get_context(message)
     card_type = context['card_type']
-    user_deck_id = context['user_deck_id']
+    user_deck = UserDeck.get_by_id(context['user_deck_id'])
 
-    keyboard = types.InlineKeyboardMarkup()
-    cancel_btn = types.InlineKeyboardButton(
-        text=button_texts.CANCEL, callback_data=f'deck.{user_deck_id}'
-    )
-    keyboard.add(cancel_btn)
+    keyboard = markups.cancel_to_deck_menu_markup(user_deck.id)
 
     if len(question) > dist.MAX_QUESTION_LENGTH:
         text = replies.CARD_QUESTION_TOO_LONG_REPLY
     else:
-        user_deck = UserDeck.get_by_id(user_deck_id)
         if card_type == 0:
             user_card = Card.fromQuestion(user_deck, card_type, question)
             text = replies.FACT_CREATED_REPLY.format(question)
@@ -101,7 +95,7 @@ def send_question_handler(message: types.Message) -> None:
         else:
             metadata = {
                 'card_type': card_type,
-                'user_deck_id': user_deck_id,
+                'user_deck_id': user_deck.id,
                 'question': question,
             }
             if card_type == 1:
@@ -129,13 +123,7 @@ def send_question_handler(message: types.Message) -> None:
                     f"{gaps} ", replies.CORRECT_ANSWERS, question
                 )
             elif card_type == 3:
-                # TODO: move to markups.py
-                keyboard.add(
-                    types.InlineKeyboardButton(
-                        text=button_texts.NO_CORRECT_ANSWERS,
-                        callback_data='no_correct_answers',
-                    )
-                )
+                keyboard = markups.correct_answers_await_markup(user_deck.id)
                 text = replies.SEND_ANSWERS_REPLY.format(
                     "", replies.CORRECT_ANSWERS, question,
                 )
@@ -194,11 +182,7 @@ def correct_answers_handler(message: types.Message) -> None:
                 text = replies.SEND_ANSWERS_REPLY.format(
                     "", replies.WRONG_ANSWERS, question,
                 )
-                keyboard.add(
-                    types.InlineKeyboardButton(
-                        text=button_texts.NO_WRONG_ANSWERS, callback_data='no_wrong_answers',
-                    )
-                )
+                keyboard = markups.wrong_answers_await_markup(user_deck.id)
             else:
                 utils.forget_context(user)
 
@@ -207,7 +191,7 @@ def correct_answers_handler(message: types.Message) -> None:
                 )
 
                 text = replies.CARD_CREATED_REPLY.format(
-                    type=card_type, question=question, correct_answers=correct_answers,
+                    type=card_type, question=question, correct_answers=correct_answers
                 )
 
                 keyboard = markups.card_created_markup(user_card.id, user_deck.id)
@@ -217,7 +201,7 @@ def correct_answers_handler(message: types.Message) -> None:
         metadata.pop('command')
         utils.set_context(user, command='wrong_answers', metadata=metadata)
 
-        text = replies.SEND_ANSWERS_REPLY.format("", replies.WRONG_ANSWERS, question, )
+        text = replies.SEND_ANSWERS_REPLY.format("", replies.WRONG_ANSWERS, question)
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(
@@ -251,11 +235,7 @@ def wrong_answers_handler(message: types.Message) -> None:
         text = replies.INCORRECT_NUMBER_OF_REPLY.format(replies.WRONG_ANSWERS, question)
         keyboard = markups.cancel_markup(user_deck.id)
         if correct_answers and len(correct_answers) > 0:
-            keyboard.add(
-                types.InlineKeyboardButton(
-                    text='Неправильных ответов нет', callback_data='no_wrong_answers'
-                )
-            )
+            keyboard = markups.wrong_answers_await_markup(user_deck.id)
     else:
         card_type = context.get('card_type')
         if not isinstance(card_type, int) or not isinstance(question, str):
