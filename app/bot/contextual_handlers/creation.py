@@ -16,7 +16,7 @@ def new_deck_handler(message: types.Message) -> None:
 
     title = message.text.lower()
 
-    keyboard = markups.create_new_deck_markup()
+    keyboard = markups.new_deck_markup()
     try:
         UserDeck(user, deck_title=title)
     except ValueError as err:
@@ -26,7 +26,7 @@ def new_deck_handler(message: types.Message) -> None:
     else:
         text = replies.USER_DECK_CREATED_REPLY.format(title=title.upper())
         utils.forget_context(user)
-        keyboard = markups.create_menu_markup(user)
+        keyboard = markups.main_menu_markup(user)
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(
         user.chat_id, text, reply_markup=keyboard, parse_mode='Markdown',
@@ -52,12 +52,12 @@ def rename_user_deck_handler(message: types.Message) -> None:
         deck.rename(title)
     except ValueError as err:
         text = str(err)
-        keyboard = markups.create_rename_user_deck_markup(deck)
+        keyboard = markups.rename_user_deck_markup(deck)
     else:
         text = replies.USER_DECK_RENAMED_REPLY.format(
             ex_deck_title=ex_title.upper(), new_deck_title=title.upper(),
         )
-        keyboard = markups.create_deck_menu_markup(deck)
+        keyboard = markups.deck_menu_markup(deck)
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(
@@ -95,7 +95,7 @@ def send_question_handler(message: types.Message) -> None:
             user_card = Card.fromQuestion(user_deck, card_type, question)
             text = replies.FACT_CREATED_REPLY.format(question)
 
-            keyboard = markups.create_created_card_markup(user_card, user_deck)
+            keyboard = markups.card_created_markup(user_card.id, user_deck.id)
 
             utils.forget_context(user)
         else:
@@ -165,7 +165,7 @@ def correct_answers_handler(message: types.Message) -> None:
     card_type = context['card_type']
     user_deck = UserDeck.get_by_id(context['user_deck_id'])
 
-    keyboard = markups.create_cancel_markup(user_deck)
+    keyboard = markups.cancel_markup(user_deck.id)
 
     if card_type != 4:
         correct_answers = [
@@ -178,7 +178,7 @@ def correct_answers_handler(message: types.Message) -> None:
             text = replies.INCORRECT_NUMBER_OF_REPLY.format(
                 replies.CORRECT_ANSWERS, question
             )
-            keyboard = markups.create_cancel_markup(user_deck)
+            keyboard = markups.cancel_markup(user_deck.id)
         else:
             if card_type == 2 and len(correct_answers) != context.get('gaps'):
                 gaps = context.get('gaps')
@@ -210,7 +210,7 @@ def correct_answers_handler(message: types.Message) -> None:
                     type=card_type, question=question, correct_answers=correct_answers,
                 )
 
-                keyboard = markups.create_created_card_markup(user_card, user_deck)
+                keyboard = markups.card_created_markup(user_card.id, user_deck.id)
     else:
         metadata = context
         metadata['correct_answers'] = [message.text.strip().lower()]
@@ -249,7 +249,7 @@ def wrong_answers_handler(message: types.Message) -> None:
 
     if len(wrong_answers) == 0:
         text = replies.INCORRECT_NUMBER_OF_REPLY.format(replies.WRONG_ANSWERS, question)
-        keyboard = markups.create_cancel_markup(user_deck)
+        keyboard = markups.cancel_markup(user_deck.id)
         if correct_answers and len(correct_answers) > 0:
             keyboard.add(
                 types.InlineKeyboardButton(
@@ -265,7 +265,7 @@ def wrong_answers_handler(message: types.Message) -> None:
             user_deck, card_type, question, correct_answers, wrong_answers
         )
 
-        keyboard = markups.create_created_card_markup(user_card, user_deck)
+        keyboard = markups.card_created_markup(user_card.id, user_deck.id)
 
         if correct_answers and len(correct_answers) == 0:
             correct_answers = replies.THERE_ARE_NO_REPLY.format(replies.CORRECT_ANSWERS)

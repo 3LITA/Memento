@@ -4,12 +4,14 @@ from telebot import types
 
 from app.bot import utils, replies
 from app.bot.main import bot
-from app.bot.keyboard import button_texts, markups
+from app.bot.keyboard import button_texts, cd, markups
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('learn'))
+@bot.callback_query_handler(
+    func=lambda msg: utils.button_pressed(msg, cd.learn_user_deck())
+)
 def learn_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
@@ -30,7 +32,7 @@ def learn_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(
-    func=lambda message: message.data.startswith('set_knowledge')
+    func=lambda msg: utils.button_pressed(msg, cd.rate_knowledge())
 )
 def set_knowledge_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
@@ -49,8 +51,10 @@ def set_knowledge_markup_handler(message: types.Message) -> None:
     user.set_inline_keyboard(message_id)
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('show'))
-def show_answers_markup_handler(message: types.Message) -> None:
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.tip()))
+def tip_markup_handler(message: types.Message) -> None:
+    # TODO: fix it
+
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -82,12 +86,12 @@ def show_answers_markup_handler(message: types.Message) -> None:
     )
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('submit'))
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.submit()))
 def submit_answer_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
-    card_id, correct_answers = message.data.split('.')[1:]
+    card_id = message.data.split('.')[1]
 
     try:
         chosen = [int(num) for num in utils.parse_chosen_nums(message.message.json)]
@@ -99,11 +103,11 @@ def submit_answer_markup_handler(message: types.Message) -> None:
 
     if card.add_attempt(answers):
         reply = ''
-        keyboard = markups.create_set_knowledge_markup(card)
+        keyboard = markups.rate_knowledge_markup(card)
         reply_list = replies.CORRECT_REPLIES
     else:
         reply = f'{card.question.text}\n\n'
-        keyboard = markups.create_answer_sheet_markup(card)
+        keyboard = markups.multiple_choice_markup(card)
         reply_list = replies.WRONG_REPLIES
     shuffle(reply_list)
     reply += reply_list[0]
@@ -116,7 +120,7 @@ def submit_answer_markup_handler(message: types.Message) -> None:
     )
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('answer'))
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.answer()))
 def answer_sheet_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
@@ -142,12 +146,12 @@ def answer_sheet_markup_handler(message: types.Message) -> None:
         if num == correct_numbers:
             text = ''
             reply_list = replies.CORRECT_REPLIES
-            keyboard = markups.create_set_knowledge_markup(card)
+            keyboard = markups.rate_knowledge_markup(card)
         else:
             card.inc_attempt()
             text = f'{card.question.text}\n\n'
             reply_list = replies.WRONG_REPLIES
-            keyboard = markups.create_answer_sheet_markup(card)
+            keyboard = markups.multiple_choice_markup(card)
         shuffle(reply_list)
         text += reply_list[0]
 

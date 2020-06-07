@@ -26,11 +26,11 @@ def learn_contextual_handler(message: types.Message) -> None:
 
     if card.add_attempt(answer):
         reply = ''
-        keyboard = markups.create_set_knowledge_markup(card)
+        keyboard = markups.rate_knowledge_markup(card)
         reply_list = replies.CORRECT_REPLIES
     else:
         reply = f'{card.question.text}\n\n'
-        keyboard = markups.create_basic_learn_markup(card)
+        keyboard = markups.basic_learn_markup(card)
         reply_list = replies.WRONG_REPLIES
     reply += choice(reply_list)
 

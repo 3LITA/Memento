@@ -1,5 +1,5 @@
 from random import shuffle
-from typing import Dict, List
+from typing import Dict, List, Sequence
 
 from telebot.types import InlineKeyboardMarkup
 
@@ -21,6 +21,25 @@ class _Markup:
     @property
     def keyboard(self):
         return self._keyboard
+
+
+def repeat_keyboard(
+    prev_keyboard: dict, exclude: Sequence, *add_btns: buttons.Button
+) -> InlineKeyboardMarkup:
+    rows = []
+    for row in range(len(prev_keyboard)):
+        new_row = []
+        for btn in prev_keyboard[row]:
+            text = btn.get('text')
+            callback_data = btn.get('callback_data')
+            if text not in exclude:
+                new_row.append(buttons.Button(text, callback_data))
+        rows.append(new_row)
+    for btn in add_btns:
+        rows.append([btn])
+
+    markup = _Markup(*rows)
+    return markup.keyboard
 
 
 def main_menu_markup(has_decks: bool) -> InlineKeyboardMarkup:
