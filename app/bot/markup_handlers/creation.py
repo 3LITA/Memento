@@ -2,14 +2,14 @@ from telebot import types
 
 from app.bot import utils, replies
 from app.bot.main import bot
-from app.bot.keyboard import button_texts, markups
+from app.bot.keyboard import cd, markups
 from app.models.Card import Card
 from app.models.User import User
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('add_card'))
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.add_card()))
 def deck_menu_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
@@ -22,7 +22,7 @@ def deck_menu_markup_handler(message: types.Message) -> None:
 
     text = replies.CHOOSE_CARD_TYPE_REPLY.format(deck_title.upper())
 
-    keyboard = markups.create_choose_card_type_markup(user_deck_id)
+    keyboard = markups.choose_card_type_markup(user_deck_id)
 
     bot.edit_message_text(
         text=text,
@@ -33,7 +33,7 @@ def deck_menu_markup_handler(message: types.Message) -> None:
     )
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('card_type'))
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.card_type()))
 def card_type_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
@@ -46,15 +46,10 @@ def card_type_markup_handler(message: types.Message) -> None:
         text = replies.SEND_QUESTION_REPLY.format(card_type)
         if int(card_type) == 2:
             text += replies.NOTE_GAPS_FOR_TYPE_2_REPLY
-    # TODO: move to markups.py
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(
-        types.InlineKeyboardButton(
-            text=button_texts.BACK, callback_data=f'add_card.{user_deck_id}'
-        )
-    )
-    metadata = {'card_type': int(card_type), 'user_deck_id': int(user_deck_id)}
 
+    keyboard = markups.question_await_markup(user_deck_id)
+
+    metadata = {'card_type': int(card_type), 'user_deck_id': int(user_deck_id)}
     utils.set_context(user=user, command='send_question', metadata=metadata)
 
     bot.edit_message_text(
@@ -67,7 +62,7 @@ def card_type_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(
-    func=lambda message: message.data.startswith('no_correct_answers')
+    func=lambda msg: msg.data.startswith('no_correct_answers')  # TODO: where the fuck does it come from?
 )
 def no_correct_answers_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
@@ -87,7 +82,7 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
         "", replies.WRONG_ANSWERS, context['question'],
     )
 
-    keyboard = markups.create_cancel_markup(user_deck=user_deck)
+    keyboard = markups.cancel_markup(user_deck.id)
 
     utils.set_context(user, command='wrong_answers', metadata=context)
 
@@ -100,7 +95,7 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(
-    func=lambda message: message.data.startswith('no_wrong_answers')
+    func=lambda message: message.data.startswith('no_wrong_answers')  # TODO: where the fuck does it come from?
 )
 def no_wrong_answers_markup_handler(message: types.Message) -> None:
     user = utils.get_user(message)
@@ -114,7 +109,7 @@ def no_wrong_answers_markup_handler(message: types.Message) -> None:
 
     card = Card.fromQuestion(user_deck, card_type, question, correct_answers, [])
 
-    keyboard = markups.create_created_card_markup(card, user_deck)
+    keyboard = markups.card_created_markup(card.id, user_deck.id)
 
     utils.forget_context(user)
 

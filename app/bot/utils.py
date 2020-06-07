@@ -18,6 +18,10 @@ def get_user(message: types.Message) -> User:
     return User.get_or_create(message.from_user.id, message.from_user.username)
 
 
+def button_pressed(message, callback_data: str) -> bool:
+    return message.data.startswith(callback_data)
+
+
 def get_args(message: types.Message) -> typing.Optional[typing.List[str]]:
     pattern = r'(^/\w+)(\s(.*))?'
     search = re.search(pattern, message.text)
@@ -80,14 +84,14 @@ def build_learn_text_and_keyboard(
     text = card.question.text
     if card.question.card_type == 0:
         text += '\n\n' + replies.SET_KNOWLEDGE_REPLY
-        keyboard = markups.create_set_knowledge_markup(card)
+        keyboard = markups.rate_knowledge_markup(card)
     elif card.question.card_type == 3:
         text += '\n\n' + replies.USER_CHOSEN_REPLY
-        keyboard = markups.create_answer_sheet_markup(card)
+        keyboard = markups.multiple_choice_markup(card)
     elif card.question.card_type == 4:
-        keyboard = markups.create_answer_sheet_markup(card)
+        keyboard = markups.multiple_choice_markup(card)
     else:
-        keyboard = markups.create_basic_learn_markup(card)
+        keyboard = markups.basic_learn_markup(card)
         metadata = {'card_id': card.id}
         set_context(user, 'learn', metadata)
     return text, keyboard

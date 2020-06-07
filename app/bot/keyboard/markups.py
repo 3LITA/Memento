@@ -8,7 +8,7 @@ from app import settings
 from . import buttons, button_texts, cd
 
 
-class Markup:
+class _Markup:
 
     def __init__(self, *rows: List[buttons.Button]) -> None:
         rows = list(rows)
@@ -31,7 +31,7 @@ def main_menu_markup(has_decks: bool) -> InlineKeyboardMarkup:
     first_row = [decks_btn] if has_decks else []
     first_row += [add_deck_btn, language_btn]
 
-    markup = Markup(first_row)
+    markup = _Markup(first_row)
     return markup.keyboard
 
 
@@ -48,7 +48,7 @@ def edit_card_markup(card_id: int, deck_id: int, card_type: int) -> InlineKeyboa
     if card_type == 3 or card_type == 4:
         first_row.append(change_wrong_answers_btn)
 
-    markup = Markup(first_row, second_row)
+    markup = _Markup(first_row, second_row)
     return markup.keyboard
 
 
@@ -61,14 +61,14 @@ def edit_user_deck_markup(deck_id: int) -> InlineKeyboardMarkup:
     first_row = [rename_btn, delete_btn]
     second_row = [back_btn]
 
-    markup = Markup(first_row, second_row)
+    markup = _Markup(first_row, second_row)
     return markup.keyboard
 
 
 def rename_user_deck_markup(deck_id: int) -> InlineKeyboardMarkup:
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    markup = Markup([cancel_btn])
+    markup = _Markup([cancel_btn])
     return markup.keyboard
 
 
@@ -76,7 +76,7 @@ def delete_user_deck_markup(deck_id: int) -> InlineKeyboardMarkup:
     sure_btn = buttons.SureDeleteDeckButton(deck_id)
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    markup = Markup([sure_btn, cancel_btn])
+    markup = _Markup([sure_btn, cancel_btn])
     return markup.keyboard
 
 
@@ -91,13 +91,13 @@ def deck_menu_markup(deck_id: int, has_cards: bool) -> InlineKeyboardMarkup:
     if has_cards:
         first_row.insert(1, learn_btn)
 
-    markup = Markup(first_row, [back_btn])
+    markup = _Markup(first_row, [back_btn])
     return markup.keyboard
 
 
 def new_deck_markup() -> InlineKeyboardMarkup:
     back_btn = buttons.BackButton(cd.add_deck())
-    markup = Markup([back_btn])
+    markup = _Markup([back_btn])
     return markup.keyboard
 
 
@@ -108,7 +108,13 @@ def choose_card_type_markup(deck_id: int) -> InlineKeyboardMarkup:
     ]
     back_btn = buttons.BackButton(cd.deck_menu(deck_id))
 
-    markup = Markup(first_row, [back_btn])
+    markup = _Markup(first_row, [back_btn])
+    return markup.keyboard
+
+
+def question_await_markup(deck_id: int) -> InlineKeyboardMarkup:
+    back_btn = buttons.BackButton(cd.add_card(deck_id))
+    markup = _Markup([back_btn])
     return markup.keyboard
 
 
@@ -118,13 +124,13 @@ def card_created_markup(card_id: int, deck_id: int) -> InlineKeyboardMarkup:
 
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    markup = Markup([edit_btn, next_btn], [cancel_btn])
+    markup = _Markup([edit_btn, next_btn], [cancel_btn])
     return markup.keyboard
 
 
 def cancel_markup(deck_id: int) -> InlineKeyboardMarkup:
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
-    markup = Markup([cancel_btn])
+    markup = _Markup([cancel_btn])
     return markup.keyboard
 
 
@@ -132,7 +138,7 @@ def basic_learn_markup(card_id: int, deck_id: int) -> InlineKeyboardMarkup:
     tip_btn = buttons.TipButton(card_id)
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    markup = Markup([tip_btn, cancel_btn])
+    markup = _Markup([tip_btn, cancel_btn])
     return markup.keyboard
 
 
@@ -153,7 +159,7 @@ def multiple_choice_markup(
     tip_btn = buttons.TipButton(card_id)
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    markup = Markup(*answers_btns, [submit_btn], [tip_btn], [cancel_btn])
+    markup = _Markup(*answers_btns, [submit_btn], [tip_btn], [cancel_btn])
     return markup.keyboard
 
 
@@ -172,7 +178,7 @@ def radiobutton_markup(
     tip_btn = buttons.TipButton(card_id)
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    markup = Markup(*answers_btns, [tip_btn], [cancel_btn])
+    markup = _Markup(*answers_btns, [tip_btn], [cancel_btn])
     return markup.keyboard
 
 
@@ -183,7 +189,7 @@ def rate_knowledge_markup(card_id: int) -> InlineKeyboardMarkup:
     ]
     edit_btn = buttons.EditCardButton(card_id)
 
-    markup = Markup(first_row, [edit_btn])
+    markup = _Markup(first_row, [edit_btn])
     return markup.keyboard
 
 
@@ -195,5 +201,5 @@ def language_choice_markup(current_language: str) -> InlineKeyboardMarkup:
     ]
     cancel_btn = buttons.CancelButton(cd.menu())
 
-    markup = Markup(*languages, [cancel_btn])
+    markup = _Markup(*languages, [cancel_btn])
     return markup.keyboard
