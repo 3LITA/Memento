@@ -22,6 +22,10 @@ def button_pressed(message, callback_data: str) -> bool:
     return message.data.startswith(callback_data)
 
 
+def humanize_title(title: str) -> str:
+    return utils.humanize_title(title)
+
+
 def get_args(message: types.Message) -> typing.Optional[typing.List[str]]:
     pattern = r'(^/\w+)(\s(.*))?'
     search = re.search(pattern, message.text)
@@ -54,26 +58,6 @@ def create_learn_decks_inline_keyboard(
                     callback_data=f'learn_decks.{deck.id}',
                 )
             )
-        return markup
-    return None  # probably it is wrong
-
-
-def decks_inline_keyboard(user: User) -> typing.Optional[types.InlineKeyboardMarkup]:
-
-    decks = User.get_decks(user)
-
-    if decks and len(decks) > 0:
-        # TODO: move to replies.py
-        markup = types.InlineKeyboardMarkup()
-        markuped = [
-            types.InlineKeyboardButton(
-                text=utils.humanize_title(deck.title).upper(),
-                callback_data=f'deck.{deck.id}',
-            )
-            for deck in decks
-        ]
-        markup.add(*markuped)
-        markup.add(types.InlineKeyboardButton(text=button_texts.BACK, callback_data='menu'))
         return markup
     return None  # probably it is wrong
 

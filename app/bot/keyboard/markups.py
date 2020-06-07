@@ -1,5 +1,5 @@
 from random import shuffle
-from typing import List
+from typing import Dict, List
 
 from telebot.types import InlineKeyboardMarkup
 
@@ -32,6 +32,27 @@ def main_menu_markup(has_decks: bool) -> InlineKeyboardMarkup:
     first_row += [add_deck_btn, language_btn]
 
     markup = _Markup(first_row)
+    return markup.keyboard
+
+
+def decks_markup(decks_map: Dict[int, str]) -> InlineKeyboardMarkup:
+    decks_btns = [
+        buttons.DeckButton(decks_map[deck_id], deck_id)
+        for deck_id in decks_map.keys()
+    ]
+    back_btn = buttons.BackButton(cd.main_menu())
+
+    markup = _Markup(*decks_btns, [back_btn])
+    return markup.keyboard
+
+
+def add_deck_markup() -> InlineKeyboardMarkup:
+    create_deck_btn = buttons.CreateNewDeckButton()
+    # add_existing_btn = buttons.AddExistingDeckButton()
+
+    back_btn = buttons.BackButton(cd.main_menu())
+
+    markup = _Markup([create_deck_btn], [back_btn])
     return markup.keyboard
 
 
@@ -143,18 +164,19 @@ def basic_learn_markup(card_id: int, deck_id: int) -> InlineKeyboardMarkup:
 
 
 def multiple_choice_markup(
-        card_id: int, deck_id: int, correct_answers: List[str], wrong_answers: List[str]
+        card_id: int,
+        deck_id: int,
+        correct_answers: List[str],
+        wrong_answers: List[str],
 ) -> InlineKeyboardMarkup:
-    answers = [(ans, True) for ans in correct_answers]
-    answers.extend([(ans, False) for ans in wrong_answers])
-
+    answers = correct_answers + wrong_answers
     shuffle(answers)
+
     answers_btns = [
-        buttons.AnswerButton(i + 1, answers[i][0]) for i in range(len(answers))
+        buttons.AnswerButton(i + 1, answers[i]) for i in range(len(answers))
     ]
 
-    correct_options = [i + 1 for i in range(len(answers)) if answers[i][1]]
-    submit_btn = buttons.SubmitButton(card_id, correct_options)
+    submit_btn = buttons.SubmitButton(card_id)
 
     tip_btn = buttons.TipButton(card_id)
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))

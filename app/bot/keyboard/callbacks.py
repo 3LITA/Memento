@@ -7,6 +7,8 @@ class CallbackData:
 
     _ADD_DECK = 'add_deck'
 
+    _CREATE_NEW_DECK = 'new_deck'
+
     _ADD_CARD = 'add_card.{deck_id}'
 
     _LANGUAGE = 'language'
@@ -45,7 +47,7 @@ class CallbackData:
 
     _ANSWER = 'answer.{option_number}'
 
-    _SUBMIT = 'submit.{card_id}.{correct_answers}'
+    _SUBMIT = 'submit.{card_id}'
 
     _RADIO_ANSWER = 'radio_answer.{card_id}.{mark}'
 
@@ -67,6 +69,9 @@ class CallbackData:
 
     def add_deck(self) -> str:
         return self._get_callback(self._ADD_DECK)
+
+    def create_new_deck(self) -> str:
+        return self._get_callback(self._CREATE_NEW_DECK)
 
     def add_card(self, deck_id: Optional[int] = None) -> str:
         return self._get_callback(self._ADD_CARD, deck_id=deck_id)
@@ -131,12 +136,8 @@ class CallbackData:
     def answer(self, option_number: Optional[int] = None) -> str:
         return self._get_callback(self._ANSWER, option_number=option_number)
 
-    def submit(
-            self, card_id: Optional[int] = None, correct_answers: Optional[str] = None
-    ) -> str:
-        return self._get_callback(
-            self._SUBMIT, card_id=card_id, correct_answers=correct_answers
-        )
+    def submit(self, card_id: Optional[int] = None) -> str:
+        return self._get_callback(self._SUBMIT, card_id=card_id)
 
     def radio_answer(
             self, card_id: Optional[int] = None, mark: Optional[str] = None) -> str:

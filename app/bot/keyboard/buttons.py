@@ -28,9 +28,23 @@ class DecksButton(Button):
 
 class DeckButton(Button):
 
+    def __init__(self, humanized_title: str, deck_id: int) -> None:
+        text = humanized_title.upper()
+        super().__init__(text, cd.deck_menu(deck_id))
+
+
+class DeckMenuButton(Button):
+
     def __init__(self, deck_title: str, deck_id: Union[int, str]) -> None:
         text = deck_title
         super().__init__(text, cd.deck_menu(deck_id))
+
+
+class CreateNewDeckButton(Button):
+
+    def __init__(self) -> None:
+        text = button_texts.CREATE_NEW_DECK
+        super().__init__(cd.create_new_deck())
 
 
 class AddDeckButton(Button):
@@ -184,11 +198,9 @@ class AnswerButton(Button):
 
 class SubmitButton(Button):
 
-    def __init__(self, card_id: int, correct_answers: List[int]) -> None:
+    def __init__(self, card_id: int) -> None:
         text = button_texts.SUBMIT
-        answers = [str(answer) for answer in correct_answers]
-        answers = '0' if not answers else ','.join(answers)
-        super().__init__(text, cd.submit(card_id, answers))
+        super().__init__(text, cd.submit(card_id))
 
 
 class RadioAnswerButton(Button):
