@@ -4,7 +4,7 @@ from telebot.types import InlineKeyboardButton
 
 from app.settings import LANGUAGES
 
-from . import button_texts, cd
+from . import button_texts, cd, CORRECT_MARK, WRONG_MARK
 
 
 class Button:
@@ -178,7 +178,7 @@ class SetLanguageButton(Button):
 class AnswerButton(Button):
 
     def __init__(self, option_number: int, option_text: str) -> None:
-        text = f'{option_number}: {option_text}'
+        text = _render_option(option_number, option_text)
         super().__init__(text, cd.answer(option_number))
 
 
@@ -189,3 +189,21 @@ class SubmitButton(Button):
         answers = [str(answer) for answer in correct_answers]
         answers = '0' if not answers else ','.join(answers)
         super().__init__(text, cd.submit(card_id, answers))
+
+
+class RadioAnswerButton(Button):
+
+    def __init__(
+            self,
+            option_number: int,
+            option_text: str,
+            card_id: int,
+            is_correct: bool = False,
+    ) -> None:
+        text = _render_option(option_number, option_text)
+        correct_mark = CORRECT_MARK if is_correct else WRONG_MARK
+        super().__init__(text, cd.radio_answer(card_id, correct_mark))
+
+
+def _render_option(option_number: int, option_text: str) -> str:
+    return f'{option_number}: {option_text}'

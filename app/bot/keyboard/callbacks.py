@@ -47,6 +47,8 @@ class CallbackData:
 
     _SUBMIT = 'submit.{card_id}.{correct_answers}'
 
+    _RADIO_ANSWER = 'radio_answer.{card_id}.{mark}'
+
     __instance = None
 
     def __new__(cls):
@@ -135,3 +137,7 @@ class CallbackData:
         return self._get_callback(
             self._SUBMIT, card_id=card_id, correct_answers=correct_answers
         )
+
+    def radio_answer(
+            self, card_id: Optional[int] = None, mark: Optional[str] = None) -> str:
+        return self._get_callback(self._RADIO_ANSWER, card_id=card_id, mark=mark)

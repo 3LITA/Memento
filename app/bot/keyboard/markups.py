@@ -129,10 +129,10 @@ def cancel_markup(deck_id: int) -> InlineKeyboardMarkup:
 
 
 def basic_learn_markup(card_id: int, deck_id: int) -> InlineKeyboardMarkup:
-    show_btn = buttons.TipButton(card_id)
+    tip_btn = buttons.TipButton(card_id)
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
-    markup = Markup([show_btn, cancel_btn])
+    markup = Markup([tip_btn, cancel_btn])
     return markup.keyboard
 
 
@@ -151,15 +151,29 @@ def multiple_choice_markup(
     submit_btn = buttons.SubmitButton(card_id, correct_options)
 
     tip_btn = buttons.TipButton(card_id)
-
     cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
 
     markup = Markup(*answers_btns, [submit_btn], [tip_btn], [cancel_btn])
     return markup.keyboard
 
 
-def radiobutton_markup():
-    pass
+def radiobutton_markup(
+        card_id: int, deck_id: int, correct_answer: str, wrong_answers: List[str]
+) -> InlineKeyboardMarkup:
+    answers = [(ans, False) for ans in wrong_answers]
+    answers.append((correct_answer, True))
+
+    shuffle(answers)
+    answers_btns = [
+        buttons.RadioAnswerButton(i + 1, answers[i][0], card_id, answers[i][1])
+        for i in range(len(answers))
+    ]
+
+    tip_btn = buttons.TipButton(card_id)
+    cancel_btn = buttons.CancelButton(cd.deck_menu(deck_id))
+
+    markup = Markup(*answers_btns, [tip_btn], [cancel_btn])
+    return markup.keyboard
 
 
 def rate_knowledge_markup(card_id: int) -> InlineKeyboardMarkup:
