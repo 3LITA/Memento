@@ -1,11 +1,11 @@
 import telebot
 from telebot import types
 
+from app.bot.keyboard import markups
 from app.settings import dist
 from app.settings.local import TOKEN
 
 from . import utils, replies
-from .keyboard import markups
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -25,7 +25,7 @@ def start_handler(message: types.Message) -> None:
     else:
         text = replies.START_REPLY.format(message.from_user.first_name)
 
-    keyboard = markups.create_menu_markup(user)
+    keyboard = markups.main_menu_markup(user.has_decks())
     message_id = bot.send_message(
         chat_id=message.chat.id, text=text, reply_markup=keyboard, parse_mode='Markdown'
     ).message_id
@@ -52,7 +52,7 @@ def menu_handler(message: types.Message) -> None:
             user.forget_keyboard()
 
     text = replies.MENU_REPLY
-    keyboard = markups.create_menu_markup(user)
+    keyboard = markups.main_menu_markup(user.has_decks())
 
     message_id = bot.send_message(
         message.chat.id, text, reply_markup=keyboard
