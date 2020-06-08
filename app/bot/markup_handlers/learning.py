@@ -2,9 +2,9 @@ from random import choice
 
 from telebot.types import CallbackQuery
 
-from app.bot import utils, replies
-from app.bot.main import bot
+from app.bot import replies, utils
 from app.bot.keyboard import cd, markups
+from app.bot.main import bot
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 
@@ -72,6 +72,7 @@ def tip_markup_handler(callback: CallbackQuery) -> None:
         reply_markup=keyboard,
     )
 
+
 # @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.tip()))
 # def tip_markup_handler(message: types.Message) -> None:
 #     # TODO: make show handler from this
@@ -128,7 +129,12 @@ def submit_answer_markup_handler(callback: CallbackQuery) -> None:
         reply_list = replies.CORRECT_REPLIES
     else:
         reply = f'{card.question.text}\n\n'
-        keyboard = markups.multiple_choice_markup(card)
+        keyboard = markups.multiple_choice_markup(
+            card.id,
+            card.user_deck.id,
+            card.question.correct_answers,
+            card.question.wrong_answers,
+        )
         reply_list = replies.WRONG_REPLIES
 
     reply += choice(reply_list)

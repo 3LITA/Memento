@@ -44,7 +44,7 @@ class Question(db.Model):  # type: ignore
     cards = db.relationship('Card', backref='question', lazy=True)  # O-M to UserCard
 
     def has_tips(self) -> bool:
-        return self.tips and len(self.tips > 0)
+        return self.tips and len(self.tips) > 0
 
     def get_tip(self, prev_tip: str = '') -> str:
         tips = set(self.tips) - {prev_tip}

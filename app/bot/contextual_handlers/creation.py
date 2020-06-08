@@ -1,8 +1,8 @@
 from telebot import types
 
-from app.bot import utils, replies
-from app.bot.main import bot
+from app.bot import replies, utils
 from app.bot.keyboard import markups
+from app.bot.main import bot
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title

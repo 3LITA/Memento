@@ -5,7 +5,8 @@ from app.bot.keyboard import markups
 from app.settings import dist
 from app.settings.local import TOKEN
 
-from . import utils, replies
+from . import replies, utils
+
 
 bot = telebot.TeleBot(TOKEN)
 

@@ -2,7 +2,7 @@ from random import choice
 
 from telebot import types
 
-from app.bot import utils, replies
+from app.bot import replies, utils
 from app.bot.keyboard import markups
 from app.bot.main import bot
 from app.models.Card import Card
@@ -30,7 +30,7 @@ def learn_contextual_handler(message: types.Message) -> None:
         reply_list = replies.CORRECT_REPLIES
     else:
         reply = f'{card.question.text}\n\n'
-        keyboard = markups.basic_learn_markup(card)
+        keyboard = markups.basic_learn_markup(card.id, card.user_deck.id)
         reply_list = replies.WRONG_REPLIES
     reply += choice(reply_list)
 

@@ -59,13 +59,13 @@ class CallbackData:
 
     __instance = None
 
-    def __new__(cls):
+    def __new__(cls) -> 'CallbackData':
         if not cls.__instance:
             cls.__instance = super(CallbackData, cls).__new__(cls)
         return cls.__instance
 
     @staticmethod
-    def _get_callback(callback: str, **kwargs: Union[str, int]) -> str:
+    def _get_callback(callback: str, **kwargs: Optional[Union[str, int]]) -> str:
         if kwargs and None not in kwargs.values():
             return callback.format_map(kwargs)
         return callback.split('.')[0]
@@ -79,7 +79,7 @@ class CallbackData:
     def create_new_deck(self) -> str:
         return self._get_callback(self._CREATE_NEW_DECK)
 
-    def add_card(self, deck_id: Optional[int] = None) -> str:
+    def add_card(self, deck_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._ADD_CARD, deck_id=deck_id)
 
     def language(self) -> str:
@@ -88,52 +88,56 @@ class CallbackData:
     def my_decks(self) -> str:
         return self._get_callback(self._MY_DECKS)
 
-    def deck_menu(self, deck_id: Optional[int] = None) -> str:
+    def deck_menu(self, deck_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._DECK_MENU, deck_id=deck_id)
 
-    def edit_user_deck(self, deck_id: Optional[int] = None) -> str:
+    def edit_user_deck(self, deck_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._EDIT_USER_DECK, deck_id=deck_id)
 
-    def edit_card(self, card_id: Optional[int] = None) -> str:
+    def edit_card(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._EDIT_CARD, card_id=card_id)
 
-    def edit_question(self, card_id: Optional[int] = None) -> str:
+    def edit_question(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._EDIT_QUESTION, card_id=card_id)
 
-    def edit_correct_answers(self, card_id: Optional[int] = None) -> str:
+    def edit_correct_answers(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._EDIT_CORRECT_ANSWERS, card_id=card_id)
 
-    def edit_wrong_answers(self, card_id: Optional[int] = None) -> str:
+    def edit_wrong_answers(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._EDIT_WRONG_ANSWERS, card_id=card_id)
 
-    def delete_user_card(self, card_id: Optional[int] = None) -> str:
+    def delete_user_card(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._DELETE_USER_CARD, card_id=card_id)
 
-    def delete_user_deck(self, deck_id: Optional[int] = None) -> str:
+    def delete_user_deck(self, deck_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._DELETE_USER_DECK, deck_id=deck_id)
 
-    def sure_delete_user_deck(self, deck_id: Optional[int] = None) -> str:
+    def sure_delete_user_deck(self, deck_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._SURE_DELETE_USER_DECK, deck_id=deck_id)
 
-    def rename_user_deck(self, deck_id: Optional[int] = None) -> str:
+    def rename_user_deck(self, deck_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._RENAME_USER_DECK, deck_id=deck_id)
 
-    def learn_user_deck(self, deck_id: Optional[int] = None) -> str:
+    def learn_user_deck(self, deck_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._LEARN_USER_DECK, deck_id=deck_id)
 
     def card_type(
-            self, deck_id: Optional[int] = None, card_type: Optional[int] = None
+        self,
+        deck_id: Optional[Union[int, str]] = None,
+        card_type: Optional[Union[int, str]] = None,
     ) -> str:
         return self._get_callback(self._CARD_TYPE, deck_id=deck_id, type=card_type)
 
-    def tip(self, card_id: Optional[int] = None) -> str:
+    def tip(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._TIP, card_id=card_id)
 
-    def show_answer(self, card_id: Optional[int] = None) -> str:
+    def show_answer(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._SHOW_ANSWER, card_id=card_id)
 
     def rate_knowledge(
-            self, card_id: Optional[int] = None, knowledge: Optional[int] = None
+        self,
+        card_id: Optional[Union[int, str]] = None,
+        knowledge: Optional[Union[int, str]] = None,
     ) -> str:
         return self._get_callback(
             self._RATE_KNOWLEDGE, card_id=card_id, knowledge=knowledge
@@ -142,14 +146,15 @@ class CallbackData:
     def set_language(self, language: Optional[str] = None) -> str:
         return self._get_callback(self._SET_LANGUAGE, language=language)
 
-    def answer(self, option_number: Optional[int] = None) -> str:
+    def answer(self, option_number: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._ANSWER, option_number=option_number)
 
-    def submit(self, card_id: Optional[int] = None) -> str:
+    def submit(self, card_id: Optional[Union[int, str]] = None) -> str:
         return self._get_callback(self._SUBMIT, card_id=card_id)
 
     def radio_answer(
-            self, card_id: Optional[int] = None, mark: Optional[str] = None) -> str:
+        self, card_id: Optional[Union[int, str]] = None, mark: Optional[str] = None
+    ) -> str:
         return self._get_callback(self._RADIO_ANSWER, card_id=card_id, mark=mark)
 
     def no_correct_answers(self) -> str:

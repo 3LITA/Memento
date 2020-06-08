@@ -1,9 +1,9 @@
 from flask_babel import refresh
 from telebot.types import CallbackQuery
 
-from app.bot import utils, replies
-from app.bot.main import bot
+from app.bot import replies, utils
 from app.bot.keyboard import cd, markups
+from app.bot.main import bot
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
 
@@ -79,7 +79,9 @@ def deck_menu_markup_handler(callback: CallbackQuery) -> None:
     )
 
 
-@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.create_new_deck()))
+@bot.callback_query_handler(
+    func=lambda msg: utils.button_pressed(msg, cd.create_new_deck())
+)
 def new_markup_handler(callback: CallbackQuery) -> None:
     user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id

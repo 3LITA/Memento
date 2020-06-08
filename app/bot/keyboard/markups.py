@@ -5,11 +5,10 @@ from telebot.types import InlineKeyboardMarkup
 
 from app import settings
 
-from . import buttons, button_texts, cd
+from . import button_texts, buttons, cd
 
 
 class _Markup:
-
     def __init__(self, *rows: List[buttons.Button]) -> None:
         row_width = len(max(rows, key=len))
         self._keyboard = InlineKeyboardMarkup(row_width)
@@ -18,7 +17,7 @@ class _Markup:
             self._keyboard.add(*btns)
 
     @property
-    def keyboard(self):
+    def keyboard(self) -> InlineKeyboardMarkup:
         return self._keyboard
 
 
@@ -74,7 +73,9 @@ def add_deck_markup() -> InlineKeyboardMarkup:
     return markup.keyboard
 
 
-def edit_card_markup(card_id: int, deck_id: int, card_type: int) -> InlineKeyboardMarkup:
+def edit_card_markup(
+    card_id: int, deck_id: int, card_type: int
+) -> InlineKeyboardMarkup:
     edit_question_btn = buttons.EditQuestionButton(card_id)
     edit_correct_btn = buttons.EditCorrectAnswersButton(card_id)
     change_wrong_answers_btn = buttons.EditWrongAnswersButton(card_id)
@@ -198,10 +199,7 @@ def basic_learn_markup(card_id: int, deck_id: int) -> InlineKeyboardMarkup:
 
 
 def multiple_choice_markup(
-        card_id: int,
-        deck_id: int,
-        correct_answers: List[str],
-        wrong_answers: List[str],
+    card_id: int, deck_id: int, correct_answers: List[str], wrong_answers: List[str],
 ) -> InlineKeyboardMarkup:
     answers = correct_answers + wrong_answers
     shuffle(answers)
@@ -220,7 +218,7 @@ def multiple_choice_markup(
 
 
 def radiobutton_markup(
-        card_id: int, deck_id: int, correct_answer: str, wrong_answers: List[str]
+    card_id: int, deck_id: int, correct_answer: str, wrong_answers: List[str]
 ) -> InlineKeyboardMarkup:
     answers = [(ans, False) for ans in wrong_answers]
     answers.append((correct_answer, True))

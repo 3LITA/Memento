@@ -1,25 +1,25 @@
 import re
-from typing import Optional, List, Tuple, Sequence, Dict, Any, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 from telebot.types import CallbackQuery, InlineKeyboardMarkup, Message
 
-from . import replies
-from .keyboard import buttons, markups
 from app.models import utils
 from app.models.Card import Card
 from app.models.User import User
 
-expectations: Dict[
-    int, Dict[str, Any]
-] = dict()  # chat_id: {key: value}
+from . import replies
+from .keyboard import buttons, markups
+
+
+expectations: Dict[int, Dict[str, Any]] = dict()  # chat_id: {key: value}
 
 
 def get_user(message: Union[CallbackQuery, Message]) -> User:
     return User.get_or_create(message.from_user.id, message.from_user.username)
 
 
-def button_pressed(message, callback_data: str) -> bool:
-    return message.data.startswith(callback_data)
+def button_pressed(callback: CallbackQuery, callback_data: str) -> bool:
+    return callback.data.startswith(callback_data)
 
 
 def humanize_title(title: str) -> str:
@@ -73,7 +73,7 @@ def build_learn_text_and_keyboard(
 
 
 def repeat_keyboard(
-        data: dict, exclude: Sequence = (), delete_card_id: int = None
+    data: dict, exclude: Sequence = (), delete_card_id: int = None
 ) -> InlineKeyboardMarkup:
     prev_keyboard = get_prev_keyboard(data)
     if not prev_keyboard:

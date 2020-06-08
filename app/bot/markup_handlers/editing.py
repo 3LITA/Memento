@@ -1,8 +1,8 @@
 from telebot.types import CallbackQuery
 
-from app.bot import utils, replies
-from app.bot.main import bot
+from app.bot import replies, utils
 from app.bot.keyboard import button_texts, cd, markups
+from app.bot.main import bot
 from app.models.Card import Card
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
@@ -17,9 +17,7 @@ def edit_card_markup_handler(callback: CallbackQuery) -> None:
     card = Card.get_by_id(card_id)
 
     keyboard = markups.edit_card_markup(
-        card.id,
-        card.user_deck.id,
-        card.question.card_type,
+        card.id, card.user_deck.id, card.question.card_type,
     )
 
     question_text = card.question.text
@@ -49,7 +47,9 @@ def edit_card_markup_handler(callback: CallbackQuery) -> None:
     )
 
 
-@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.edit_user_deck()))
+@bot.callback_query_handler(
+    func=lambda msg: utils.button_pressed(msg, cd.edit_user_deck())
+)
 def edit_deck_markup_handler(callback: CallbackQuery) -> None:
     user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
@@ -162,9 +162,9 @@ def delete_card_markup_handler(callback: CallbackQuery) -> None:
     card.delete()
 
     text = (
-            replies.DECK_MENU_REPLY.format(humanize_title(deck.title).upper())
-            + '\n\n'
-            + replies.CARD_DELETED_REPLY
+        replies.DECK_MENU_REPLY.format(humanize_title(deck.title).upper())
+        + '\n\n'
+        + replies.CARD_DELETED_REPLY
     )
     keyboard = markups.deck_menu_markup(deck.id, deck.has_cards())
 

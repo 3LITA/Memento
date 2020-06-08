@@ -2,6 +2,7 @@ __all__ = ['buttons', 'button_texts', 'callbacks', 'cd', 'CORRECT_MARK', 'WRONG_
 
 from .callbacks import CallbackData
 
+
 cd = CallbackData()
 
 CORRECT_MARK = 'T'
