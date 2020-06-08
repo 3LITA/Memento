@@ -1,22 +1,21 @@
-from telebot import types
+from telebot.types import CallbackQuery
 
 from app.bot import utils, replies
 from app.bot.main import bot
 from app.bot.keyboard import cd, markups
 from app.models.Card import Card
-from app.models.User import User
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.add_card()))
-def deck_menu_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def deck_menu_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
     utils.forget_context(user)
 
-    user_deck_id = message.data.split('.')[-1]
+    user_deck_id = callback.data.split('.')[-1]
     user_deck = UserDeck.get_by_id(user_deck_id)
     deck_title = humanize_title(user_deck.title)
 
@@ -34,11 +33,11 @@ def deck_menu_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.card_type()))
-def card_type_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def card_type_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    user_deck_id, card_type = message.data.split('.')[1:]
+    user_deck_id, card_type = callback.data.split('.')[1:]
 
     if int(card_type) == 0:
         text = replies.SEND_FACT_REPLY
@@ -64,11 +63,11 @@ def card_type_markup_handler(message: types.Message) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.no_correct_answers())
 )
-def no_correct_answers_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def no_correct_answers_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    context = utils.get_context(message)
+    context = utils.get_context(callback)
     if context:
         context.pop('command')
 
@@ -97,11 +96,11 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.no_wrong_answers())
 )
-def no_wrong_answers_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def no_wrong_answers_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    context = utils.get_context(message)
+    context = utils.get_context(callback)
     user_deck = UserDeck.get_by_id(context['user_deck_id'])
     card_type = context['card_type']  # seems like it's always 3, but still
     question = context['question']

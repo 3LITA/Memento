@@ -1,4 +1,4 @@
-from telebot import types
+from telebot.types import CallbackQuery
 
 from app.bot import utils, replies
 from app.bot.main import bot
@@ -9,11 +9,11 @@ from app.models.utils import humanize_title
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.edit_card()))
-def edit_card_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def edit_card_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    card_id = message.data.split('.')[-1]
+    card_id = callback.data.split('.')[-1]
     card = Card.get_by_id(card_id)
 
     keyboard = markups.edit_card_markup(
@@ -50,11 +50,11 @@ def edit_card_markup_handler(message: types.CallbackQuery) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.edit_user_deck()))
-def edit_deck_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def edit_deck_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    deck_id = message.data.split('.')[-1]
+    deck_id = callback.data.split('.')[-1]
     deck = UserDeck.get_by_id(deck_id)
 
     text = replies.EDIT_USER_DECK_REPLY.format(
@@ -74,11 +74,11 @@ def edit_deck_markup_handler(message: types.CallbackQuery) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.rename_user_deck())
 )
-def rename_user_deck_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def rename_user_deck_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    deck_id = message.data.split('.')[-1]
+    deck_id = callback.data.split('.')[-1]
     deck = UserDeck.get_by_id(deck_id)
 
     text = replies.RENAME_USER_DECK_REPLY.format(
@@ -101,11 +101,11 @@ def rename_user_deck_markup_handler(message: types.CallbackQuery) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.delete_user_deck())
 )
-def delete_user_deck_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def delete_user_deck_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    deck_id = message.data.split('.')[-1]
+    deck_id = callback.data.split('.')[-1]
     deck = UserDeck.get_by_id(deck_id)
 
     text = replies.DELETE_USER_DECK_REPLY.format(humanize_title(deck.title).upper())
@@ -123,11 +123,11 @@ def delete_user_deck_markup_handler(message: types.CallbackQuery) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.sure_delete_user_deck())
 )
-def ensure_delete_user_deck_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def ensure_delete_user_deck_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    deck_id = message.data.split('.')[-1]
+    deck_id = callback.data.split('.')[-1]
     deck = UserDeck.get_by_id(deck_id)
 
     if deck:
@@ -151,11 +151,11 @@ def ensure_delete_user_deck_markup_handler(message: types.CallbackQuery) -> None
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.delete_user_card())
 )
-def delete_card_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def delete_card_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    card_id = message.data.split('.')[-1]
+    card_id = callback.data.split('.')[-1]
     card = Card.get_by_id(card_id)
     deck = card.user_deck
 

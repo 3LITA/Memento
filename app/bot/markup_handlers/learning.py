@@ -1,6 +1,6 @@
 from random import choice
 
-from telebot import types
+from telebot.types import CallbackQuery
 
 from app.bot import utils, replies
 from app.bot.main import bot
@@ -12,11 +12,11 @@ from app.models.UserDeck import UserDeck
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.learn_user_deck())
 )
-def learn_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def learn_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    deck_id = message.data.split('.')[-1]
+    deck_id = callback.data.split('.')[-1]
     user_deck = UserDeck.get_by_id(deck_id)
 
     card = user_deck.pull_card()
@@ -34,11 +34,11 @@ def learn_markup_handler(message: types.CallbackQuery) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.rate_knowledge())
 )
-def set_knowledge_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def set_knowledge_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    card_id, knowledge = message.data.split('.')[1:]
+    card_id, knowledge = callback.data.split('.')[1:]
     card = Card.get_by_id(card_id)
 
     card.set_knowledge(int(knowledge))
@@ -52,17 +52,17 @@ def set_knowledge_markup_handler(message: types.CallbackQuery) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.tip()))
-def tip_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def tip_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    card_id = message.data.split('.')[1]
+    card_id = callback.data.split('.')[1]
     card = Card.get_by_id(card_id)
 
     tip = replies.TIP + card.get_tip() if card.has_tips() else replies.NO_TIPS_REPLY
-    reply = message.message.text + '\n\n' + tip
+    reply = callback.message.text + '\n\n' + tip
 
-    prev_keyboard = utils.get_prev_keyboard(message.message.json)
+    prev_keyboard = utils.get_prev_keyboard(callback.message.json)
     keyboard = markups.tip_markup(prev_keyboard, card_id)
 
     bot.edit_message_text(
@@ -108,17 +108,17 @@ def tip_markup_handler(message: types.CallbackQuery) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.submit()))
-def submit_answer_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def submit_answer_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    card_id = message.data.split('.')[1]
+    card_id = callback.data.split('.')[1]
 
     try:
-        chosen = [int(num) for num in utils.parse_chosen_nums(message.message.json)]
+        chosen = [int(num) for num in utils.parse_chosen_nums(callback.message.json)]
     except ValueError:
         chosen = []
-    answers = utils.convert_chosen_to_answers(message.message.json, chosen)
+    answers = utils.convert_chosen_to_answers(callback.message.json, chosen)
 
     card = Card.get_by_id(card_id)
 
@@ -142,16 +142,16 @@ def submit_answer_markup_handler(message: types.CallbackQuery) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.answer()))
-def answer_sheet_markup_handler(message: types.CallbackQuery) -> None:
-    user = utils.get_user(message)
+def answer_sheet_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    card_id, correct_numbers, num = message.data.split('.')[1:]
+    card_id, correct_numbers, num = callback.data.split('.')[1:]
     card = Card.get_by_id(card_id)
 
     if card.question.card_type == 3:
-        text = message.message.text
-        js = message.message.json
+        text = callback.message.text
+        js = callback.message.json
         keyboard = utils.repeat_keyboard(js)
         if text.endswith(replies.USER_CHOSEN_REPLY):
             text += ' ' + num

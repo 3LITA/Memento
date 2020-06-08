@@ -105,7 +105,7 @@ def get_expected(message: Message) -> Optional[str]:
     return None
 
 
-def get_context(message: Message,) -> Dict[str, Any]:
+def get_context(message: Union[Message, CallbackQuery]) -> Dict[str, Any]:
     data = expectations[message.from_user.id]
     return data
 
