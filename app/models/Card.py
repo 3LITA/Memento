@@ -46,6 +46,12 @@ class Card(db.Model):  # type: ignore
     def __repr__(self) -> str:
         return '<Card %r>' % self.id
 
+    def has_tips(self) -> bool:
+        return self.question.has_tips()
+
+    def get_tip(self, prev_tip: str = '') -> str:
+        return self.question.get_tip(prev_tip)
+
     def add_attempt(self: 'Card', user_answer: typing.Union[str, typing.List]) -> bool:
 
         success = self._is_answer_correct(user_answer)

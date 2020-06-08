@@ -1,5 +1,5 @@
-import typing
 from random import random, shuffle
+from typing import Optional, Union
 
 from app import settings
 from app.__init__ import db
@@ -99,13 +99,13 @@ class UserDeck(db.Model):  # type: ignore
     @classmethod
     def search_by_title(
         cls, user: 'User.User', user_deck_title: str
-    ) -> typing.Optional['UserDeck']:
+    ) -> Optional['UserDeck']:
         proper_title = utils.generate_title(user.id, user_deck_title)
         return cls.query.filter_by(title=proper_title).first()
 
     @classmethod
-    def get_by_id(cls, card_id: str) -> 'UserDeck':
-        deck = cls.query.filter_by(id=card_id).first()
+    def get_by_id(cls, deck_id: Union[str, int]) -> 'UserDeck':
+        deck = cls.query.filter_by(id=deck_id).first()
         if not deck:
             raise AttributeError('Deck not found')
         return deck

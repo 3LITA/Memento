@@ -1,7 +1,7 @@
 import re
-from typing import Optional, List, Tuple, Sequence, Dict, Any
+from typing import Optional, List, Tuple, Sequence, Dict, Any, Union
 
-from telebot import types
+from telebot.types import CallbackQuery, InlineKeyboardMarkup, Message
 
 from . import replies
 from .keyboard import buttons, markups
@@ -14,7 +14,7 @@ expectations: Dict[
 ] = dict()  # chat_id: {key: value}
 
 
-def get_user(message: types.Message) -> User:
+def get_user(message: Union[CallbackQuery, Message]) -> User:
     return User.get_or_create(message.from_user.id, message.from_user.username)
 
 
@@ -26,7 +26,7 @@ def humanize_title(title: str) -> str:
     return utils.humanize_title(title)
 
 
-def get_args(message: types.Message) -> Optional[List[str]]:
+def get_args(message: Message) -> Optional[List[str]]:
     pattern = r'(^/\w+)(\s(.*))?'
     search = re.search(pattern, message.text)
     args = None
@@ -45,7 +45,7 @@ def count_gaps(question: str) -> int:
 
 def build_learn_text_and_keyboard(
     user: User, card: Card
-) -> Tuple[str, types.InlineKeyboardMarkup]:
+) -> Tuple[str, InlineKeyboardMarkup]:
     text = card.question.text
     if card.question.card_type == 0:
         text += '\n\n' + replies.SET_KNOWLEDGE_REPLY
@@ -72,13 +72,19 @@ def build_learn_text_and_keyboard(
     return text, keyboard
 
 
-def repeat_keyboard(data: dict, exclude: Sequence = (), delete_card_id: int = None):
-    prev_keyboard = data.get('reply_markup', {}).get('inline_keyboard')
+def repeat_keyboard(
+        data: dict, exclude: Sequence = (), delete_card_id: int = None
+) -> InlineKeyboardMarkup:
+    prev_keyboard = get_prev_keyboard(data)
     if not prev_keyboard:
         raise ValueError
 
     add_btns = [buttons.DeleteUserCardButton(delete_card_id)] if delete_card_id else []
     return markups.repeat_keyboard(prev_keyboard, exclude, *add_btns)
+
+
+def get_prev_keyboard(data: dict) -> dict:
+    return data.get('reply_markup', {}).get('inline_keyboard')
 
 
 def forget_context(user: User) -> Optional[Dict[str, Any]]:
@@ -92,14 +98,14 @@ def set_context(user: User, command: str, metadata: dict = None) -> None:
     expectations[user.chat_id] = data
 
 
-def get_expected(message: types.Message) -> Optional[str]:
+def get_expected(message: Message) -> Optional[str]:
     data = expectations.get(message.from_user.id)
     if data:
         return data.get('command')
     return None
 
 
-def get_context(message: types.Message,) -> Dict[str, Any]:
+def get_context(message: Message,) -> Dict[str, Any]:
     data = expectations[message.from_user.id]
     return data
 

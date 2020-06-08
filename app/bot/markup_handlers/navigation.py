@@ -9,8 +9,8 @@ from app.models.utils import humanize_title
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.main_menu()))
-def menu_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def menu_markup_handler(query: types.CallbackQuery) -> None:
+    user = utils.get_user(query)
     inline_keyboard_id = user.inline_keyboard_id
 
     text = replies.MENU_REPLY
@@ -24,8 +24,8 @@ def menu_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.add_deck()))
-def add_deck_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def add_deck_markup_handler(query: types.CallbackQuery) -> None:
+    user = utils.get_user(query)
     markup_message_id = user.inline_keyboard_id
 
     utils.forget_context(user)
@@ -43,8 +43,8 @@ def add_deck_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.my_decks()))
-def decks_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def decks_markup_handler(query: types.CallbackQuery) -> None:
+    user = utils.get_user(query)
     inline_keyboard_id = user.inline_keyboard_id
 
     decks_map = {deck.id: utils.humanize_title(deck.title) for deck in user.decks}
@@ -57,13 +57,13 @@ def decks_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.deck_menu()))
-def deck_menu_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def deck_menu_markup_handler(query: types.CallbackQuery) -> None:
+    user = utils.get_user(query)
     markup_message_id = user.inline_keyboard_id
 
     utils.forget_context(user)
 
-    user_deck_id = message.data.split('.')[-1]
+    user_deck_id = query.data.split('.')[-1]
     user_deck = UserDeck.get_by_id(user_deck_id)
 
     text = replies.DECK_MENU_REPLY.format(humanize_title(user_deck.title).upper())
@@ -80,8 +80,8 @@ def deck_menu_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.create_new_deck()))
-def new_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def new_markup_handler(query: types.CallbackQuery) -> None:
+    user = utils.get_user(query)
     markup_message_id = user.inline_keyboard_id
 
     text = replies.CREATE_NEW_DECK_REPLY
@@ -97,8 +97,8 @@ def new_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.language()))
-def language_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def language_markup_handler(query: types.CallbackQuery) -> None:
+    user = utils.get_user(query)
     markup_message_id = user.inline_keyboard_id
 
     text = replies.CHANGE_LANGUAGE_REPLY
@@ -115,14 +115,14 @@ def language_markup_handler(message: types.Message) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.set_language())
 )
-def set_language_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def set_language_markup_handler(query: types.CallbackQuery) -> None:
+    user = utils.get_user(query)
     markup_message_id = user.inline_keyboard_id
 
-    language = message.data.split('.')[1]
+    language = query.data.split('.')[1]
     user.set_preferred_language(language)
 
-    refresh()
+    refresh()  # TODO: make this work
 
     text = replies.LANGUAGE_WAS_CHANGED_REPLY
     keyboard = markups.main_menu_markup(user)

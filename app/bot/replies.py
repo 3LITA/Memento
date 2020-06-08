@@ -138,6 +138,13 @@ CHANGE_LANGUAGE_REPLY = _("Choose the language you want to set")
 
 LANGUAGE_WAS_CHANGED_REPLY = _("The language was successfully changed!")
 
+TIP = _("Tip: ")
+
+NO_TIPS_REPLY = _(
+    "Unfortunately, there are no tips for this question...\n"
+    "I can show you the answer though"
+)
+
 WTF_MESSAGES = [
     _('What do you mean?'),
     _('Please type /help and get the available commands'),

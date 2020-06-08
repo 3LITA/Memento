@@ -9,7 +9,7 @@ from app.models.utils import humanize_title
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.edit_card()))
-def edit_card_markup_handler(message: types.Message) -> None:
+def edit_card_markup_handler(message: types.CallbackQuery) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -50,7 +50,7 @@ def edit_card_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.edit_user_deck()))
-def edit_deck_markup_handler(message: types.Message) -> None:
+def edit_deck_markup_handler(message: types.CallbackQuery) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -60,7 +60,7 @@ def edit_deck_markup_handler(message: types.Message) -> None:
     text = replies.EDIT_USER_DECK_REPLY.format(
         deck_title=humanize_title(deck.title).upper()
     )
-    keyboard = markups.edit_user_deck_markup(deck)
+    keyboard = markups.edit_user_deck_markup(deck.id)
 
     bot.edit_message_text(
         text=text,
@@ -74,7 +74,7 @@ def edit_deck_markup_handler(message: types.Message) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.rename_user_deck())
 )
-def rename_user_deck_markup_handler(message: types.Message) -> None:
+def rename_user_deck_markup_handler(message: types.CallbackQuery) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -84,7 +84,7 @@ def rename_user_deck_markup_handler(message: types.Message) -> None:
     text = replies.RENAME_USER_DECK_REPLY.format(
         deck_title=humanize_title(deck.title).upper()
     )
-    keyboard = markups.cancel_to_deck_menu_markup(deck)
+    keyboard = markups.cancel_to_deck_menu_markup(deck.id)
 
     metadata = {'deck_id': deck.id}
     utils.set_context(user, 'rename_user_deck', metadata)
@@ -101,7 +101,7 @@ def rename_user_deck_markup_handler(message: types.Message) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.delete_user_deck())
 )
-def delete_user_deck_markup_handler(message: types.Message) -> None:
+def delete_user_deck_markup_handler(message: types.CallbackQuery) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -123,7 +123,7 @@ def delete_user_deck_markup_handler(message: types.Message) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.sure_delete_user_deck())
 )
-def ensure_delete_user_deck_markup_handler(message: types.Message) -> None:
+def ensure_delete_user_deck_markup_handler(message: types.CallbackQuery) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -151,7 +151,7 @@ def ensure_delete_user_deck_markup_handler(message: types.Message) -> None:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.delete_user_card())
 )
-def delete_card_markup_handler(message: types.Message) -> None:
+def delete_card_markup_handler(message: types.CallbackQuery) -> None:
     user = utils.get_user(message)
     markup_message_id = user.inline_keyboard_id
 
@@ -166,7 +166,7 @@ def delete_card_markup_handler(message: types.Message) -> None:
             + '\n\n'
             + replies.CARD_DELETED_REPLY
     )
-    keyboard = markups.deck_menu_markup(deck)
+    keyboard = markups.deck_menu_markup(deck.id, deck.has_cards())
 
     bot.edit_message_text(
         text=text,

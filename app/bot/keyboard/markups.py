@@ -11,8 +11,7 @@ from . import buttons, button_texts, cd
 class _Markup:
 
     def __init__(self, *rows: List[buttons.Button]) -> None:
-        rows = list(rows)
-        row_width = max(rows, key=len)
+        row_width = len(max(rows, key=len))
         self._keyboard = InlineKeyboardMarkup(row_width)
         for row in rows:
             btns = [btn.button for btn in row]
@@ -24,7 +23,7 @@ class _Markup:
 
 
 def repeat_keyboard(
-    prev_keyboard: dict, exclude: Sequence, *add_btns: buttons.Button
+    prev_keyboard: dict, exclude: Sequence[str], *add_btns: buttons.Button
 ) -> InlineKeyboardMarkup:
     rows = []
     for row in range(len(prev_keyboard)):
@@ -56,7 +55,7 @@ def main_menu_markup(has_decks: bool) -> InlineKeyboardMarkup:
 
 def decks_markup(decks_map: Dict[int, str]) -> InlineKeyboardMarkup:
     decks_btns = [
-        buttons.DeckButton(decks_map[deck_id], deck_id)
+        [buttons.DeckButton(decks_map[deck_id], deck_id)]
         for deck_id in decks_map.keys()
     ]
     back_btn = buttons.BackButton(cd.main_menu())
@@ -208,7 +207,7 @@ def multiple_choice_markup(
     shuffle(answers)
 
     answers_btns = [
-        buttons.AnswerButton(i + 1, answers[i]) for i in range(len(answers))
+        [buttons.AnswerButton(i + 1, answers[i])] for i in range(len(answers))
     ]
 
     submit_btn = buttons.SubmitButton(card_id)
@@ -228,7 +227,7 @@ def radiobutton_markup(
 
     shuffle(answers)
     answers_btns = [
-        buttons.RadioAnswerButton(i + 1, answers[i][0], card_id, answers[i][1])
+        [buttons.RadioAnswerButton(i + 1, answers[i][0], card_id, answers[i][1])]
         for i in range(len(answers))
     ]
 
@@ -256,7 +255,12 @@ def language_choice_markup(current_language: str) -> InlineKeyboardMarkup:
         for lang in settings.LANGUAGES.keys()
         if lang != current_language
     ]
-    cancel_btn = buttons.CancelButton(cd.menu())
+    cancel_btn = buttons.CancelButton(cd.main_menu())
 
     markup = _Markup(*languages, [cancel_btn])
     return markup.keyboard
+
+
+def tip_markup(prev_keyboard: dict, card_id: int) -> InlineKeyboardMarkup:
+    show_btn = buttons.ShowAnswerButton(card_id)
+    return repeat_keyboard(prev_keyboard, [button_texts.TIP], show_btn)

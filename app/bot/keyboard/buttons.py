@@ -23,7 +23,7 @@ class DecksButton(Button):
 
     def __init__(self) -> None:
         text = button_texts.MY_DECKS
-        super().__init__(text, cd.add_deck())
+        super().__init__(text, cd.my_decks())
 
 
 class DeckButton(Button):
@@ -173,6 +173,13 @@ class TipButton(Button):
     def __init__(self, card_id: Union[int, str]) -> None:
         text = button_texts.TIP
         super().__init__(text, cd.tip(card_id))
+
+
+class ShowAnswerButton(Button):
+
+    def __init__(self, card_id: Union[int, str]) -> None:
+        text = button_texts.SHOW_ANSWER
+        super().__init__(text, cd.show_answer(card_id))
 
 
 class RateKnowledgeButton(Button):

@@ -41,6 +41,8 @@ class CallbackData:
 
     _TIP = 'tip.{card_id}'
 
+    _SHOW_ANSWER = 'show_answer.{card_id}'
+
     _RATE_KNOWLEDGE = 'rate_knowledge.{card_id}.{knowledge}'
 
     _SET_LANGUAGE = 'set_language.{language}'
@@ -126,6 +128,9 @@ class CallbackData:
 
     def tip(self, card_id: Optional[int] = None) -> str:
         return self._get_callback(self._TIP, card_id=card_id)
+
+    def show_answer(self, card_id: Optional[int] = None) -> str:
+        return self._get_callback(self._SHOW_ANSWER, card_id=card_id)
 
     def rate_knowledge(
             self, card_id: Optional[int] = None, knowledge: Optional[int] = None
