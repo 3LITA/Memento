@@ -9,7 +9,7 @@ from . import button_texts, buttons, cd
 
 
 class _Markup:
-    def __init__(self, *rows: List[buttons.Button]) -> None:
+    def __init__(self, *rows: Sequence[buttons.Button]) -> None:
         row_width = len(max(rows, key=len))
         self._keyboard = InlineKeyboardMarkup(row_width)
         for row in rows:
@@ -45,8 +45,9 @@ def main_menu_markup(has_decks: bool) -> InlineKeyboardMarkup:
     add_deck_btn = buttons.AddDeckButton()
     language_btn = buttons.LanguageButton()
 
-    first_row = [decks_btn] if has_decks else []
-    first_row += [add_deck_btn, language_btn]
+    first_row = [add_deck_btn, language_btn]
+    if has_decks:
+        first_row.insert(0, decks_btn)
 
     markup = _Markup(first_row)
     return markup.keyboard
