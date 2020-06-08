@@ -27,6 +27,8 @@ EDIT = _('Edit')
 
 TIP = _('Tip')
 
+SHOW_ANSWER = _('Show answer')
+
 SUBMIT = _('Submit')
 
 LANGUAGE = _('Change language')

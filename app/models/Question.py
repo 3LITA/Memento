@@ -1,12 +1,14 @@
+from random import choice
+
 from sqlalchemy.dialects.postgresql import ARRAY
 
-from app import db
-from app.settings import MAX_ANSWER_LENGTH, MAX_QUESTION_LENGTH
+from app.__init__ import db
+from app.settings import MAX_ANSWER_LENGTH, MAX_QUESTION_LENGTH, MAX_TIP_LENGTH
 
 
 class Question(db.Model):  # type: ignore
     """
-    <-- Notes for future coding -->
+    TODO: make enum or other structure for card_type
 
     If card_type == 0:
         question can be anything;
@@ -35,10 +37,18 @@ class Question(db.Model):  # type: ignore
     text = db.Column(db.String(MAX_QUESTION_LENGTH), nullable=False)
     correct_answers = db.Column(ARRAY(db.String(MAX_ANSWER_LENGTH)))
     wrong_answers = db.Column(ARRAY(db.String(MAX_ANSWER_LENGTH)))
+    tips = db.Column(ARRAY(db.String(MAX_TIP_LENGTH)))
     deck_id = db.Column(
         db.Integer, db.ForeignKey('public_deck.id')
     )  # M-O to PublicDeck
     cards = db.relationship('Card', backref='question', lazy=True)  # O-M to UserCard
+
+    def has_tips(self) -> bool:
+        return self.tips and len(self.tips) > 0
+
+    def get_tip(self, prev_tip: str = '') -> str:
+        tips = set(self.tips) - {prev_tip}
+        return choice(list(tips))
 
     def __repr__(self) -> str:
         return '<Question %r>' % self.id

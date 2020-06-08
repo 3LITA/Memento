@@ -4,6 +4,7 @@ MAX_QUESTION_LENGTH = 255
 MAX_DECK_TITLE_LENGTH = 127
 MAX_SLUG_LENGTH = 127
 MAX_ANSWER_LENGTH = 63
+MAX_TIP_LENGTH = 63
 CARD_TYPES_RANGE = 5  # 0 - 4
 KNOWLEDGE_RANGE = 3
 
@@ -11,7 +12,7 @@ DEFAULT_LOCALE = 'en'
 LANGUAGES = {'en': '🇬🇧', 'ru': '🇷🇺'}
 BABEL_TRANSLATION_DIRECTORIES = 'localization/i18n'
 
-COMMANDS = {
+BOT_COMMANDS = {
     'start_commands': ['start'],
     'help_commands': ['help'],
     'decks_commands': ['decks'],

@@ -1,10 +1,10 @@
-from random import shuffle
+from random import choice
 
 from telebot import types
 
-from app.bot import markups, utils
+from app.bot import replies, utils
+from app.bot.keyboard import markups
 from app.bot.main import bot
-from app.localization import replies
 from app.models.Card import Card
 
 
@@ -26,14 +26,13 @@ def learn_contextual_handler(message: types.Message) -> None:
 
     if card.add_attempt(answer):
         reply = ''
-        keyboard = markups.create_set_knowledge_markup(card)
+        keyboard = markups.rate_knowledge_markup(card)
         reply_list = replies.CORRECT_REPLIES
     else:
         reply = f'{card.question.text}\n\n'
-        keyboard = markups.create_basic_learn_markup(card)
+        keyboard = markups.basic_learn_markup(card.id, card.user_deck.id)
         reply_list = replies.WRONG_REPLIES
-    shuffle(reply_list)
-    reply += reply_list[0]
+    reply += choice(reply_list)
 
     bot.delete_message(user.chat_id, markup_message_id)
     message_id = bot.send_message(user.chat_id, reply, reply_markup=keyboard).message_id
@@ -43,6 +42,5 @@ def learn_contextual_handler(message: types.Message) -> None:
 @bot.message_handler(func=lambda message: True)
 def wtf_handler(message: types.Message) -> None:
     answers = replies.WTF_MESSAGES
-    shuffle(answers)
-    text = answers[0]
+    text = choice(answers)
     bot.send_message(message.chat.id, text)

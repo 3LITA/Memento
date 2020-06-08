@@ -1,28 +1,27 @@
-from telebot import types
+from telebot.types import CallbackQuery
 
-from app.bot import markups, utils
+from app.bot import replies, utils
+from app.bot.keyboard import cd, markups
 from app.bot.main import bot
-from app.localization import buttons, replies
 from app.models.Card import Card
-from app.models.User import User
 from app.models.UserDeck import UserDeck
 from app.models.utils import humanize_title
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('add_card'))
-def deck_menu_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.add_card()))
+def deck_menu_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
     utils.forget_context(user)
 
-    user_deck_id = message.data.split('.')[-1]
+    user_deck_id = callback.data.split('.')[-1]
     user_deck = UserDeck.get_by_id(user_deck_id)
     deck_title = humanize_title(user_deck.title)
 
     text = replies.CHOOSE_CARD_TYPE_REPLY.format(deck_title.upper())
 
-    keyboard = markups.create_choose_card_type_markup(user_deck_id)
+    keyboard = markups.choose_card_type_markup(user_deck_id)
 
     bot.edit_message_text(
         text=text,
@@ -33,12 +32,12 @@ def deck_menu_markup_handler(message: types.Message) -> None:
     )
 
 
-@bot.callback_query_handler(func=lambda message: message.data.startswith('card_type'))
-def card_type_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.card_type()))
+def card_type_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    user_deck_id, card_type = message.data.split('.')[1:]
+    user_deck_id, card_type = callback.data.split('.')[1:]
 
     if int(card_type) == 0:
         text = replies.SEND_FACT_REPLY
@@ -46,15 +45,10 @@ def card_type_markup_handler(message: types.Message) -> None:
         text = replies.SEND_QUESTION_REPLY.format(card_type)
         if int(card_type) == 2:
             text += replies.NOTE_GAPS_FOR_TYPE_2_REPLY
-    # TODO: move to markups.py
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(
-        types.InlineKeyboardButton(
-            text=buttons.BACK, callback_data=f'add_card.{user_deck_id}'
-        )
-    )
-    metadata = {'card_type': int(card_type), 'user_deck_id': int(user_deck_id)}
 
+    keyboard = markups.question_await_markup(user_deck_id)
+
+    metadata = {'card_type': int(card_type), 'user_deck_id': int(user_deck_id)}
     utils.set_context(user=user, command='send_question', metadata=metadata)
 
     bot.edit_message_text(
@@ -67,13 +61,13 @@ def card_type_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(
-    func=lambda message: message.data.startswith('no_correct_answers')
+    func=lambda msg: utils.button_pressed(msg, cd.no_correct_answers())
 )
-def no_correct_answers_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def no_correct_answers_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    context = utils.get_context(message)
+    context = utils.get_context(callback)
     if context:
         context.pop('command')
 
@@ -87,7 +81,7 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
         "", replies.WRONG_ANSWERS, context['question'],
     )
 
-    keyboard = markups.create_cancel_markup(user_deck=user_deck)
+    keyboard = markups.cancel_markup(user_deck.id)
 
     utils.set_context(user, command='wrong_answers', metadata=context)
 
@@ -100,13 +94,13 @@ def no_correct_answers_markup_handler(message: types.Message) -> None:
 
 
 @bot.callback_query_handler(
-    func=lambda message: message.data.startswith('no_wrong_answers')
+    func=lambda msg: utils.button_pressed(msg, cd.no_wrong_answers())
 )
-def no_wrong_answers_markup_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
+def no_wrong_answers_markup_handler(callback: CallbackQuery) -> None:
+    user = utils.get_user(callback)
     markup_message_id = user.inline_keyboard_id
 
-    context = utils.get_context(message)
+    context = utils.get_context(callback)
     user_deck = UserDeck.get_by_id(context['user_deck_id'])
     card_type = context['card_type']  # seems like it's always 3, but still
     question = context['question']
@@ -114,7 +108,7 @@ def no_wrong_answers_markup_handler(message: types.Message) -> None:
 
     card = Card.fromQuestion(user_deck, card_type, question, correct_answers, [])
 
-    keyboard = markups.create_created_card_markup(card, user_deck)
+    keyboard = markups.card_created_markup(card.id, user_deck.id)
 
     utils.forget_context(user)
 
@@ -129,4 +123,4 @@ def no_wrong_answers_markup_handler(message: types.Message) -> None:
     message_id = bot.send_message(
         chat_id=user.chat_id, text=text, reply_markup=keyboard
     ).message_id
-    User.set_inline_keyboard(user, message_id)
+    user.set_inline_keyboard(message_id)

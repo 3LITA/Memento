@@ -1,6 +1,6 @@
 from flask_babel import _
 
-from app.settings import COMMANDS
+from app.settings import BOT_COMMANDS
 
 
 START_REPLY = _(
@@ -13,7 +13,7 @@ START_AGAIN = _("Welcome back, *{}*!")
 
 HELP_REPLY = _(
     "%(menu_command)s - use this command to navigate\n",
-    menu_command=COMMANDS['menu_commands'][-1],
+    menu_command=BOT_COMMANDS['menu_commands'][-1],
 )
 
 UNKNOWN_COMMAND_REPLY = _("Sorry, I don't understand this command")
@@ -137,6 +137,13 @@ INCORRECT_GAPS_NUMBER_IN_ANSWER_REPLY = _(
 CHANGE_LANGUAGE_REPLY = _("Choose the language you want to set")
 
 LANGUAGE_WAS_CHANGED_REPLY = _("The language was successfully changed!")
+
+TIP = _("Tip: ")
+
+NO_TIPS_REPLY = _(
+    "Unfortunately, there are no tips for this question...\n"
+    "I can show you the answer though"
+)
 
 WTF_MESSAGES = [
     _('What do you mean?'),
