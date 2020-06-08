@@ -207,7 +207,7 @@ def multiple_choice_markup(
     shuffle(answers)
 
     answers_btns = [
-        [buttons.AnswerButton(i + 1, answers[i])] for i in range(len(answers))
+        [buttons.AnswerButton(i + 1, answer)] for i, answer in enumerate(answers)
     ]
 
     submit_btn = buttons.SubmitButton(card_id)
@@ -227,8 +227,8 @@ def radiobutton_markup(
 
     shuffle(answers)
     answers_btns = [
-        [buttons.RadioAnswerButton(i + 1, answers[i][0], card_id, answers[i][1])]
-        for i in range(len(answers))
+        [buttons.RadioAnswerButton(i + 1, answer[0], card_id, answer[1])]
+        for i, answer in enumerate(answers)
     ]
 
     tip_btn = buttons.TipButton(card_id)
