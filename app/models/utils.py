@@ -1,38 +1,47 @@
 import re
-import typing
+from typing import Any, Union
 
-from sqlalchemy.ext.mutable import Mutable
+from app.app import db, logging
 
 
-class MutableList(Mutable, list):
-    def append(self, value: typing.Any) -> None:
-        list.append(self, value)
-        self.changed()
-        return None
+class ActiveRecordMixin:
+    def save(self) -> None:
+        logging.debug("Save %s", self)
+        if self not in db.session:
+            logging.debug("Created %s with args %s", self.__class__, self.__dict__)
+            db.session.add(self)
+        db.session.commit()
+
+    def delete(self) -> None:
+        logging.debug("Delete %s", self)
+        db.session.delete(self)
+        db.session.commit()
 
     @classmethod
-    def coerce(
-        cls: typing.Any, key: typing.Any, value: typing.Any
-    ) -> typing.Optional[typing.Union['MutableList', typing.Any]]:
-        if not isinstance(value, MutableList):
-            if isinstance(value, list):
-                return MutableList(value)
-            return Mutable.coerce(key, value)
-        else:
-            return value
+    def get(cls, id_: Union[str, int]) -> Any:
+        logging.debug("Getting %s from database", cls.__name__)
+        deck = cls.query.filter_by(id=id_).first()  # type: ignore
+        if not deck:
+            logging.critical("%s with id %s not found in database", cls.__name__, id_)
+            raise AttributeError(f'{cls.__name__} not found')
+        return deck
+
+    @classmethod
+    def get_by(cls, **kw: Any) -> Any:
+        logging.debug("Querying %s with args %s", cls.__name__, kw)
+        res = cls.query.filter_by(**kw).first()  # type: ignore
+        if not res:
+            logging.warning("%s with args %s not found in database", cls.__name__, kw)
+        return res
 
 
-def is_title_correct(title: str) -> typing.Optional[typing.Match]:
-    return re.match(r'^[A-Za-z0-9_-]*$', title)
+def is_title_correct(title: str) -> bool:
+    return bool(re.compile(r'^[A-Za-z0-9-]*$').search(title))
 
 
-def generate_title(id: int, title: str) -> str:
-    return str(id) + ':' + title.lower()
+def generate_title(user_id: int, title: str) -> str:
+    return f'{user_id}:{title.lower()}'
 
 
 def humanize_title(title: str) -> str:
-    return title.split(':')[-1]
-
-
-def generate_attempt(success: bool, timestamp: int) -> str:
-    return 'T:' + str(timestamp) if success else 'F:' + str(timestamp)
+    return ''.join(title.split(':')[1:])

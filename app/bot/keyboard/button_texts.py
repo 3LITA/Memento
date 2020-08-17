@@ -27,11 +27,13 @@ EDIT = _('Edit')
 
 TIP = _('Tip')
 
+SHOW_ANSWER = _('Show answer')
+
 SUBMIT = _('Submit')
 
 LANGUAGE = _('Change language')
 
-KNOWLEDGE_RATES = [_('👎🏻'), _('🖕🏻'), _('👍🏻')]
+KNOWLEDGE_RATES = [_('👎'), _('🖕'), _('👍')]
 
 CREATE_NEW_DECK = _('Create')
 

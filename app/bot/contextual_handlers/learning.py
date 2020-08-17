@@ -1,48 +1,50 @@
-from random import shuffle
+from random import choice
+from typing import Any
 
-from telebot import types
+from telebot.types import Message
 
-from app.bot import markups, utils
+from app.app import logging
+from app.bot import contexts, replies, utils
+from app.bot.keyboard import markups
 from app.bot.main import bot
-from app.localization import replies
+from app.models import CardType
 from app.models.Card import Card
+from app.models.User import User
 
 
-@bot.message_handler(func=lambda message: utils.get_expected(message) == 'learn')
-def learn_contextual_handler(message: types.Message) -> None:
-    user = utils.get_user(message)
-    markup_message_id = user.inline_keyboard_id
-
-    context = utils.get_context(message)
-
-    card_id = context['card_id']
-    card = Card.get_by_id(card_id)
+@bot.message_handler(
+    func=lambda message: contexts.command_expected(
+        message, contexts.ExpectedCommands.LEARN
+    )
+)
+@utils.log_message
+def learn_contextual_handler(message: Message, **_: Any) -> utils.handler_return:
+    context = contexts.get_context(message)
+    card = Card.get(context.card_id)
 
     answer = (
-        message.text
-        if card.question.card_type == 1
-        else [ans.strip() for ans in message.text.split(',')]
+        message.text.lower()
+        if card.type == CardType.SIMPLE
+        else [ans.strip().lower() for ans in message.text.split(',')]
     )
 
-    if card.add_attempt(answer):
-        reply = ''
-        keyboard = markups.create_set_knowledge_markup(card)
+    if card.add_attempt(answer).success:
+        text = replies.RATE_KNOWLEDGE
+        keyboard = markups.rate_knowledge_markup(card.id)
         reply_list = replies.CORRECT_REPLIES
     else:
-        reply = f'{card.question.text}\n\n'
-        keyboard = markups.create_basic_learn_markup(card)
+        text = card.question
+        keyboard = markups.basic_learn_markup(card.id, card.deck_id)
         reply_list = replies.WRONG_REPLIES
-    shuffle(reply_list)
-    reply += reply_list[0]
+    reply = replies.Reply(f"{choice(reply_list)}\n\n{text}")
 
-    bot.delete_message(user.chat_id, markup_message_id)
-    message_id = bot.send_message(user.chat_id, reply, reply_markup=keyboard).message_id
-    user.set_inline_keyboard(message_id)
+    return keyboard, reply
 
 
 @bot.message_handler(func=lambda message: True)
-def wtf_handler(message: types.Message) -> None:
+@utils.log_message
+def wtf_handler(user: User, **_: Any) -> utils.handler_return:
+    logging.warning("%s sent an unexpected message", user.chat_id)
     answers = replies.WTF_MESSAGES
-    shuffle(answers)
-    text = answers[0]
-    bot.send_message(message.chat.id, text)
+    reply = choice(answers)
+    return None, reply

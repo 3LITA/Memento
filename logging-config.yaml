@@ -1,0 +1,30 @@
+version: 1
+
+formatters:
+  default:
+    format: '%(asctime)s %(levelname)s in %(module)s: %(message)s'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: default
+    stream: ext://sys.stdout
+
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: default
+    filename: logs/memento.log
+    maxBytes: 1024
+    backupCount: 3
+
+loggers:
+  app:
+    level: DEBUG
+    handlers: [console, file]
+    propagate: no
+
+root:
+  level: DEBUG
+  handlers: [console]

@@ -2,7 +2,7 @@ from typing import List, Optional
 
 from app.models.Card import Card
 from app.models.User import User
-from app.models.UserDeck import UserDeck
+from app.models.Deck import Deck
 
 
 def create_user() -> User:
@@ -11,10 +11,10 @@ def create_user() -> User:
     return User(chat_id, username)
 
 
-def create_deck() -> UserDeck:
+def create_deck() -> Deck:
     user = create_user()
     deck_title = 'testing_deck'
-    return UserDeck(user, deck_title)
+    return Deck(user, deck_title)
 
 
 def create_card(

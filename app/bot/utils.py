@@ -1,26 +1,114 @@
 import re
-import typing
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
-from telebot import types
+from telebot import TeleBot
+from telebot.types import CallbackQuery, InlineKeyboardMarkup, Message
 
-from app.localization import buttons, replies
-from app.models import utils
+from app import settings
+from app.app import logging
+from app.models import CardType, utils
 from app.models.Card import Card
+from app.models.Deck import Deck
 from app.models.User import User
 
-from . import markups
+from . import contexts, replies
+from .keyboard import buttons, markups
 
 
-expectations: typing.Dict[
-    int, typing.Dict[str, typing.Any]
-] = dict()  # chat_id: {key: value}
+handler_return = Tuple[Optional[InlineKeyboardMarkup], replies.Reply]
 
 
-def get_user(message: types.Message) -> User:
-    return User.get_or_create(message.from_user.id, message.from_user.username)
+def log_message(func: Callable) -> Callable:
+    from app.bot.main import bot
+
+    def wrapped(message: Message) -> None:
+        logging.info(
+            "[%s.%s] %s: %s",
+            func.__module__,
+            func.__name__,
+            message.chat.id,
+            message.text,
+        )
+        user = get_user(message)
+        keyboard, reply = None, None
+        try:
+            keyboard, reply = func(message=message, user=user)
+        except contexts.ContextNotFound as e:
+            logging.warning(e)
+            reply = replies.CONTEXT_FORGOTTEN
+            keyboard = markups.main_menu_markup(user.has_decks())
+        except Exception as e:
+            logging.critical(e)
+        finally:
+            if reply:
+                if user.inline_keyboard_id:
+                    delete_message(bot, message.from_user.id, user.inline_keyboard_id)
+                message_id = bot.send_message(
+                    chat_id=user.chat_id,
+                    text=reply.text,
+                    reply_markup=keyboard,
+                    parse_mode=reply.parse_mode,
+                ).message_id
+                user.set_inline_keyboard_id(message_id)
+
+                logging.info(
+                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text,
+                )
+
+    return wrapped
 
 
-def get_args(message: types.Message) -> typing.Optional[typing.List[str]]:
+def log_pressed_button(func: Callable) -> Callable:
+    from app.bot.main import bot
+
+    def wrapper(callback: CallbackQuery) -> None:
+        logging.info(
+            "%s.%s - %s pressed the button %s",
+            func.__module__,
+            func.__name__,
+            callback.from_user.id,
+            callback.data.get('command'),
+        )
+        user = get_user(callback)
+        kwargs = callback.data
+        keyboard, reply = None, None
+        try:
+            keyboard, reply = func(callback=callback, user=user, **kwargs)
+        except contexts.ContextNotFound as e:
+            logging.warning(e)
+            reply = replies.CONTEXT_FORGOTTEN
+            keyboard = markups.main_menu_markup(user.has_decks())
+        except Exception as e:
+            logging.critical(e)
+        finally:
+            if reply:
+                bot.edit_message_text(
+                    text=reply.text,
+                    chat_id=user.chat_id,
+                    message_id=user.inline_keyboard_id,
+                    reply_markup=keyboard,
+                    parse_mode=reply.parse_mode,
+                )
+                logging.info(
+                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text,
+                )
+
+    return wrapper
+
+
+def get_user(message: Union[CallbackQuery, Message]) -> User:
+    return User.get_or_create_by_chat_id(message.from_user.id)
+
+
+def button_pressed(callback: CallbackQuery, command: Dict[str, Any]) -> bool:
+    return callback.data.get('command') == command.get('command')
+
+
+def humanize_title(title: str) -> str:
+    return utils.humanize_title(title)
+
+
+def get_args(message: Message) -> Optional[List[str]]:
     pattern = r'(^/\w+)(\s(.*))?'
     search = re.search(pattern, message.text)
     args = None
@@ -37,121 +125,74 @@ def count_gaps(question: str) -> int:
     return count
 
 
-def create_learn_decks_inline_keyboard(
-    user: User,
-) -> typing.Optional[types.InlineKeyboardMarkup]:
-
-    decks = user.get_decks()
-
-    if decks and len(decks) > 0:
-        markup = types.InlineKeyboardMarkup()
-        for deck in decks:
-            markup.add(
-                types.InlineKeyboardButton(
-                    text=utils.humanize_title(deck.title),
-                    callback_data=f'learn_decks.{deck.id}',
-                )
-            )
-        return markup
-    return None  # probably it is wrong
-
-
-def decks_inline_keyboard(user: User) -> typing.Optional[types.InlineKeyboardMarkup]:
-
-    decks = User.get_decks(user)
-
-    if decks and len(decks) > 0:
-        # TODO: move to replies.py
-        markup = types.InlineKeyboardMarkup()
-        markuped = [
-            types.InlineKeyboardButton(
-                text=utils.humanize_title(deck.title).upper(),
-                callback_data=f'deck.{deck.id}',
-            )
-            for deck in decks
-        ]
-        markup.add(*markuped)
-        markup.add(types.InlineKeyboardButton(text=buttons.BACK, callback_data='menu'))
-        return markup
-    return None  # probably it is wrong
-
-
 def build_learn_text_and_keyboard(
     user: User, card: Card
-) -> typing.Tuple[str, types.InlineKeyboardMarkup]:
-    text = card.question.text
-    if card.question.card_type == 0:
-        text += '\n\n' + replies.SET_KNOWLEDGE_REPLY
-        keyboard = markups.create_set_knowledge_markup(card)
-    elif card.question.card_type == 3:
-        text += '\n\n' + replies.USER_CHOSEN_REPLY
-        keyboard = markups.create_answer_sheet_markup(card)
-    elif card.question.card_type == 4:
-        keyboard = markups.create_answer_sheet_markup(card)
+) -> Tuple[replies.Reply, InlineKeyboardMarkup]:
+    reply = replies.Reply(text=card.question)
+    if card.type == CardType.FACT:
+        reply = replies.Reply(
+            text=f"{reply}\n\n{replies.RATE_KNOWLEDGE}",
+            parse_mode=replies.RATE_KNOWLEDGE.parse_mode,
+        )
+        keyboard = markups.rate_knowledge_markup(card.id)
+    elif card.type == CardType.MULTIPLE_CHOICE:
+        reply = replies.Reply(
+            text=f"{reply}\n\n{replies.USER_CHOSEN}",
+            parse_mode=replies.USER_CHOSEN.parse_mode,
+        )
+        keyboard = markups.multiple_choice_markup(
+            card.id, card.deck_id, card.correct_answers, card.wrong_answers,
+        )
+    elif card.type == CardType.RADIOBUTTON:
+        keyboard = markups.radiobutton_markup(
+            card.id, card.deck_id, card.correct_answers[0], card.wrong_answers,
+        )
     else:
-        keyboard = markups.create_basic_learn_markup(card)
-        metadata = {'card_id': card.id}
-        set_context(user, 'learn', metadata)
-    return text, keyboard
+        keyboard = markups.basic_learn_markup(card.id, card.deck.id)
+        contexts.set_context(user, contexts.ExpectedCommands.LEARN, card_id=card.id)
+    return reply, keyboard
 
 
 def repeat_keyboard(
-    js: dict, exclude: typing.Optional[typing.List] = None
-) -> types.InlineKeyboardMarkup:
-    if exclude is None:
-        exclude = []
-    inline_keyboard = js.get('reply_markup', {}).get('inline_keyboard')
+    callback: CallbackQuery, exclude: Sequence[str] = (), delete_card_id: int = None
+) -> InlineKeyboardMarkup:
+    data = callback.message.json
+    prev_keyboard = get_previous_keyboard(data)
+    if not prev_keyboard:
+        raise ValueError
 
-    keyboard = types.InlineKeyboardMarkup()
-    for row in range(len(inline_keyboard)):
-        for btn in inline_keyboard[row]:
-            text = btn.get('text')
-            callback_data = btn.get('callback_data')
-            if text not in exclude:
-                keyboard.add(
-                    types.InlineKeyboardButton(text=text, callback_data=callback_data,)
-                )
-    return keyboard
+    add_btns = [buttons.DeleteUserCardButton(delete_card_id)] if delete_card_id else []
+    return markups.repeat_keyboard(prev_keyboard, exclude, *add_btns)
 
 
-def forget_context(user: User) -> typing.Optional[typing.Dict[str, typing.Any]]:
+def get_previous_keyboard(data: dict) -> dict:
+    return data.get('reply_markup', {}).get('inline_keyboard')
+
+
+def delete_message(
+    bot: TeleBot, chat_id: Union[int, str], message_id: Union[int, str]
+) -> None:
     try:
-        return expectations.pop(user.chat_id)
-    except KeyError:
-        return None
+        bot.delete_message(chat_id, message_id)
+    except Exception as e:
+        logging.error(
+            "Failed to delete message %s in chat %s, reason: %s", message_id, chat_id, e
+        )
 
 
-def set_context(user: User, command: str, metadata: dict = None) -> None:
-    data = {'command': command}
-    if metadata:
-        data.update(metadata)
-    expectations[user.chat_id] = data
+def parse_chosen_nums(callback: CallbackQuery) -> List[int]:
+    js = callback.message.json
+    text = js['text'].split(replies.USER_CHOSEN.text)
+    return sorted([int(num.strip()) for num in text[-1].split(',')])
 
 
-def get_expected(message: types.Message) -> typing.Optional[str]:
-    data = expectations.get(message.from_user.id)
-    if data:
-        return data.get('command')
-    return None
+def parse_question(text: str) -> str:
+    question = text.split(replies.USER_CHOSEN.text)
+    return ''.join(question[:-1])
 
 
-def get_context(message: types.Message,) -> typing.Dict[str, typing.Any]:
-    data = expectations[message.from_user.id]
-    return data
-
-
-def build_chosen_answers_reply(card: Card) -> str:
-    return card.question.text + '\n\n' + replies.USER_CHOSEN_REPLY + ' '
-
-
-def parse_chosen_nums(js: dict) -> typing.List[str]:
-    text = js['text'].split(replies.USER_CHOSEN_REPLY)
-    chosen_nums = sorted([num.strip() for num in text[-1].split(',')])
-
-    return chosen_nums
-
-
-def convert_chosen_to_answers(js: dict, chosen: typing.List[int]) -> typing.List[str]:
+def convert_chosen_to_answers(callback: CallbackQuery, chosen: List[int]) -> List[str]:
+    js = callback.message.json
     inline_keyboard = js.get('reply_markup', {}).get('inline_keyboard')
     answers = []
     for num in chosen:
@@ -159,3 +200,13 @@ def convert_chosen_to_answers(js: dict, chosen: typing.List[int]) -> typing.List
         answer = inline_keyboard[num - 1][0]['text'][num_part_length:]
         answers.append(answer)
     return answers
+
+
+def check_deck_title_is_correct(user: User, title: str) -> Optional[replies.Reply]:
+    if len(title) > settings.MAX_DECK_TITLE_LENGTH:
+        return replies.TOO_LONG_DECK_TITLE
+    if not utils.is_title_correct(title):
+        return replies.INCORRECT_CHARACTERS_IN_DECK_TITLE
+    if Deck.search_by_title(user, utils.generate_title(user.id, title)):
+        return replies.DECK_TITLE_ALREADY_EXISTS.format(title=title.upper())
+    return None

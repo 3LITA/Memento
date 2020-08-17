@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.7'
 
 services:
   app:
@@ -13,11 +13,9 @@ services:
       - postgres
     restart: unless-stopped
     environment:
-      ## Путь к точке создания приложения
-      FLASK_APP: app/__init__.py
-      ## Секретный ключ - а для чего?
+      FLASK_APP: run.py
       SECRET_KEY: '!! Something secret !!'
-      ## TOKEN для дева пусть у каждого свой будет
+      TOKEN: TOKEN
       DATABASE_USER: dev
       DATABASE_PASS: devpass
       DATABASE_HOST: postgres
