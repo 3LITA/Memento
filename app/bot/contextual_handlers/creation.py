@@ -2,11 +2,9 @@ from typing import Any
 
 from telebot.types import Message
 
-from app import settings
-from app.app import logging
-from app.bot import contexts, replies, utils
+from app import exceptions, settings
+from app.bot import bot, contexts, replies, utils
 from app.bot.keyboard import markups
-from app.bot.main import bot
 from app.models import CardType
 from app.models.Card import Card
 from app.models.Deck import Deck
@@ -23,14 +21,18 @@ from app.models.utils import humanize_title
 def new_deck_handler(message: Message, user: User) -> utils.handler_return:
     title = message.text.lower()
 
-    reply = utils.check_deck_title_is_correct(user, title)
-    if reply:
-        logging.warning("User %s failed to create a deck, reason: %s", user.id, reply)
-        keyboard = markups.new_deck_markup()
-    else:
+    keyboard = markups.new_deck_markup()
+    try:
         Deck(user, deck_title=title)
-        reply = replies.DECK_CREATED.format(title=title.upper())
+    except exceptions.TooLongError:
+        reply = replies.TOO_LONG_DECK_TITLE
+    except exceptions.IncorrectCharacters:
+        reply = replies.INCORRECT_CHARACTERS_IN_DECK_TITLE
+    except exceptions.NotUnique:
+        reply = replies.DECK_TITLE_ALREADY_EXISTS.format(title=title.upper())
+    else:
         contexts.forget_context(user)
+        reply = replies.DECK_CREATED.format(title=title.upper())
         keyboard = markups.main_menu_markup(user.has_decks())
 
     return keyboard, reply
@@ -49,16 +51,19 @@ def rename_user_deck_handler(message: Message, user: User) -> utils.handler_retu
     deck = Deck.get(context.deck_id)
     ex_title = humanize_title(deck.title)
 
-    reply = utils.check_deck_title_is_correct(user, title)
-    if reply:
-        logging.warning(
-            "User %s failed to rename a deck %s, reason: %s", user.id, deck.id, reply
-        )
-        keyboard = markups.cancel_to_deck_menu_markup(deck.id)
+    keyboard = markups.cancel_to_deck_menu_markup(deck.id)
+    try:
+        deck.rename(deck_title=title)
+    except exceptions.TooLongError:
+        reply = replies.TOO_LONG_DECK_TITLE
+    except exceptions.IncorrectCharacters:
+        reply = replies.INCORRECT_CHARACTERS_IN_DECK_TITLE
+    except exceptions.NotUnique:
+        reply = replies.DECK_TITLE_ALREADY_EXISTS.format(title=title.upper())
     else:
         contexts.forget_context(user)
         reply = replies.DECK_RENAMED.format(
-            previous_deck_title=ex_title.upper(), new_deck_title=title.upper(),
+            previous_deck_title=ex_title.upper(), new_deck_title=title.upper()
         )
         keyboard = markups.deck_menu_markup(deck.id, deck.has_cards())
 
@@ -160,7 +165,7 @@ def correct_answers_only_handler(message: Message, user: User) -> utils.handler_
         )
     elif context.card_type == CardType.GAPS and len(correct_answers) != context.gaps:
         reply = replies.INCORRECT_GAPS_NUMBER_IN_ANSWER.format(
-            expected=context.gaps, actual=len(correct_answers),
+            expected=context.gaps, actual=len(correct_answers)
         )
     else:
         contexts.forget_context(user)

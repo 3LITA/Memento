@@ -5,15 +5,7 @@ from typing import Any, Callable, List, Optional, Sequence
 import app.models.User
 import app.models.Deck
 
-
-def get_or_create(
-        chat_id: int,
-        username: Optional[str] = None,
-        id: Optional[int] = None,
-) -> app.models.User.User:
-    user = app.models.User.User(chat_id, username)
-    user._id = id if id else random.randint(1, 10000)
-    return user
+from tests.testutils.utils import random_string
 
 
 def dummy_func(*args, **kwargs) -> None:
@@ -27,7 +19,7 @@ def true_func(*args, **kwargs) -> bool:
 def get_decks(*deck_ids: int) -> List[app.models.Deck.Deck]:
     decks = []
     for deck_id in deck_ids:
-        deck = app.models.Deck.Deck(user=random_user(),
+        deck = app.models.Deck.Deck(user=_get_user_by(),
                                     deck_title=f'deck{deck_id}')
         deck._id = deck_id
         decks.append(deck)
@@ -35,23 +27,85 @@ def get_decks(*deck_ids: int) -> List[app.models.Deck.Deck]:
     return decks
 
 
-def random_user() -> app.models.User.User:
-    return app.models.User.User(random.randint(1, 10000))
+def _get_user(
+        id_: int, found: bool = True, has_decks: bool = False
+) -> Optional[app.models.User.User]:
+    if not found:
+        return
+
+    raw_password = (
+        f"{random_string().lower()}"
+        f"{random_string().upper()}"
+        f"{random.randint(0, 1000)}"
+    )
+    email = f"{random_string()}@mail.com"
+    username = random_string()
+    user = app.models.User.User(
+        email=email, raw_password=raw_password, username=username
+    )
+    user._id = id_
+    return user
 
 
-def deck_get_by_id(
-        deck_id: int, deck_title: Optional[str] = None
+def _get_user_by(
+        search_result_map: dict,
+        has_decks: bool,
+        deck_ids: Optional[Sequence[int]] = None,
+        **kwargs: Any,
+) -> Optional[app.models.User.User]:
+    for k in kwargs.keys():
+        if k.startswith('_') and search_result_map[k]:
+            kwargs[k[1:]] = kwargs.pop(k)
+            user = app.models.User.User(**kwargs)
+            user._id = random.randint(1, 1000)
+            if has_decks:
+                user.has_decks = true_func
+            if deck_ids:
+                user._decks = [get_deck(deck_id) for deck_id in deck_ids]
+            return user
+
+
+def get_user_by(
+        by_chat_id: bool = False,
+        by_email: bool = False,
+        by_username: bool = False,
+        has_decks: bool = False,
+        email: Optional[str] = None,
+        raw_password: Optional[str] = None,
+        username: Optional[str] = None,
+        deck_ids: Optional[Sequence[int]] = None,
+) -> Callable:
+    has_decks = True if deck_ids else has_decks
+    search_result_map = {
+        '_chat_id': by_chat_id,
+        '_email': by_email,
+        '_username': by_username,
+    }
+    if not raw_password:
+        raw_password = (
+            f"{random_string().lower()}"
+            f"{random_string().upper()}"
+            f"{random.randint(0, 1000)}"
+        )
+    return partial(
+        _get_user_by,
+        search_result_map,
+        has_decks=has_decks,
+        deck_ids=deck_ids,
+        email=email if email else f"{random_string()}@mail.com",
+        raw_password=raw_password,
+        username=username if username else random_string(),
+    )
+
+
+def get_deck(
+        id_: int, deck_title: Optional[str] = None
 ) -> app.models.Deck.Deck:
-    user = random_user()
-    deck_title = deck_title if deck_title else f'deck{deck_id}'
+    user = _get_user(id_=random.randint(1, 1000), has_decks=True)
+    deck_title = deck_title if deck_title else f'deck{id_}'
     deck = app.models.Deck.Deck(user=user, deck_title=deck_title)
-    deck._id = deck_id
+    deck._id = id_
     return deck
-
-
-def user_deck_init(self, deck_title: str, deck_id: int = 9, **kwargs) -> None:
-    self.title = deck_title
-    self.id = deck_id
 
 
 def _card_get_by_id(
@@ -59,7 +113,7 @@ def _card_get_by_id(
 ) -> app.models.Card.Card:
     if not deck_id:
         deck_id = random.randint(1, 10000)
-    deck = deck_get_by_id(deck_id)
+    deck = get_deck(deck_id)
     card = app.models.Card.Card(deck=deck, **kwargs)
     card.deck = deck
     card._deck_id = deck_id
@@ -67,7 +121,7 @@ def _card_get_by_id(
     return card
 
 
-def card_get_by_id(
+def get_card(
         card_type: int,
         question: str,
         correct_answers: Sequence[str] = (),
@@ -86,6 +140,14 @@ def card_get_by_id(
     )
 
 
+def _raise_error(*args, error: Exception, **kwargs):
+    raise error
+
+
+def raise_error(error: Exception, *args, **kwargs):
+    return partial(_raise_error, error=error)
+
+
 def raise_attribute_error(*args, **kwargs):
     raise AttributeError
 
@@ -96,7 +158,7 @@ def raise_value_error(*args, **kwargs):
 
 app.models.utils.ActiveRecordMixin.delete = dummy_func
 app.models.utils.ActiveRecordMixin.save = dummy_func
+app.models.utils.ActiveRecordMixin.get = dummy_func
+app.models.utils.ActiveRecordMixin.get_by = dummy_func
 
 app.models.Deck.Deck.search_by_title = dummy_func
-app.models.User.User.get_or_create_by_chat_id = get_or_create
-app.models.User.User.preferred_language = None

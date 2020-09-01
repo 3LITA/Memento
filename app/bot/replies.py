@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from flask_babel import _
+from flask_babel import gettext as _
 
 from app.settings import BotCommands
 
@@ -25,13 +25,22 @@ class Reply:
 START = Reply(
     text=_(
         "Hi, *{}*!\n"
-        "I am gonna help you learn everything you've always wanted,\n"
-        "no matter how hard it is!"
+        "I am gonna help you learn everything you've always wanted, "
+        "no matter how hard it is!\n"
+        "But first, you must sign up."
     ),
     parse_mode=MARKDOWN,
 )
 
-START_AGAIN = Reply(text=_("Welcome back, *{}*!"), parse_mode=MARKDOWN,)
+AFTER_SIGN_UP = Reply(
+    text=_(
+        "Excellent, *{username}*!\n"
+        "Since you have signed up, you can create new decks!"
+    ),
+    parse_mode=MARKDOWN,
+)
+
+START_AGAIN = Reply(text=_("Welcome back, *{}*!"), parse_mode=MARKDOWN)
 
 HELP = Reply(
     text=_(
@@ -40,18 +49,18 @@ HELP = Reply(
     ),
 )
 
-UNKNOWN_COMMAND = Reply(text=_("Sorry, I don't understand this command"),)
+UNKNOWN_COMMAND = Reply(text=_("Sorry, I don't understand this command"))
 
 DECK_CREATED = Reply(
-    text=_("Deck *{title}* was successfully created!"), parse_mode=MARKDOWN,
+    text=_("Deck *{title}* was successfully created!"), parse_mode=MARKDOWN
 )
 
-CARD_DELETED = Reply(text=_("The card was successfully deleted!"),)
+CARD_DELETED = Reply(text=_("The card was successfully deleted!"))
 
 CARD_ALREADY_DELETED = Reply(text=_("The card is already deleted"))
 
 DECK_DELETED = Reply(
-    text=_("Deck *{deck_title}* was successfully deleted!"), parse_mode=MARKDOWN,
+    text=_("Deck *{deck_title}* was successfully deleted!"), parse_mode=MARKDOWN
 )
 
 DECK_RENAMED = Reply(
@@ -59,15 +68,15 @@ DECK_RENAMED = Reply(
     parse_mode=MARKDOWN,
 )
 
-DECK_NOT_FOUND = Reply(text=_("Sorry, but I can't find this deck.\n"),)
+DECK_NOT_FOUND = Reply(text=_("Sorry, but I can't find this deck.\n"))
 
-CHOOSE_DECK = Reply(text=_("Your decks:"),)
+CHOOSE_DECK = Reply(text=_("Your decks:"))
 
-RATE_KNOWLEDGE = Reply(text=_("Please, estimate your knowledge level:"),)
+RATE_KNOWLEDGE = Reply(text=_("Please, estimate your knowledge level:"))
 
-MAIN_MENU = Reply(text=_("It's a start menu."),)
+MAIN_MENU = Reply(text=_("It's a start menu."))
 
-ADD_DECK = Reply(text=_("Do you want to create a new deck or add an existing one?"),)
+ADD_DECK = Reply(text=_("Do you want to create a new deck or add an existing one?"))
 
 CREATE_NEW_DECK = Reply(
     text=_("Send me a name to your deck.\n" "P.S. Remember that it should be unique.")
@@ -79,16 +88,17 @@ INCORRECT_CHARACTERS_IN_DECK_TITLE = Reply(
     text=_(
         "Deck title contains incorrect characters. Only latin letters, numbers "
         "and dash are allowed."
-    )
+    ),
 )
 
 DECK_TITLE_ALREADY_EXISTS = Reply(
-    text=_("Deck with title *{title}* already exists. Come up with another name.")
+    text=_("Deck with title *{title}* already exists. Come up with another name."),
+    parse_mode=MARKDOWN,
 )
 
-DECK_MENU = Reply(text=_("Deck *{title}*"), parse_mode=MARKDOWN,)
+DECK_MENU = Reply(text=_("Deck *{title}*"), parse_mode=MARKDOWN)
 
-DECK_IS_EMPTY = Reply(text=_("Deck *{title}* is empty"),)
+DECK_IS_EMPTY = Reply(text=_("Deck *{title}* is empty"), parse_mode=MARKDOWN)
 
 CHOOSE_CARD_TYPE = Reply(
     text=_(
@@ -115,10 +125,10 @@ NOTE_GAPS_FOR_TYPE_2 = Reply(
 )
 
 SEND_FACT = Reply(
-    text=_('Send me the *fact*, that should be on this card.'), parse_mode=MARKDOWN,
+    text=_('Send me the *fact*, that should be on this card.'), parse_mode=MARKDOWN
 )
 
-FACT_CREATED = Reply(text=_('Your new card:\n\n' '{fact}'),)
+FACT_CREATED = Reply(text=_('Your new card:\n\n' '{fact}'))
 
 SEND_EXACT_NUMBER_CORRECT_ANSWERS = Reply(
     text=_(
@@ -128,20 +138,20 @@ SEND_EXACT_NUMBER_CORRECT_ANSWERS = Reply(
 )
 
 SEND_CORRECT_ANSWERS = Reply(
-    text=_('Send me comma-separated correct answers to this question:\n\n' '{question}')
+    text=_('Send me comma-separated correct answers to this question:\n\n{question}'),
 )
 
 SEND_WRONG_ANSWERS = Reply(
-    text=_('Send me comma-separated wrong answers to this question:\n\n' '{question}')
+    text=_('Send me comma-separated wrong answers to this question:\n\n{question}'),
 )
 
 SEND_CORRECT_ANSWER = Reply(
-    text=_('Send me the correct answer to this question:\n\n' '{question}'),
+    text=_('Send me the correct answer to this question:\n\n{question}'),
 )
 
-THERE_ARE_NO_CORRECT_ANSWERS = Reply(text=_("There are no correct answers."),)
+THERE_ARE_NO_CORRECT_ANSWERS = Reply(text=_("There are no correct answers."))
 
-THERE_ARE_NO_WRONG_ANSWERS = Reply(text=_("There are no wrong answers."),)
+THERE_ARE_NO_WRONG_ANSWERS = Reply(text=_("There are no wrong answers."))
 
 INADEQUATE_CORRECT_ANSWER_SENT = Reply(
     text=_(
@@ -179,20 +189,20 @@ EDIT_DECK = Reply(
 )
 
 RENAME_DECK = Reply(
-    text=_('Send me the name to the deck *{deck_title}*.'), parse_mode=MARKDOWN,
+    text=_('Send me the name to the deck *{deck_title}*.'), parse_mode=MARKDOWN
 )
 
 DELETE_DECK = Reply(
-    text=_('Are you sure you want to delete deck *{title}*?'), parse_mode=MARKDOWN,
+    text=_('Are you sure you want to delete deck *{title}*?'), parse_mode=MARKDOWN
 )
 
-CORRECT_ANSWER_IS = Reply(text=_('Correct answer: '),)
+CORRECT_ANSWER_IS = Reply(text=_('Correct answer: '))
 
-CORRECT_ANSWERS_ARE = Reply(text=_('Correct answers: '),)
+CORRECT_ANSWERS_ARE = Reply(text=_('Correct answers: '))
 
-WRONG_ANSWERS_ARE = Reply(text=_('Wrong answers: '),)
+WRONG_ANSWERS_ARE = Reply(text=_('Wrong answers: '))
 
-USER_CHOSEN = Reply(text=_('Your choice:'),)
+USER_CHOSEN = Reply(text=_('Your choice:'))
 
 CORRECT_REPLIES = [
     Reply(text=_('Correct!')),
@@ -217,24 +227,24 @@ CARD_CREATED = Reply(
         "The card of type {type} was successfully created:\n\n"
         "{question}\n\n"
         "Correct answers: {correct_answers}"
-    )
+    ),
 )
 
 CARD_WITH_CHOICE_CREATED = Reply(
-    _(
+    text=_(
         "The card of type {type} was successfully created:\n\n"
         "{question}\n\n"
         "Correct: {correct_answers}\n\n"
         "Wrong: {wrong_answers}"
-    )
+    ),
 )
 
 NO_GAPS_IN_TYPE_2 = Reply(
-    text=_('Sorry, but a card of type *2* should contain gaps "*_*"')
+    text=_('Sorry, but a card of type *2* should contain gaps "*_*"'),
 )
 
 INCORRECT_GAPS_NUMBER_IN_ANSWER = Reply(
-    text=_("Sorry, but I need {expected} answers, whereas you gave me {actual}.")
+    text=_("Sorry, but I need {expected} answers, whereas you gave me {actual}."),
 )
 
 CHANGE_LANGUAGE = Reply(text=_("Choose the language you want to set"))
@@ -247,11 +257,11 @@ NO_TIPS = Reply(
     text=_(
         "Unfortunately, there are no tips for this question...\n"
         "I can show you the answer though"
-    )
+    ),
 )
 
 CONTEXT_FORGOTTEN = Reply(
-    text=_("Unfortunately, the context of our dialogue is already forgotten...")
+    text=_("Unfortunately, the context of our dialogue is already forgotten..."),
 )
 
 WTF_MESSAGES = [

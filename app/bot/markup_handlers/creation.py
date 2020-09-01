@@ -2,9 +2,8 @@ from typing import Any
 
 from telebot.types import CallbackQuery
 
-from app.bot import contexts, replies, utils
+from app.bot import bot, contexts, replies, utils
 from app.bot.keyboard import cd, markups
-from app.bot.main import bot
 from app.models import CardType
 from app.models.Card import Card
 from app.models.Deck import Deck
@@ -89,7 +88,7 @@ def no_wrong_answers_markup_handler(
     context = contexts.get_context(callback)
     deck = Deck.get(context.deck_id)
 
-    card = Card(deck, context.card_type, context.question, context.correct_answers,)
+    card = Card(deck, context.card_type, context.question, context.correct_answers)
     contexts.forget_context(user)
 
     keyboard = markups.card_created_markup(card.id, deck.id)

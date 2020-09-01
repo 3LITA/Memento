@@ -1,5 +1,9 @@
-from flask_babel import _
+from flask_babel import gettext as _
 
+
+SIGN_UP = _('Sign up')
+
+SIGN_IN = _('Sign in')
 
 MY_DECKS = _('My decks')
 

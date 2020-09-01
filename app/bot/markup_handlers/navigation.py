@@ -1,14 +1,23 @@
+import logging
 from typing import Any
 
 from flask_babel import refresh
+from telebot.types import CallbackQuery
 
-from app.app import logging
-from app.bot import contexts, replies, utils
+from app.bot import bot, contexts, replies, utils
 from app.bot.keyboard import cd, markups
-from app.bot.main import bot
 from app.models.Deck import Deck
 from app.models.User import User
 from app.models.utils import humanize_title
+
+
+@bot.callback_query_handler(
+    func=lambda msg: utils.button_pressed(msg, cd.delete_message())
+)
+@utils.log_pressed_button
+def delete_message_markup_handler(callback: CallbackQuery) -> utils.handler_return:
+    bot.delete_message(callback.from_user.id)
+    return None, None
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.main_menu()))
@@ -79,12 +88,13 @@ def language_markup_handler(user: User, **_: Any) -> utils.handler_return:
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.set_language())
 )
+@utils.log_pressed_button
 def set_language_markup_handler(
     language: str, user: User, **_: Any
 ) -> utils.handler_return:
     user.set_preferred_language(language)
 
-    logging.info("Set %s language to user %s", language, user)
+    logging.info("Set '%s' language to user %s", language, user.id)
     refresh()  # TODO: make this work
 
     reply = replies.LANGUAGE_WAS_CHANGED

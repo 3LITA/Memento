@@ -18,3 +18,5 @@ import polib
 #         po = polib.pofile(f'{I18N_PATH}/{lang}/LC_MESSAGES/messages.po')
 #         for entry in po:
 #             assert entry.msgstr != '', f'"{entry.msgid}" not translated in {lang}'
+#
+#     print("All entries are translated")

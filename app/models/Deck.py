@@ -1,10 +1,10 @@
+import logging
 from random import random, shuffle
 from typing import Sequence
 
-from app import settings
-from app.app import db, logging
+from app import exceptions, settings
 
-from . import Card, User, utils
+from . import Card, User, db, utils
 
 
 class Deck(db.Model, utils.ActiveRecordMixin):  # type: ignore
@@ -24,25 +24,27 @@ class Deck(db.Model, utils.ActiveRecordMixin):  # type: ignore
     )  # O-M to Card
 
     def __repr__(self) -> str:
-        return '<Deck %r>' % self.title
+        return '<Deck %r>' % self.id
 
     def __init__(self, user: 'User.User', deck_title: str) -> None:
         if not utils.is_title_correct(deck_title):
             logging.error("Deck title %s contains incorrect symbols", deck_title)
-            raise AttributeError(f'deck title contains incorrect symbols: {deck_title}')
+            raise exceptions.IncorrectCharacters(
+                f'deck title contains incorrect symbols: {deck_title}'
+            )
         if (
             len(utils.generate_title(user.id, deck_title))
             > settings.MAX_DECK_TITLE_LENGTH
         ):
             logging.error("Too long deck title %s", deck_title)
-            raise ValueError(f'deck title is too long: {deck_title}')
+            raise exceptions.TooLongError(f'deck title is too long: {deck_title}')
 
         deck_title = utils.generate_title(user.id, deck_title)
         search = Deck.search_by_title(user, deck_title)
 
         if search:
             logging.error("Tried to create deck with non unique title %s", deck_title)
-            raise ValueError(f'this title is already in use: {deck_title}')
+            raise exceptions.NotUnique(f'this title is already in use: {deck_title}')
 
         self._title = deck_title
         self._user = user
@@ -72,33 +74,34 @@ class Deck(db.Model, utils.ActiveRecordMixin):  # type: ignore
         return bool(self.cards and len(self.cards) > 0)
 
     def rename(self, deck_title: str) -> None:
-
         if not utils.is_title_correct(deck_title):
             logging.error("Deck title %s contains incorrect symbols", deck_title)
-            raise ValueError(f'deck title contains incorrect symbols: {deck_title}')
+            raise exceptions.IncorrectCharacters(
+                f'deck title contains incorrect symbols: {deck_title}'
+            )
 
         proper_title = utils.generate_title(self.user.id, deck_title)
 
         if len(proper_title) > settings.MAX_DECK_TITLE_LENGTH:
             logging.error("Too long deck title %s", deck_title)
-            raise ValueError(f'deck title is too long: {deck_title}')
+            raise exceptions.TooLongError(f'deck title is too long: {deck_title}')
 
-        search = Deck.get_by(title=proper_title)
+        search = Deck.get_by(_title=proper_title)
 
         if search:
             logging.error("Tried to create deck with non unique title %s", proper_title)
-            raise ValueError(
+            raise exceptions.NotUnique(
                 f'deck title must be unique inside a user namespace: {proper_title}'
             )
-
         else:
             self._title = proper_title
-            self.save()
+
+        self.save()
 
     def pull_card(self) -> 'Card.Card':
         if not self.cards or len(self.cards) == 0:
             logging.error("Deck with id %s is empty", self.id)
-            raise ValueError('UserDeck is empty')
+            raise exceptions.EmptyDeck(f'Deck {self.id} is empty')
 
         num = random()
 

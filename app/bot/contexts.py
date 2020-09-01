@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, List, Optional, Union
 
 from telebot.types import CallbackQuery, Message
@@ -58,8 +59,13 @@ def set_context(user: User, command: str, **kwargs: Union[int, str, List[str]]) 
 def command_expected(message: Message, command: str) -> bool:
     try:
         return get_context(message).command == command
-    except AttributeError or ContextNotFound:
+    except AttributeError:
         return False
+    except ContextNotFound:
+        return False
+    except Exception as e:
+        logging.error(e)
+    return True
 
 
 def get_context(message: Union[Message, CallbackQuery]) -> Context:

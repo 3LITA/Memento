@@ -11,6 +11,17 @@ LANGUAGES = {'en': '🇬🇧', 'ru': '🇷🇺'}
 BABEL_TRANSLATION_DIRECTORIES = 'i18n'
 
 
+class URLS:
+    INDEX = '/'
+    PROFILE = '/profile'
+
+    SIGN_IN = '/signin'
+    SIGN_UP = '/signup'
+
+    LOGIN = '/login'
+    LOGOUT = '/logout'
+
+
 class BotCommands:
     start_commands = ['start']
     help_commands = ['help']

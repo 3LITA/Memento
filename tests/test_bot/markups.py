@@ -1,6 +1,21 @@
 from typing import List, Optional, Union
 
+from tests.conftest import WEBSITE
 from tests.testutils.utils import random_string
+
+
+def sign_up_markup(chat_id: int) -> dict:
+    return {
+        "inline_keyboard": [
+            [
+                {
+                    "text": "Sign up",
+                    "url": f"{WEBSITE}/login?chat_id={chat_id}",
+                    "callback_data": {"command": "delete_message"},
+                }
+            ]
+        ]
+    }
 
 
 def main_menu_without_decks() -> dict:
@@ -8,15 +23,11 @@ def main_menu_without_decks() -> dict:
         'inline_keyboard': [
             [
                 {
-                    'callback_data': {
-                        'command': 'add_deck',
-                    },
+                    'callback_data': {'command': 'add_deck'},
                     'text': 'Add deck'
                 },
                 {
-                    'callback_data': {
-                        'command': 'choose_language',
-                    },
+                    'callback_data': {'command': 'choose_language'},
                     'text': 'Change language'
                 }
             ]
@@ -180,7 +191,7 @@ def edit_fact_markup(card_id: Union[int, str], deck_id: Union[int, str]) -> dict
             [
                 {
                     'callback_data': {
-                        'command': 'delete_user_card',
+                        'command': 'delete_card',
                         'card_id': card_id,
                     },
                     'text': 'Delete'
@@ -452,3 +463,26 @@ def multiple_choice_static_rows(card_id: Union[int, str],
             }
         ]
     ]
+
+
+def confirm_deck_deletion(deck_id: int) -> dict:
+    return {
+        'inline_keyboard': [
+            [
+                {
+                    'callback_data': {
+                        'command': 'sure_delete_deck',
+                        'deck_id': deck_id,
+                    },
+                    'text': 'Delete'
+                },
+                {
+                    'callback_data': {
+                        'command': 'deck_menu',
+                        'deck_id': deck_id,
+                    },
+                    'text': 'Cancel'
+                }
+            ]
+        ]
+    }

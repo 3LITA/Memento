@@ -8,7 +8,23 @@ import requests
 
 from tests import conftest
 
+from .telebot_requests import Request
+
 queue = list()
+
+
+def await_queue(await_time: Optional[float] = None) -> List[Request]:
+    if not await_time:
+        await_time = conftest.MAX_AWAIT_TIME
+
+    await_end = time.time() + await_time
+    while time.time() < await_end:
+        if len(queue) > 0:
+            time.sleep(0.1)
+            q = queue.copy()
+            queue.clear()
+            return q
+    raise AssertionError("queue is empty")
 
 
 def _make_request(
@@ -17,10 +33,8 @@ def _make_request(
         params: Optional[dict] = None,
         data: Optional[dict] = None,
         json: Optional[dict] = None,
-        wait: Optional[int] = None,
-) -> Tuple[requests.Response, List[dict]]:
-    if not wait:
-        wait = conftest.AWAIT_TIME
+        wait: Optional[float] = None,
+) -> Tuple[requests.Response, List[Request]]:
     url = f'{conftest.MAIN_SERVER_ROOT}/{relative_url}'
     if method == 'get':
         r = requests.get(url, params=params, data=data, json=json)
@@ -28,19 +42,19 @@ def _make_request(
         r = requests.post(url, data=data, json=json)
     else:
         raise NotImplementedError
-    time.sleep(wait)
-    return r, queue
+    return r, await_queue(wait)
 
 
 post = partial(_make_request, 'post')
 get = partial(_make_request, 'get')
 
 
-def expectations_match(actual, expected):
+def expectations_match(actual, expected) -> bool:
     if not expected:
         assert not actual
     else:
         assert actual.__dict__ == expected.__dict__
+    return True
 
 
 def random_string(letters: int = 10) -> str:

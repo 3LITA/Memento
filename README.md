@@ -3,55 +3,56 @@
 ## User Guide
 
 ### Telegram bot
+After starting the conversation with the bot using /start, it sends a message with an
+inline keyboard button with link to the sign in page. After clicking the button the user
+first signs up a new account and bot sends start message offering to create a new deck.
+
+The overall interface is based on telegram inline keyboard markups and only if the input
+text is expected, user has to type words.
+
+##### Bot UI activity diagram
+![BotUI](docs/Bot-UI.png) 
 
 ### Web version
+The web version currently supports only auth page, so other pages such as profile 
+and home are empty.
 
 ## Schemas
 
 The class diagram of the models:
 
-![ClassDiagram](docs/MementoClass.png)
+![ClassDiagram](docs/Class.png)
 
-As we can see on the schema, there are 7 entities in the project:
+As we can see on the schema, there are 4 entities in the project:
 * User
     * _**id**_
     * _**email**_
     * _**username**_
-    * **password** hash (password must match security rules)
+    * **password_hash** (password must match security rules)
+    * email_verified
     * preferred language (the default is set according to the context, but may be changed)
+    * inline_keyboard_id (we try to keep only one message in every telegram chat)
     * _chat_id_ for telegram bot
-* UserDeck
+* Deck
     * _**id**_
     * **user_id** (M-O to User)
-    * public_deck_id (M-O to PublicDeck)
     * _**title**_ (unique in user's namespace)
-    * **version** (default is -1, when shared or cloned, matches the version of the PublicDeck)
 * Card
     * _**id**_
-    * **question_id** (M-O to Question)
-    * **user_deck_id** (M-O to UserDeck)
-    * **knowledge** (integer value demonstrating user's knowledge of the card)
-    * **attempts_list** (format `success`:`timestamp`, e.g. `T:32183901`)
-* Question
+    * **deck_id** (M-O to Deck)
+    * **card_type**
+    * **question**
+    * _image_filepath_
+    * **knowledge** (integer value determining user's knowledge of the card)
+    * correct_answers
+    * wrong_answers
+    * tips
+* Attempt
     * _**id**_
-    * public_deck_id (M-O to PublicDeck)
-    * **type** (integer value indicating type)
-    * **text** (integer value demonstrating user's knowledge of the card)
-    * **correct_answers**
-    * **wrong_answers**
-* PublicDeck
-    * _**id**_
-    * **title**
-    * **version** (integer value indicating type)
-    * _**slug**_ (integer value demonstrating user's knowledge of the card)
-    * **password** hash if the access must be limited 
-* Invite is an invitation link for a User to join the PublicDeck
-    * **user_id**
-    * **public_deck**
-* Admin is a connector table to allow User administrate PublicDeck 
-    * **user_id**
-    * **public_deck**
-    * rights
+    * **success**
+    * **timestamp**
+    * **card_id**
+
     
 **not null** <br/>
 _unique_

@@ -22,6 +22,12 @@ class _Markup:
         return self._keyboard
 
 
+def sign_up_markup(chat_id: int) -> InlineKeyboardMarkup:
+    sign_up_btn = buttons.SignUpButton(chat_id)
+    markup = _Markup([sign_up_btn])
+    return markup.keyboard
+
+
 def repeat_keyboard(
     prev_keyboard: dict, exclude: Sequence[str], *add_btns: buttons.Button
 ) -> InlineKeyboardMarkup:

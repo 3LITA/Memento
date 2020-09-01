@@ -1,107 +1,125 @@
+import json
+import logging
 import re
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Callable, List, Optional, Sequence, Tuple, Union
 
 from telebot import TeleBot
 from telebot.types import CallbackQuery, InlineKeyboardMarkup, Message
 
-from app import settings
-from app.app import logging
 from app.models import CardType, utils
 from app.models.Card import Card
-from app.models.Deck import Deck
 from app.models.User import User
 
-from . import contexts, replies
+from . import bot, contexts, replies
 from .keyboard import buttons, markups
 
 
-handler_return = Tuple[Optional[InlineKeyboardMarkup], replies.Reply]
+handler_return = Tuple[Optional[InlineKeyboardMarkup], Optional[replies.Reply]]
 
 
 def log_message(func: Callable) -> Callable:
-    from app.bot.main import bot
-
     def wrapped(message: Message) -> None:
-        logging.info(
-            "[%s.%s] %s: %s",
-            func.__module__,
-            func.__name__,
-            message.chat.id,
-            message.text,
-        )
-        user = get_user(message)
-        keyboard, reply = None, None
-        try:
-            keyboard, reply = func(message=message, user=user)
-        except contexts.ContextNotFound as e:
-            logging.warning(e)
-            reply = replies.CONTEXT_FORGOTTEN
-            keyboard = markups.main_menu_markup(user.has_decks())
-        except Exception as e:
-            logging.critical(e)
-        finally:
+        from app.server import web
+
+        with web.app_context():
+            logging.info(
+                "[%s.%s] %s: %s",
+                func.__module__,
+                func.__name__,
+                message.chat.id,
+                message.text,
+            )
+            user = get_user(message)
+            keyboard, reply = None, None
+            if not user:
+                logging.info(
+                    "User with chat_id %s not found in database", message.chat.id
+                )
+                reply = replies.START.format(message.from_user.first_name)
+                keyboard = markups.sign_up_markup(message.chat.id)
+            else:
+                try:
+                    keyboard, reply = func(message=message, user=user)
+                except contexts.ContextNotFound as e:
+                    logging.warning(e)
+                    reply = replies.CONTEXT_FORGOTTEN
+                    keyboard = markups.main_menu_markup(user.has_decks())
+                except Exception as e:
+                    logging.critical(e)
             if reply:
-                if user.inline_keyboard_id:
+                if user and user.inline_keyboard_id:
                     delete_message(bot, message.from_user.id, user.inline_keyboard_id)
                 message_id = bot.send_message(
-                    chat_id=user.chat_id,
+                    chat_id=message.from_user.id,
                     text=reply.text,
                     reply_markup=keyboard,
                     parse_mode=reply.parse_mode,
                 ).message_id
-                user.set_inline_keyboard_id(message_id)
+                if user:
+                    user.set_inline_keyboard_id(message_id)
 
                 logging.info(
-                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text,
+                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text
                 )
+            bot.delete_message(message.chat.id, message.message_id)
 
     return wrapped
 
 
 def log_pressed_button(func: Callable) -> Callable:
-    from app.bot.main import bot
-
     def wrapper(callback: CallbackQuery) -> None:
-        logging.info(
-            "%s.%s - %s pressed the button %s",
-            func.__module__,
-            func.__name__,
-            callback.from_user.id,
-            callback.data.get('command'),
-        )
-        user = get_user(callback)
-        kwargs = callback.data
-        keyboard, reply = None, None
-        try:
-            keyboard, reply = func(callback=callback, user=user, **kwargs)
-        except contexts.ContextNotFound as e:
-            logging.warning(e)
-            reply = replies.CONTEXT_FORGOTTEN
-            keyboard = markups.main_menu_markup(user.has_decks())
-        except Exception as e:
-            logging.critical(e)
-        finally:
+        from app.server import web
+
+        with web.app_context():
+            callback.data = json.loads(callback.data)
+            logging.info(
+                "%s.%s - %s pressed the button %s",
+                func.__module__,
+                func.__name__,
+                callback.from_user.id,
+                callback.data.get('command'),
+            )
+            user = get_user(callback)
+            keyboard, reply = None, None
+            if not user:
+                logging.info(
+                    "User with chat_id %s not found in database", callback.from_user.id
+                )
+                reply = replies.START.format(callback.from_user.first_name)
+                keyboard = markups.sign_up_markup(callback.from_user.id)
+            else:
+                kwargs = callback.data
+                try:
+                    keyboard, reply = func(callback=callback, user=user, **kwargs)
+                except contexts.ContextNotFound as e:
+                    logging.warning(e)
+                    reply = replies.CONTEXT_FORGOTTEN
+                    keyboard = markups.main_menu_markup(user.has_decks())
+                except Exception as e:
+                    logging.critical(e)
             if reply:
                 bot.edit_message_text(
                     text=reply.text,
-                    chat_id=user.chat_id,
-                    message_id=user.inline_keyboard_id,
+                    chat_id=callback.from_user.id,
+                    message_id=callback.message.message_id,
                     reply_markup=keyboard,
                     parse_mode=reply.parse_mode,
                 )
                 logging.info(
-                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text,
+                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text
                 )
 
     return wrapper
 
 
-def get_user(message: Union[CallbackQuery, Message]) -> User:
-    return User.get_or_create_by_chat_id(message.from_user.id)
+def get_user(message: Union[CallbackQuery, Message]) -> Optional[User]:
+    return User.get_by(_chat_id=message.from_user.id)
 
 
-def button_pressed(callback: CallbackQuery, command: Dict[str, Any]) -> bool:
-    return callback.data.get('command') == command.get('command')
+def button_pressed(callback: CallbackQuery, command: str) -> bool:
+    return json.loads(callback.data).get('command') == json.loads(command).get(
+        'command'
+    )
 
 
 def humanize_title(title: str) -> str:
@@ -141,11 +159,11 @@ def build_learn_text_and_keyboard(
             parse_mode=replies.USER_CHOSEN.parse_mode,
         )
         keyboard = markups.multiple_choice_markup(
-            card.id, card.deck_id, card.correct_answers, card.wrong_answers,
+            card.id, card.deck_id, card.correct_answers, card.wrong_answers
         )
     elif card.type == CardType.RADIOBUTTON:
         keyboard = markups.radiobutton_markup(
-            card.id, card.deck_id, card.correct_answers[0], card.wrong_answers,
+            card.id, card.deck_id, card.correct_answers[0], card.wrong_answers
         )
     else:
         keyboard = markups.basic_learn_markup(card.id, card.deck.id)
@@ -200,13 +218,3 @@ def convert_chosen_to_answers(callback: CallbackQuery, chosen: List[int]) -> Lis
         answer = inline_keyboard[num - 1][0]['text'][num_part_length:]
         answers.append(answer)
     return answers
-
-
-def check_deck_title_is_correct(user: User, title: str) -> Optional[replies.Reply]:
-    if len(title) > settings.MAX_DECK_TITLE_LENGTH:
-        return replies.TOO_LONG_DECK_TITLE
-    if not utils.is_title_correct(title):
-        return replies.INCORRECT_CHARACTERS_IN_DECK_TITLE
-    if Deck.search_by_title(user, utils.generate_title(user.id, title)):
-        return replies.DECK_TITLE_ALREADY_EXISTS.format(title=title.upper())
-    return None

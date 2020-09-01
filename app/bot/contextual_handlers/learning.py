@@ -1,12 +1,11 @@
+import logging
 from random import choice
 from typing import Any
 
 from telebot.types import Message
 
-from app.app import logging
-from app.bot import contexts, replies, utils
+from app.bot import bot, contexts, replies, utils
 from app.bot.keyboard import markups
-from app.bot.main import bot
 from app.models import CardType
 from app.models.Card import Card
 from app.models.User import User

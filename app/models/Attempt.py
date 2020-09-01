@@ -1,8 +1,6 @@
 from time import time
 
-from app.app import db
-
-from . import Card, utils
+from . import Card, db, utils
 
 
 class Attempt(db.Model, utils.ActiveRecordMixin):  # type: ignore

@@ -1,12 +1,12 @@
+import logging
 from random import choice
 from typing import List, Sequence, Union
 
 from sqlalchemy.dialects.postgresql import ARRAY
 
 from app import settings
-from app.app import db, logging
 
-from . import Attempt, CardType, Deck, utils
+from . import Attempt, CardType, Deck, db, utils
 
 
 class Card(db.Model, utils.ActiveRecordMixin):  # type: ignore
@@ -15,6 +15,9 @@ class Card(db.Model, utils.ActiveRecordMixin):  # type: ignore
     _card_type = db.Column(db.Integer, nullable=False, name='type')
     _question = db.Column(
         db.String(settings.MAX_QUESTION_LENGTH), nullable=False, name='question'
+    )
+    _image_filepath = db.Column(
+        db.String(100), nullable=True, unique=True, name='image_filepath'
     )
     _correct_answers = db.Column(
         ARRAY(db.String(settings.MAX_ANSWER_LENGTH)),
@@ -27,9 +30,9 @@ class Card(db.Model, utils.ActiveRecordMixin):  # type: ignore
         name='wrong_answers',
     )
     _tips = db.Column(
-        ARRAY(db.String(settings.MAX_ANSWER_LENGTH)), nullable=False, name='tips',
+        ARRAY(db.String(settings.MAX_ANSWER_LENGTH)), nullable=True, name='tips'
     )
-    _knowledge = db.Column(db.Integer, default=1, nullable=False, name='knowledge')
+    _knowledge = db.Column(db.Integer, default=1, name='knowledge')
     _deck_id = db.Column(
         db.Integer, db.ForeignKey('deck.id'), nullable=False, name='deck_id'
     )  # M-O to Deck
@@ -132,23 +135,19 @@ class Card(db.Model, utils.ActiveRecordMixin):  # type: ignore
     def set_knowledge(self, knowledge: int) -> None:
         logging.info("Setting knowledge %s to card %s", knowledge, self.id)
         if knowledge not in range(1, settings.KNOWLEDGE_RANGE + 1):
-            raise AttributeError('Knowledge is out of available range')
+            raise ValueError('Knowledge is out of available range')
         self._knowledge = knowledge
         self.save()
 
     def _is_answer_correct(self, user_answer: Union[str, List[str]]) -> bool:
         if self.type == CardType.SIMPLE:
             if not isinstance(user_answer, str):
-                raise AttributeError(
-                    f"{user_answer} is {type(user_answer)} instead of str"
-                )
+                raise TypeError(f"{user_answer} is {type(user_answer)} instead of str")
             return user_answer.lower() in self.correct_answers
 
         elif self.type == CardType.RADIOBUTTON:
             if not isinstance(user_answer, str):
-                raise AttributeError(
-                    f"{user_answer} is {type(user_answer)} instead of str"
-                )
+                raise TypeError(f"{user_answer} is {type(user_answer)} instead of str")
             return user_answer.lower() == self.correct_answers[0]
 
         answer = user_answer if isinstance(user_answer, list) else [user_answer]
@@ -158,4 +157,4 @@ class Card(db.Model, utils.ActiveRecordMixin):  # type: ignore
         elif self.type == CardType.MULTIPLE_CHOICE:
             return sorted(answer) == sorted(list(self.correct_answers))
 
-        raise AttributeError("Unknown card type %s", self.type)
+        raise ValueError("Unknown card type %s", self.type)

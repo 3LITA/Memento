@@ -3,25 +3,23 @@ from typing import Any
 
 from telebot.types import CallbackQuery
 
-from app.bot import replies, utils
+from app import exceptions
+from app.bot import bot, replies, utils
 from app.bot.keyboard import CORRECT_MARK, button_texts, cd, markups
-from app.bot.main import bot
 from app.models import CardType
 from app.models.Card import Card
 from app.models.Deck import Deck
 from app.models.User import User
 
 
-@bot.callback_query_handler(
-    func=lambda msg: utils.button_pressed(msg, cd.learn_user_deck())
-)
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.learn_deck()))
 @utils.log_pressed_button
 def learn_markup_handler(deck_id: int, user: User, **_: Any) -> utils.handler_return:
     deck = Deck.get(deck_id)
 
     try:
         card = deck.pull_card()
-    except ValueError:
+    except exceptions.EmptyDeck:
         title = utils.humanize_title(deck.title).upper()
         reply = replies.DECK_IS_EMPTY.format(title=title)
         keyboard = markups.deck_menu_markup(deck_id, False)
@@ -108,7 +106,7 @@ def radio_button_markup_handler(
         text = f'{card.question}\n\n'
         reply_list = replies.WRONG_REPLIES
         keyboard = markups.radiobutton_markup(
-            card.id, card.deck_id, card.correct_answers[0], card.wrong_answers,
+            card.id, card.deck_id, card.correct_answers[0], card.wrong_answers
         )
     reply = replies.Reply(f'{text}{choice(reply_list)}')
 
@@ -163,7 +161,7 @@ def submit_answer_markup_handler(
     else:
         text = f'{card.question}\n\n'
         keyboard = markups.multiple_choice_markup(
-            card.id, card.deck_id, card.correct_answers, card.wrong_answers,
+            card.id, card.deck_id, card.correct_answers, card.wrong_answers
         )
         reply_list = replies.WRONG_REPLIES
 

@@ -1,8 +1,7 @@
 from typing import Any
 
-from app.bot import contexts, replies, utils
+from app.bot import bot, contexts, replies, utils
 from app.bot.keyboard import button_texts, cd, markups
-from app.bot.main import bot
 from app.models import CardType
 from app.models.Card import Card
 from app.models.Deck import Deck
@@ -39,9 +38,7 @@ def edit_card_markup_handler(card_id: int, **_: Any) -> utils.handler_return:
     return keyboard, reply
 
 
-@bot.callback_query_handler(
-    func=lambda msg: utils.button_pressed(msg, cd.edit_user_deck())
-)
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.edit_deck()))
 @utils.log_pressed_button
 def edit_deck_markup_handler(deck_id: int, **_: Any) -> utils.handler_return:
     deck = Deck.get(deck_id)
@@ -53,7 +50,7 @@ def edit_deck_markup_handler(deck_id: int, **_: Any) -> utils.handler_return:
 
 
 @bot.callback_query_handler(
-    func=lambda msg: utils.button_pressed(msg, cd.rename_user_deck())
+    func=lambda msg: utils.button_pressed(msg, cd.rename_deck())
 )
 @utils.log_pressed_button
 def rename_deck_markup_handler(
@@ -72,7 +69,7 @@ def rename_deck_markup_handler(
 
 
 @bot.callback_query_handler(
-    func=lambda msg: utils.button_pressed(msg, cd.delete_user_deck())
+    func=lambda msg: utils.button_pressed(msg, cd.delete_deck())
 )
 @utils.log_pressed_button
 def delete_deck_markup_handler(deck_id: int, **_: Any) -> utils.handler_return:
@@ -85,7 +82,7 @@ def delete_deck_markup_handler(deck_id: int, **_: Any) -> utils.handler_return:
 
 
 @bot.callback_query_handler(
-    func=lambda msg: utils.button_pressed(msg, cd.sure_delete_user_deck())
+    func=lambda msg: utils.button_pressed(msg, cd.sure_delete_deck())
 )
 @utils.log_pressed_button
 def confirm_delete_user_deck_markup_handler(
@@ -107,7 +104,7 @@ def confirm_delete_user_deck_markup_handler(
 
 
 @bot.callback_query_handler(
-    func=lambda msg: utils.button_pressed(msg, cd.delete_user_card())
+    func=lambda msg: utils.button_pressed(msg, cd.delete_card())
 )
 @utils.log_pressed_button
 def delete_card_markup_handler(

@@ -1,21 +1,28 @@
-from typing import Union
+from typing import Optional, Union
 
 from telebot.types import InlineKeyboardButton
 
-from app.settings import LANGUAGES
+from app.settings import LANGUAGES, URLS, WEBSITE
 
 from . import CORRECT_MARK, WRONG_MARK, button_texts, cd
 
 
 class Button:
-    def __init__(self, text: str, callback: dict) -> None:
-        self._text = text
-        self._callback_data = callback
-        self._button = InlineKeyboardButton(text, callback_data=self._callback_data)
+    def __init__(
+        self, text: str, callback: Optional[str] = None, url: Optional[str] = None
+    ) -> None:
+        self._button = InlineKeyboardButton(text, callback_data=callback, url=url)
 
     @property
     def button(self) -> InlineKeyboardButton:
         return self._button
+
+
+class SignUpButton(Button):
+    def __init__(self, chat_id: int) -> None:
+        text = button_texts.SIGN_UP
+        url = f"{WEBSITE}{URLS.LOGIN}?chat_id={chat_id}"
+        super().__init__(text, callback=cd.delete_message(), url=url)
 
 
 class DecksButton(Button):
@@ -79,28 +86,28 @@ class EditWrongAnswersButton(Button):
 
 
 class _DeleteButton(Button):
-    def __init__(self, callback: dict) -> None:
+    def __init__(self, callback: str) -> None:
         text = button_texts.DELETE
         super().__init__(text, callback)
 
 
 class DeleteUserCardButton(_DeleteButton):
     def __init__(self, card_id: Union[int, str]) -> None:
-        super().__init__(cd.delete_user_card(card_id))
+        super().__init__(cd.delete_card(card_id))
 
 
 class DeleteUserDeckButton(_DeleteButton):
     def __init__(self, deck_id: Union[int, str]) -> None:
-        super().__init__(cd.delete_user_deck(deck_id))
+        super().__init__(cd.delete_deck(deck_id))
 
 
 class SureDeleteDeckButton(_DeleteButton):
     def __init__(self, deck_id: Union[int, str]) -> None:
-        super().__init__(cd.sure_delete_user_deck(deck_id))
+        super().__init__(cd.sure_delete_deck(deck_id))
 
 
 class CancelButton(Button):
-    def __init__(self, callback: dict) -> None:
+    def __init__(self, callback: str) -> None:
         text = button_texts.CANCEL
         super().__init__(text, callback)
 
@@ -108,24 +115,24 @@ class CancelButton(Button):
 class RenameUserDeckButton(Button):
     def __init__(self, deck_id: Union[int, str]) -> None:
         text = button_texts.RENAME
-        super().__init__(text, cd.rename_user_deck(deck_id))
+        super().__init__(text, cd.rename_deck(deck_id))
 
 
 class LearnButton(Button):
     def __init__(self, deck_id: Union[int, str]) -> None:
         text = button_texts.LEARN
-        super().__init__(text, cd.learn_user_deck(deck_id))
+        super().__init__(text, cd.learn_deck(deck_id))
 
 
 class _EditButton(Button):
-    def __init__(self, callback: dict) -> None:
+    def __init__(self, callback: str) -> None:
         text = button_texts.EDIT
         super().__init__(text, callback)
 
 
 class EditDeckButton(_EditButton):
     def __init__(self, deck_id: Union[int, str]) -> None:
-        super().__init__(cd.edit_user_deck(deck_id))
+        super().__init__(cd.edit_deck(deck_id))
 
 
 class EditCardButton(_EditButton):
@@ -134,7 +141,7 @@ class EditCardButton(_EditButton):
 
 
 class BackButton(Button):
-    def __init__(self, callback: dict) -> None:
+    def __init__(self, callback: str) -> None:
         text = button_texts.BACK
         super().__init__(text, callback)
 
@@ -183,7 +190,7 @@ class SubmitButton(Button):
 
 class RadioAnswerButton(Button):
     def __init__(
-        self, option_text: str, card_id: int, is_correct: bool = False,
+        self, option_text: str, card_id: int, is_correct: bool = False
     ) -> None:
         text = option_text
         correct_mark = CORRECT_MARK if is_correct else WRONG_MARK

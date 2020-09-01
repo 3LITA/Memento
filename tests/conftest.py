@@ -13,7 +13,7 @@ LOGGING_CONFIG = (
 DB_USER = 'postgres'
 DB_NAME = 'ankibot'
 
-AWAIT_TIME = .1
+WEBSITE = f"https://{random_string()}.com"
 
 MAIN_SERVER_HOST = 'http://localhost'
 MAIN_SERVER_PORT = '5000'
@@ -24,10 +24,17 @@ STUB_SERVER_PORT = '5001'
 MAIN_SERVER_ROOT = f'{MAIN_SERVER_HOST}:{MAIN_SERVER_PORT}'
 STUB_SERVER_ROOT = f'{STUB_SERVER_HOST}:{STUB_SERVER_PORT}'
 
+MAX_AWAIT_TIME = 3
+
 
 @pytest.fixture()
 def first_name():
     return random_string()
+
+
+@pytest.fixture()
+def username():
+    return random_string().lower()
 
 
 @pytest.fixture()

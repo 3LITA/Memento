@@ -1,14 +1,16 @@
-import json
 import re
 from copy import copy
 
 import mock
 import pytest
-from flask_babel import _
+from flask_babel import gettext as _
 
 from tests import conftest
 from tests.test_bot import markups
 from tests.testutils import request_generator, setup, mocks, utils
+from tests.testutils.telebot_requests import (
+    Request, SEND_MESSAGE, DELETE_MESSAGE, MARKDOWN
+)
 
 setup.setup_servers()
 
@@ -31,6 +33,7 @@ setup.setup_servers()
 def test_create_deck(chat_id, question_text, deck_title):
     import app.bot.contexts
     from app.models.Deck import Deck
+    from app.models.User import User
 
     expectations = app.bot.contexts.Context(
         app.bot.contexts.ExpectedCommands.CREATE_NEW_DECK
@@ -41,6 +44,7 @@ def test_create_deck(chat_id, question_text, deck_title):
 
     expected_markup = markups.creating_deck_markup()
 
+    parse_mode = None
     if len(deck_title) > 127:
         expected_reply = _("Deck title is too long. Try to make it shorter.")
     elif not re.compile(r'^[A-Za-z0-9-]*$').search(deck_title):
@@ -53,6 +57,7 @@ def test_create_deck(chat_id, question_text, deck_title):
         expected_reply = _("Deck *{title}* was successfully created!").format(
             title=deck_title.upper()
         )
+        parse_mode = MARKDOWN
         expected_markup = markups.main_menu_with_decks()
 
     data = request_generator.generate_message(
@@ -60,31 +65,40 @@ def test_create_deck(chat_id, question_text, deck_title):
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == expected_reply
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=expected_reply,
+            reply_markup=expected_markup,
+            parse_mode=parse_mode,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 def test_create_deck_with_non_unique_title(chat_id, deck_id, question_text):
     import app.bot.contexts
     from app.models.Deck import Deck
+    from app.models.User import User
 
     deck_title = 'NotUniqueDeckTitle'
 
     expectations = app.bot.contexts.Context(
-        app.bot.contexts.ExpectedCommands.CREATE_NEW_DECK)
-    expected_markup = markups.creating_deck_markup()
+        app.bot.contexts.ExpectedCommands.CREATE_NEW_DECK
+    )
 
     app.bot.contexts.expectations = {chat_id: copy(expectations)}
 
@@ -93,25 +107,34 @@ def test_create_deck_with_non_unique_title(chat_id, deck_id, question_text):
         chat_id=chat_id,
     )
 
-    existing_deck = mocks.deck_get_by_id(deck_id, deck_title)
-    with mock.patch.object(
-            Deck, 'search_by_title', lambda user, title: existing_deck
-    ):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    existing_deck = mocks.get_deck(deck_id, deck_title)
+
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(
+                Deck, 'search_by_title', lambda user, title: existing_deck
+        ):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == _(
-        "Deck with title *{title}* already exists. Come up with another name."
-    ).format(title=deck_title.upper())
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=_(
+                "Deck with title *{title}* already exists. Come up with another name."
+            ).format(title=deck_title.upper()),
+            parse_mode=MARKDOWN,
+            reply_markup=markups.creating_deck_markup(),
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 @pytest.mark.parametrize(
@@ -132,6 +155,7 @@ def test_create_deck_with_non_unique_title(chat_id, deck_id, question_text):
 def test_rename_deck(chat_id, deck_id, question_text, deck_title):
     import app.bot.contexts
     from app.models.Deck import Deck
+    from app.models.User import User
 
     expectations = app.bot.contexts.Context(
         app.bot.contexts.ExpectedCommands.RENAME_USER_DECK,
@@ -141,6 +165,7 @@ def test_rename_deck(chat_id, deck_id, question_text, deck_title):
         chat_id: copy(expectations)
     }
 
+    parse_mode = None
     expected_markup = markups.cancel_to_deck_menu(deck_id)
     if len(deck_title) > 127:
         expected_reply = _("Deck title is too long. Try to make it shorter.")
@@ -151,6 +176,7 @@ def test_rename_deck(chat_id, deck_id, question_text, deck_title):
         )
     else:
         expectations = None
+        parse_mode = MARKDOWN
         expected_reply = _(
             "Deck *{previous_deck_title}* was renamed to *{new_deck_title}*."
         ).format(
@@ -164,25 +190,35 @@ def test_rename_deck(chat_id, deck_id, question_text, deck_title):
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            with mock.patch.object(Deck, 'get_by', mocks.dummy_func):
+                r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == expected_reply
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=expected_reply,
+            parse_mode=parse_mode,
+            reply_markup=expected_markup,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 def test_rename_deck_with_non_unique_title(chat_id, deck_id, question_text):
     import app.bot.contexts
     from app.models.Deck import Deck
+    from app.models.User import User
 
     deck_title = 'NotUniqueDeckTitle'
     old_title = 'OldTitle'
@@ -198,27 +234,39 @@ def test_rename_deck_with_non_unique_title(chat_id, deck_id, question_text):
         chat_id=chat_id,
     )
 
-    existing_deck = mocks.deck_get_by_id(deck_id + 1, deck_title)
-    deck_to_rename = mocks.deck_get_by_id(deck_id, old_title)
-    with mock.patch.object(
-            Deck, 'search_by_title', lambda user, title: existing_deck
-    ):
-        with mock.patch.object(Deck, 'get', lambda *args: deck_to_rename):
-            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    existing_deck = mocks.get_deck(deck_id + 1, deck_title)
+    deck_to_rename = mocks.get_deck(deck_id, old_title)
+
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(
+                Deck, 'search_by_title', lambda user, title: deck_to_rename
+        ):
+            with mock.patch.object(
+                    Deck, 'get_by', lambda *args, **kwargs: existing_deck
+            ):
+                with mock.patch.object(Deck, 'get', lambda *args: deck_to_rename):
+                    r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == _(
-        "Deck with title *{title}* already exists. Come up with another name."
-    ).format(title=deck_title.upper())
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == markups.cancel_to_deck_menu(deck_id)
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=_(
+                "Deck with title *{title}* already exists. Come up with another name."
+            ).format(title=deck_title.upper()),
+            parse_mode=MARKDOWN,
+            reply_markup=markups.cancel_to_deck_menu(deck_id),
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 @pytest.mark.parametrize(
@@ -228,9 +276,10 @@ def test_rename_deck_with_non_unique_title(chat_id, deck_id, question_text):
 )
 def test_send_fact(deck_id, chat_id, fact, card_id):
     import app.bot.contexts
+    from app.models import CardType
     from app.models.Card import Card
     from app.models.Deck import Deck
-    from app.models import CardType
+    from app.models.User import User
 
     card_type = CardType.FACT
 
@@ -254,27 +303,35 @@ def test_send_fact(deck_id, chat_id, fact, card_id):
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        with mock.patch.object(Card, 'id', card_id):
-            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            with mock.patch.object(Card, 'id', card_id):
+                r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == expected_reply
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=expected_reply,
+            reply_markup=expected_markup,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 def test_send_too_long_question(deck_id, chat_id):
     import app.bot.contexts
-    from app.models.Deck import Deck
     from app.models import CardType
+    from app.models.Deck import Deck
+    from app.models.User import User
 
     card_type = CardType.SIMPLE
     question = utils.random_string(256)
@@ -294,16 +351,26 @@ def test_send_too_long_question(deck_id, chat_id):
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=_("Your question is too long.\nTry to make it shorter."),
+            reply_markup=markups.cancel_to_deck_menu(deck_id),
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
 
-    assert req['text'][0] == _("Your question is too long.\nTry to make it shorter.")
-    utils.expectations_match(
+    assert utils.expectations_match(
         app.bot.contexts.expectations.get(chat_id),
         app.bot.contexts.Context(
             app.bot.contexts.ExpectedCommands.SEND_QUESTION,
@@ -311,10 +378,6 @@ def test_send_too_long_question(deck_id, chat_id):
             card_type=card_type,
         )
     )
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == markups.cancel_to_deck_menu(deck_id)
 
 
 @pytest.mark.parametrize(
@@ -324,8 +387,9 @@ def test_send_too_long_question(deck_id, chat_id):
 )
 def test_send_question(deck_id, chat_id, question_text, card_type):
     import app.bot.contexts
-    from app.models.Deck import Deck
     from app.models import CardType
+    from app.models.Deck import Deck
+    from app.models.User import User
 
     expectations = app.bot.contexts.Context(
         app.bot.contexts.ExpectedCommands.SEND_QUESTION,
@@ -372,26 +436,35 @@ def test_send_question(deck_id, chat_id, question_text, card_type):
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=expected_reply,
+            reply_markup=expected_markup,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        ),
+    ]
 
-    assert req['text'][0] == expected_reply
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 def test_send_question_with_gaps(deck_id, chat_id, question_with_gaps):
     import app.bot.contexts
-    from app.models.Deck import Deck
     from app.models import CardType
+    from app.models.Deck import Deck
+    from app.models.User import User
 
     card_type = CardType.GAPS
 
@@ -409,36 +482,45 @@ def test_send_question_with_gaps(deck_id, chat_id, question_with_gaps):
         text=question_with_gaps,
         chat_id=chat_id,
     )
-
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
-
-    req = queue[-1]
 
     gaps_number = len(question_with_gaps.split('_')) - 1
 
-    assert req['text'][0] == _(
-        'Send me {number} comma-separated correct answers to this question:\n\n'
-        '{question}'
-    ).format(number=gaps_number, question=question_with_gaps)
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=
+            _(
+                'Send me {number} comma-separated correct answers to this question:\n\n'
+                '{question}'
+            ).format(number=gaps_number, question=question_with_gaps),
+            reply_markup=markups.cancel_to_deck_menu(deck_id),
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
 
     expectations.command = app.bot.contexts.ExpectedCommands.SEND_CORRECT_ANSWERS_ONLY
     expectations.question = question_with_gaps
     expectations.gaps = gaps_number
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
 
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == markups.cancel_to_deck_menu(deck_id)
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 def test_send_wrong_gaps_number(deck_id, chat_id, question_with_gaps):
     import app.bot.contexts
-    from app.models.Deck import Deck
     from app.models import CardType
+    from app.models.Deck import Deck
+    from app.models.User import User
 
     gaps_number = len(question_with_gaps.split('_')) - 1
 
@@ -458,22 +540,30 @@ def test_send_wrong_gaps_number(deck_id, chat_id, question_with_gaps):
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=_(
+                "Sorry, but I need {expected} answers, whereas you gave me {actual}."
+            ).format(expected=gaps_number, actual=gaps_number + 1),
+            reply_markup=expected_markup,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
 
-    assert req['text'][0] == _(
-        "Sorry, but I need {expected} answers, whereas you gave me {actual}."
-    ).format(expected=gaps_number, actual=gaps_number + 1)
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 @pytest.mark.parametrize(
@@ -481,8 +571,9 @@ def test_send_wrong_gaps_number(deck_id, chat_id, question_with_gaps):
 )
 def test_send_correct_answers_none(deck_id, chat_id, question_text, card_type):
     import app.bot.contexts
-    from app.models.Deck import Deck
     from app.models import CardType
+    from app.models.Deck import Deck
+    from app.models.User import User
 
     command = (
         app.bot.contexts.ExpectedCommands.SEND_CORRECT_ANSWERS_ONLY
@@ -510,35 +601,42 @@ def test_send_correct_answers_none(deck_id, chat_id, question_text, card_type):
     )
     app.bot.contexts.expectations = {chat_id: copy(expectations)}
 
-    expected_markup = markups.cancel_to_deck_menu(deck_id)
-
     data = request_generator.generate_message(
         text=',',
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=expected_reply,
+            reply_markup=markups.cancel_to_deck_menu(deck_id),
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        ),
+    ]
 
-    assert req['text'][0] == expected_reply
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 def test_radio_send_many_correct_answers(
         deck_id, chat_id, question_text, correct_answers
 ):
     import app.bot.contexts
-    from app.models.Deck import Deck
     from app.models import CardType
+    from app.models.Deck import Deck
+    from app.models.User import User
 
     expectations = app.bot.contexts.Context(
         app.bot.contexts.ExpectedCommands.SEND_CORRECT_ANSWERS,
@@ -548,31 +646,37 @@ def test_radio_send_many_correct_answers(
     )
     app.bot.contexts.expectations = {chat_id: copy(expectations)}
 
-    expected_markup = markups.cancel_to_deck_menu(deck_id)
-
     data = request_generator.generate_message(
         text=', '.join(correct_answers),
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=_(
+                'You are confusing me!\n\n'
+                'Send me the correct answer to this question:\n\n'
+                '{question}'
+            ).format(question=question_text),
+            reply_markup=markups.cancel_to_deck_menu(deck_id),
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
 
-    assert req['text'][0] == _(
-        'You are confusing me!\n\n'
-        'Send me the correct answer to this question:\n\n'
-        '{question}'
-    ).format(question=question_text)
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 @pytest.mark.parametrize(
@@ -582,9 +686,10 @@ def test_send_correct_answers(
         deck_id, card_id, chat_id, question_text, correct_answers, card_type
 ):
     import app.bot.contexts
+    from app.models import CardType
     from app.models.Card import Card
     from app.models.Deck import Deck
-    from app.models import CardType
+    from app.models.User import User
 
     command = (
         app.bot.contexts.ExpectedCommands.SEND_CORRECT_ANSWERS_ONLY
@@ -636,30 +741,38 @@ def test_send_correct_answers(
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        with mock.patch.object(Card, 'id', card_id):
-            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            with mock.patch.object(Card, 'id', card_id):
+                r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == expected_reply
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=expected_reply,
+            reply_markup=expected_markup,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        ),
+    ]
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 def test_send_correct_answers_gaps(
         deck_id, card_id, chat_id, question_with_gaps
 ):
     import app.bot.contexts
+    from app.models import CardType
     from app.models.Card import Card
     from app.models.Deck import Deck
-    from app.models import CardType
+    from app.models.User import User
 
     gaps_number = len(question_with_gaps.split('_')) - 1
     correct_answers = [utils.random_string() for i in range(gaps_number)]
@@ -689,27 +802,32 @@ def test_send_correct_answers_gaps(
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        with mock.patch.object(Card, 'id', card_id):
-            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            with mock.patch.object(Card, 'id', card_id):
+                r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == expected_reply
-    assert not app.bot.contexts.expectations.get(chat_id)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=expected_reply,
+            reply_markup=expected_markup,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        ),
+    ]
 
 
 @pytest.mark.parametrize('card_type', (3, 4), ids=("Multiple Choice", "RadioButton"))
 def test_send_wrong_answers_none(card_id, deck_id, chat_id, question_text, card_type):
     import app.bot.contexts
     from app.models.Deck import Deck
+    from app.models.User import User
 
     expectations = app.bot.contexts.Context(
         app.bot.contexts.ExpectedCommands.SEND_WRONG_ANSWERS,
@@ -727,24 +845,32 @@ def test_send_wrong_answers_none(card_id, deck_id, chat_id, question_text, card_
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=_(
+                'You are confusing me!\n\n'
+                'Send me comma-separated wrong answers to this question:\n\n'
+                '{question}'
+            ).format(question=question_text),
+            reply_markup=expected_markup,
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        ),
+    ]
 
-    assert req['text'][0] == _(
-        'You are confusing me!\n\n'
-        'Send me comma-separated wrong answers to this question:\n\n'
-        '{question}'
-    ).format(question=question_text)
-    utils.expectations_match(app.bot.contexts.expectations.get(chat_id), expectations)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == expected_markup
+    assert utils.expectations_match(
+        app.bot.contexts.expectations.get(chat_id), expectations
+    )
 
 
 @pytest.mark.parametrize('card_type', (3, 4), ids=("Multiple Choice", "RadioButton"))
@@ -754,6 +880,7 @@ def test_send_wrong_answers(
     import app.bot.contexts
     from app.models.Card import Card
     from app.models.Deck import Deck
+    from app.models.User import User
 
     correct_answers = [utils.random_string().lower()]
 
@@ -771,28 +898,33 @@ def test_send_wrong_answers(
         chat_id=chat_id,
     )
 
-    with mock.patch.object(Deck, 'get', mocks.deck_get_by_id):
-        with mock.patch.object(Card, 'id', card_id):
-            r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+    with mock.patch.object(User, 'get_by', mocks.get_user_by(by_chat_id=True)):
+        with mock.patch.object(Deck, 'get', mocks.get_deck):
+            with mock.patch.object(Card, 'id', card_id):
+                r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
 
     assert r.status_code == 200
-    assert len(queue) > 0
 
-    req = queue[-1]
-
-    assert req['text'][0] == _(
-        "The card of type {type} was successfully created:\n\n"
-        "{question}\n\n"
-        "Correct: {correct_answers}\n\n"
-        "Wrong: {wrong_answers}"
-    ).format(
-        type=card_type,
-        question=question_text,
-        correct_answers=', '.join([ans.lower() for ans in correct_answers]),
-        wrong_answers=', '.join([ans.lower() for ans in wrong_answers]),
-    )
+    assert queue == [
+        Request(
+            SEND_MESSAGE,
+            chat_id=chat_id,
+            text=_(
+                "The card of type {type} was successfully created:\n\n"
+                "{question}\n\n"
+                "Correct: {correct_answers}\n\n"
+                "Wrong: {wrong_answers}"
+            ).format(
+                type=card_type,
+                question=question_text,
+                correct_answers=', '.join([ans.lower() for ans in correct_answers]),
+                wrong_answers=', '.join([ans.lower() for ans in wrong_answers]),
+            ),
+            reply_markup=markups.card_created_markup(card_id, deck_id),
+        ),
+        Request(
+            DELETE_MESSAGE,
+            chat_id=chat_id,
+        )
+    ]
     assert not app.bot.contexts.expectations.get(chat_id)
-
-    actual_markup = json.loads(req['reply_markup'][0])
-
-    assert actual_markup == markups.card_created_markup(card_id, deck_id)

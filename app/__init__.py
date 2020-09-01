@@ -51,7 +51,7 @@ def index() -> str:
 def webhook() -> str:
     importlib.import_module('bot.contextual_handlers')
     importlib.import_module('bot.markup_handlers')
-    from app.bot.main import bot
+    from app.bot import bot
 
     server.logger.info('Got new bot request')
     json_string = request.get_data().decode('utf-8')
