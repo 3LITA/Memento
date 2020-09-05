@@ -1,48 +1,95 @@
-from flask_babel import gettext as _
+from typing import List
+
+from app.i18n import gettext as _
 
 
-SIGN_UP = _('Sign up')
+def sign_up() -> str:
+    return _('Sign up')
 
-SIGN_IN = _('Sign in')
 
-MY_DECKS = _('My decks')
+def my_decks() -> str:
+    return _('My decks')
 
-ADD_DECK = _('Add deck')
 
-QUESTION = _('Question')
+def add_deck() -> str:
+    return _('Add deck')
 
-CORRECT = _('Correct')
 
-WRONG = _('Wrong')
+def question() -> str:
+    return _('Question')
 
-DELETE = _('Delete')
 
-CANCEL = _('Cancel')
+def correct() -> str:
+    return _('Correct')
 
-RENAME = _('Rename')
 
-BACK = _('Back')
+def wrong() -> str:
+    return _('Wrong')
 
-ADD_CARD = _('Add card')
 
-LEARN = _('Learn')
+def delete() -> str:
+    return _('Delete')
 
-EDIT = _('Edit')
 
-TIP = _('Tip')
+def cancel() -> str:
+    return _('Cancel')
 
-SHOW_ANSWER = _('Show answer')
 
-SUBMIT = _('Submit')
+def rename() -> str:
+    return _('Rename')
 
-LANGUAGE = _('Change language')
 
-KNOWLEDGE_RATES = [_('👎'), _('🖕'), _('👍')]
+def back() -> str:
+    return _('Back')
 
-CREATE_NEW_DECK = _('Create')
 
-ADD_EXISTING_DECK = _('Add')
+def add_card() -> str:
+    return _('Add card')
 
-NO_CORRECT_ANSWERS = _('No correct answers')
 
-NO_WRONG_ANSWERS = _('No wrong answers')
+def learn() -> str:
+    return _('Learn')
+
+
+def edit() -> str:
+    return _('Edit')
+
+
+def tip() -> str:
+    return _('Tip')
+
+
+def show_answer() -> str:
+    return _('Show answer')
+
+
+def submit() -> str:
+    return _('Submit')
+
+
+def language() -> str:
+    return _('Change language')
+
+
+def support() -> str:
+    return _('Support')
+
+
+def knowledge_rates() -> List[str]:
+    return [_('👎'), _('🖕'), _('👍')]
+
+
+def create_new_deck() -> str:
+    return _('Create')
+
+
+def add_existing_deck() -> str:
+    return _('Add')
+
+
+def no_correct_answers() -> str:
+    return _('No correct answers')
+
+
+def no_wrong_answers() -> str:
+    return _('No wrong answers')

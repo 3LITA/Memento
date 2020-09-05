@@ -29,7 +29,7 @@ def sign_up_markup(chat_id: int) -> InlineKeyboardMarkup:
 
 
 def repeat_keyboard(
-    prev_keyboard: dict, exclude: Sequence[str], *add_btns: buttons.Button
+    prev_keyboard: dict, exclude_text: Sequence[str], *add_btns: buttons.Button
 ) -> InlineKeyboardMarkup:
     rows = []
     for row in range(len(prev_keyboard)):
@@ -37,7 +37,7 @@ def repeat_keyboard(
         for btn in prev_keyboard[row]:
             text = btn.get('text')
             callback_data = btn.get('callback_data')
-            if text not in exclude:
+            if text not in exclude_text:
                 new_row.append(buttons.Button(text, callback_data))
         rows.append(new_row)
     for btn in add_btns:
@@ -52,11 +52,21 @@ def main_menu_markup(has_decks: bool) -> InlineKeyboardMarkup:
     add_deck_btn = buttons.AddDeckButton()
     language_btn = buttons.LanguageButton()
 
+    support_btn = buttons.SupportButton()
+
     first_row = [add_deck_btn, language_btn]
     if has_decks:
         first_row.insert(0, decks_btn)
 
-    markup = _Markup(first_row)
+    second_row = [support_btn]
+
+    markup = _Markup(first_row, second_row)
+    return markup.keyboard
+
+
+def support_markup() -> InlineKeyboardMarkup:
+    back_btn = buttons.BackButton(cd.main_menu())
+    markup = _Markup([back_btn])
     return markup.keyboard
 
 
@@ -73,7 +83,6 @@ def decks_markup(decks_map: Dict[int, str]) -> InlineKeyboardMarkup:
 
 def add_deck_markup() -> InlineKeyboardMarkup:
     create_deck_btn = buttons.CreateNewDeckButton()
-    # add_existing_btn = buttons.AddExistingDeckButton()
 
     back_btn = buttons.BackButton(cd.main_menu())
 
@@ -251,7 +260,7 @@ def radiobutton_markup(
 def rate_knowledge_markup(card_id: int) -> InlineKeyboardMarkup:
     first_row = [
         buttons.RateKnowledgeButton(card_id, knowledge)
-        for knowledge in range(len(button_texts.KNOWLEDGE_RATES))
+        for knowledge in range(len(button_texts.knowledge_rates()))
     ]
     edit_btn = buttons.EditCardButton(card_id)
 
@@ -275,4 +284,4 @@ def language_choice_markup(
 
 def tip_markup(prev_keyboard: dict, card_id: int) -> InlineKeyboardMarkup:
     show_btn = buttons.ShowAnswerButton(card_id)
-    return repeat_keyboard(prev_keyboard, [button_texts.TIP], show_btn)
+    return repeat_keyboard(prev_keyboard, [button_texts.tip()], show_btn)

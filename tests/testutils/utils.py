@@ -2,7 +2,7 @@ import string
 import time
 from functools import partial
 from random import choice
-from typing import List, Optional, Tuple
+from typing import Any, List, Optional, Tuple
 
 import requests
 
@@ -34,12 +34,13 @@ def _make_request(
         data: Optional[dict] = None,
         json: Optional[dict] = None,
         wait: Optional[float] = None,
+        **kwargs: Any,
 ) -> Tuple[requests.Response, List[Request]]:
-    url = f'{conftest.MAIN_SERVER_ROOT}/{relative_url}'
+    url = f'{conftest.MAIN_SERVER_ROOT}/{relative_url.lstrip("/")}'
     if method == 'get':
-        r = requests.get(url, params=params, data=data, json=json)
+        r = requests.get(url, params=params, data=data, json=json, **kwargs)
     elif method == 'post':
-        r = requests.post(url, data=data, json=json)
+        r = requests.post(url, data=data, json=json, **kwargs)
     else:
         raise NotImplementedError
     return r, await_queue(wait)

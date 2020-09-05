@@ -4,7 +4,7 @@ from typing import Any, Optional, Union
 
 from werkzeug.security import generate_password_hash
 
-from app import exceptions
+from app import exceptions, support_bot
 
 from . import db
 
@@ -30,8 +30,10 @@ class ActiveRecordMixin:
         res = cls.query.get(id_)  # type: ignore
         logging.debug("Get result: %s", res)
         if not res:
-            logging.critical("%s with id %s not found in database", cls.__name__, id_)
-            raise AttributeError(f'{cls.__name__} not found')
+            error_msg = f"{cls.__name__} with id {id_} not found in database"
+            support_bot.notify_critical_error(Exception(error_msg))
+            logging.critical(error_msg)
+            raise AttributeError(error_msg)
         return res
 
     @classmethod

@@ -18,6 +18,19 @@ def sign_up_markup(chat_id: int) -> dict:
     }
 
 
+def back_to_main_menu() -> dict:
+    return {
+        'inline_keyboard': [
+            [
+                {
+                    'callback_data': {'command': 'main_menu'},
+                    'text': 'Back'
+                },
+            ]
+        ]
+    }
+
+
 def main_menu_without_decks() -> dict:
     return {
         'inline_keyboard': [
@@ -29,6 +42,12 @@ def main_menu_without_decks() -> dict:
                 {
                     'callback_data': {'command': 'choose_language'},
                     'text': 'Change language'
+                }
+            ],
+            [
+                {
+                    'callback_data': {'command': 'support'},
+                    'text': 'Support'
                 }
             ]
         ]

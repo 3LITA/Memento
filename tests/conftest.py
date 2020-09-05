@@ -5,8 +5,12 @@ import pytest
 
 from tests.testutils.utils import random_string
 
+ADMIN_CHAT_ID = 999999
 BOT_SECRET_URL = random_string()
 BOT_TOKEN = 'BOT'
+SUPPORT_BOT_TOKEN = 'SUPPORT_BOT'
+SECRET_KEY = random_string()
+
 LOGGING_CONFIG = (
     f"{os.path.dirname(os.path.abspath(__file__))}/test-logging-config.yaml"
 )
@@ -35,6 +39,11 @@ def first_name():
 @pytest.fixture()
 def username():
     return random_string().lower()
+
+
+@pytest.fixture()
+def email():
+    return f"{random_string().lower()}@com"
 
 
 @pytest.fixture()

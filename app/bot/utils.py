@@ -6,6 +6,7 @@ from typing import Callable, List, Optional, Sequence, Tuple, Union
 from telebot import TeleBot
 from telebot.types import CallbackQuery, InlineKeyboardMarkup, Message
 
+from app import i18n, support_bot
 from app.models import CardType, utils
 from app.models.Card import Card
 from app.models.User import User
@@ -35,9 +36,10 @@ def log_message(func: Callable) -> Callable:
                 logging.info(
                     "User with chat_id %s not found in database", message.chat.id
                 )
-                reply = replies.START.format(message.from_user.first_name)
+                reply = replies.START.format(first_name=message.from_user.first_name)
                 keyboard = markups.sign_up_markup(message.chat.id)
             else:
+                i18n.set_language(user)
                 try:
                     keyboard, reply = func(message=message, user=user)
                 except contexts.ContextNotFound as e:
@@ -45,13 +47,14 @@ def log_message(func: Callable) -> Callable:
                     reply = replies.CONTEXT_FORGOTTEN
                     keyboard = markups.main_menu_markup(user.has_decks())
                 except Exception as e:
+                    support_bot.notify_critical_error(e)
                     logging.critical(e)
             if reply:
                 if user and user.inline_keyboard_id:
                     delete_message(bot, message.from_user.id, user.inline_keyboard_id)
                 message_id = bot.send_message(
                     chat_id=message.from_user.id,
-                    text=reply.text,
+                    text=reply.text(),
                     reply_markup=keyboard,
                     parse_mode=reply.parse_mode,
                 ).message_id
@@ -59,7 +62,7 @@ def log_message(func: Callable) -> Callable:
                     user.set_inline_keyboard_id(message_id)
 
                 logging.info(
-                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text
+                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text()
                 )
             bot.delete_message(message.chat.id, message.message_id)
 
@@ -88,6 +91,7 @@ def log_pressed_button(func: Callable) -> Callable:
                 reply = replies.START.format(callback.from_user.first_name)
                 keyboard = markups.sign_up_markup(callback.from_user.id)
             else:
+                i18n.set_language(user)
                 kwargs = callback.data
                 try:
                     keyboard, reply = func(callback=callback, user=user, **kwargs)
@@ -97,16 +101,17 @@ def log_pressed_button(func: Callable) -> Callable:
                     keyboard = markups.main_menu_markup(user.has_decks())
                 except Exception as e:
                     logging.critical(e)
+                    support_bot.notify_critical_error(e)
             if reply:
                 bot.edit_message_text(
-                    text=reply.text,
+                    text=reply.text(),
                     chat_id=callback.from_user.id,
                     message_id=callback.message.message_id,
                     reply_markup=keyboard,
                     parse_mode=reply.parse_mode,
                 )
                 logging.info(
-                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text
+                    "[%s.%s] bot: %s", func.__module__, func.__name__, reply.text()
                 )
 
     return wrapper
@@ -172,7 +177,9 @@ def build_learn_text_and_keyboard(
 
 
 def repeat_keyboard(
-    callback: CallbackQuery, exclude: Sequence[str] = (), delete_card_id: int = None
+    callback: CallbackQuery,
+    exclude_text: Sequence[str] = (),
+    delete_card_id: int = None,
 ) -> InlineKeyboardMarkup:
     data = callback.message.json
     prev_keyboard = get_previous_keyboard(data)
@@ -180,7 +187,7 @@ def repeat_keyboard(
         raise ValueError
 
     add_btns = [buttons.DeleteUserCardButton(delete_card_id)] if delete_card_id else []
-    return markups.repeat_keyboard(prev_keyboard, exclude, *add_btns)
+    return markups.repeat_keyboard(prev_keyboard, exclude_text, *add_btns)
 
 
 def get_previous_keyboard(data: dict) -> dict:
@@ -200,12 +207,12 @@ def delete_message(
 
 def parse_chosen_nums(callback: CallbackQuery) -> List[int]:
     js = callback.message.json
-    text = js['text'].split(replies.USER_CHOSEN.text)
+    text = js['text'].split(replies.USER_CHOSEN.text())
     return sorted([int(num.strip()) for num in text[-1].split(',')])
 
 
 def parse_question(text: str) -> str:
-    question = text.split(replies.USER_CHOSEN.text)
+    question = text.split(replies.USER_CHOSEN.text())
     return ''.join(question[:-1])
 
 

@@ -27,7 +27,7 @@ def incorrect_characters_in_username(username: str) -> None:
     flash(
         _(
             "The username {username} contains incorrect characters, "
-            "only latin letters and numbers are required"
+            "only latin letters and numbers are allowed"
         ).format(username=username),
         category=ERROR,
     )

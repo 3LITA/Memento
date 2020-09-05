@@ -2,7 +2,7 @@ from flask import Response, make_response, redirect, render_template, request
 from flask_login import login_required, login_user, logout_user
 from werkzeug import wrappers
 
-from app import exceptions
+from app import exceptions, support_bot
 from app.models.User import User
 from app.server import logging, login_manager, web
 from app.settings import URLS
@@ -79,11 +79,12 @@ def sign_up() -> wrappers.Response:
     except exceptions.PasswordError:
         flashes.insecure_password()
     except Exception as e:
+        support_bot.notify_critical_error(e)
         logging.critical(e)
         flashes.unexpected_error()
     else:
         if chat_id:
-            from app.bot.main import send_greetings
+            from app.bot import send_greetings
 
             send_greetings(user=user)
         flashes.successful_sign_up()

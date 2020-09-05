@@ -1,23 +1,25 @@
 import importlib
-import json
 import logging
-from typing import Any, Callable, Optional
+import os
+from typing import Any, Callable
 
 import telebot
 from flask import Flask, request
-from flask_babel import Babel
 from flask_login import LoginManager
 
 from app import settings
 from app.bot.main import bot
 from app.models import db
 
+from . import babel, support_bot
+
 
 web = Flask(__name__)
+web.secret_key = os.urandom(24)
 web.config.from_object(settings)
 db.init_app(web)
+babel.init_app(web)
 login_manager = LoginManager(web)
-babel = Babel(web)
 
 
 importlib.import_module("app.views.auth")
@@ -29,6 +31,7 @@ def catch_errors(func: Callable) -> Callable:
         try:
             res = func(*args, **kwargs)
         except Exception as e:
+            support_bot.notify_critical_error(e)
             logging.critical(
                 "An unexpected error happened in route %s.%s: %s",
                 func.__module__,
@@ -39,31 +42,6 @@ def catch_errors(func: Callable) -> Callable:
             return res
 
     return wrapper
-
-
-@babel.localeselector
-def get_locale() -> Optional[str]:
-    logging.info('Selecting locale')
-    if request.path == f'/{settings.BOT_SECRET_URL}':
-        from app.models.User import User
-
-        json_string = request.get_data().decode('utf-8')
-        js = json.loads(json_string)
-        try:
-            info = js['callback_query']
-        except KeyError:
-            info = js['message']
-        chat_id = info['from']['id']
-        user: Optional[User] = User.get_by(_chat_id=chat_id)
-        lang = info['from']['language_code']
-        lang = lang if lang in settings.LANGUAGES else None
-
-        if user:
-            if user.preferred_language:
-                lang = user.preferred_language
-        return lang or settings.DEFAULT_LOCALE
-    else:
-        return request.accept_languages.best_match(settings.LANGUAGES)
 
 
 @web.route(f'/{settings.BOT_SECRET_URL}', methods=['POST'])

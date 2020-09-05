@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-08-16 21:54+0400\n"
+"POT-Creation-Date: 2020-09-02 19:34+0400\n"
 "PO-Revision-Date: 2020-05-08 01:50+0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -22,66 +22,96 @@ msgstr ""
 #: app/bot/replies.py:26
 msgid ""
 "Hi, *{}*!\n"
-"I am gonna help you learn everything you've always wanted,\n"
-"no matter how hard it is!"
+"I am gonna help you learn everything you've always wanted, no matter how "
+"hard it is!\n"
+"But first, you must sign up."
 msgstr ""
 "Привет, *{}*!\n"
-"Я бот, который поможет тебе в игровой форме учить термины."
+"Я помогу тебе выучить все, что ты захочешь, вне зависимости от сложности "
+"изучаемого!\n"
+"Но сперва, тебе нужно зарегистрироваться."
 
-#: app/bot/replies.py:35
+#: app/bot/replies.py:36
+msgid ""
+"Excellent, *{username}*!\n"
+"Since you have signed up, you can create new decks!"
+msgstr ""
+"Отлично, *{username}*!\n"
+"Поскольку регистрация прошла успешно, можно создать новые колоды!"
+
+#: app/bot/replies.py:43
 msgid "Welcome back, *{}*!"
 msgstr "Привет снова, *{}*!"
 
-#: app/bot/replies.py:40
+#: app/bot/replies.py:46
+msgid ""
+"Okay, *{username}*, please describe your issue, it will be forwarded to "
+"our support assistant"
+msgstr ""
+"Хорошо, *{username}*, пожалуйста, опиши свою проблему, и она будет "
+"направлена нашему ассистенту поддержки"
+
+#: app/bot/replies.py:54
+msgid ""
+"Fine, *{username}*, your issue was sent to the support assistant:\n"
+"\n"
+"{issue_text}"
+msgstr ""
+"Здорово, *{username}*, текст проблемы был отправлен ассистенту поддержки:"
+"\n"
+"\n"
+"{issue_text}"
+
+#: app/bot/replies.py:62
 #, python-format
 msgid "%(menu_command)s - use this command to navigate\n"
 msgstr "%(menu_command)s - используй эту команду для навигации\n"
 
-#: app/bot/replies.py:47
+#: app/bot/replies.py:68
 msgid "Sorry, I don't understand this command"
 msgstr "Извини, я не знаю такой команды"
 
-#: app/bot/replies.py:51
+#: app/bot/replies.py:71
 msgid "Deck *{title}* was successfully created!"
 msgstr "Колода *{title}* была успешно создана!"
 
-#: app/bot/replies.py:56
+#: app/bot/replies.py:74
 msgid "The card was successfully deleted!"
 msgstr "Карта была успешно удалена!"
 
-#: app/bot/replies.py:60
+#: app/bot/replies.py:76
 msgid "The card is already deleted"
 msgstr "Карта уже удалена"
 
-#: app/bot/replies.py:64
+#: app/bot/replies.py:79
 msgid "Deck *{deck_title}* was successfully deleted!"
 msgstr "Колода *{deck_title}* была успешно удалена!"
 
-#: app/bot/replies.py:69
+#: app/bot/replies.py:83
 msgid "Deck *{previous_deck_title}* was renamed to *{new_deck_title}*."
 msgstr "Колода *{previous_deck_title}* была переименована в *{new_deck_title}*."
 
-#: app/bot/replies.py:74
+#: app/bot/replies.py:87
 msgid "Sorry, but I can't find this deck.\n"
 msgstr "Извини, но я не могу найти эту колоду.\n"
 
-#: app/bot/replies.py:78
+#: app/bot/replies.py:89
 msgid "Your decks:"
 msgstr "Твои колоды:"
 
-#: app/bot/replies.py:82
+#: app/bot/replies.py:91
 msgid "Please, estimate your knowledge level:"
 msgstr "Пожалуйста, оцени свои знания:"
 
-#: app/bot/replies.py:86
+#: app/bot/replies.py:93
 msgid "It's a start menu."
 msgstr "Главное меню."
 
-#: app/bot/replies.py:90
+#: app/bot/replies.py:95
 msgid "Do you want to create a new deck or add an existing one?"
 msgstr "Создать новую колоду или добавить существующую?"
 
-#: app/bot/replies.py:94
+#: app/bot/replies.py:98
 msgid ""
 "Send me a name to your deck.\n"
 "P.S. Remember that it should be unique."
@@ -89,11 +119,11 @@ msgstr ""
 "Пришли название будущей колоды.\n"
 "P.S. Учти, что оно должно быть уникальным."
 
-#: app/bot/replies.py:100
+#: app/bot/replies.py:101
 msgid "Deck title is too long. Try to make it shorter."
 msgstr "Название колоды слишком длинное. Попробуй его укоротить."
 
-#: app/bot/replies.py:106
+#: app/bot/replies.py:104
 msgid ""
 "Deck title contains incorrect characters. Only latin letters, numbers and"
 " dash are allowed."
@@ -101,19 +131,19 @@ msgstr ""
 "Название колоды содержит некорректные символы. Только латинские буквы, "
 "цифры и дефис разрешено использовать в названии колоды."
 
-#: app/bot/replies.py:113
+#: app/bot/replies.py:111
 msgid "Deck with title *{title}* already exists. Come up with another name."
 msgstr "Колода с названием *{title}* уже существует. Придумай другое название."
 
-#: app/bot/replies.py:119
+#: app/bot/replies.py:115
 msgid "Deck *{title}*"
 msgstr "Колода *{title}*"
 
-#: app/bot/replies.py:124
+#: app/bot/replies.py:117
 msgid "Deck *{title}* is empty"
 msgstr "Колода *{title}* пуста"
 
-#: app/bot/replies.py:128
+#: app/bot/replies.py:120
 msgid ""
 "Choose type of a card that you want to add to \"*{}*\".\n"
 "\n"
@@ -131,7 +161,7 @@ msgstr ""
 "3: карта с множественным выбором\n"
 "4: карта с выбором одного правильного ответа."
 
-#: app/bot/replies.py:140
+#: app/bot/replies.py:132
 msgid ""
 "You chose card type *{}*.\n"
 "\n"
@@ -141,7 +171,7 @@ msgstr ""
 "\n"
 "Пришли *вопрос*, который будет на карте."
 
-#: app/bot/replies.py:147
+#: app/bot/replies.py:139
 msgid ""
 "\n"
 "\n"
@@ -151,11 +181,11 @@ msgstr ""
 "\n"
 "Учти, что вопрос должен содержать поля для ввода \"*_*\"."
 
-#: app/bot/replies.py:154
+#: app/bot/replies.py:144
 msgid "Send me the *fact*, that should be on this card."
 msgstr "Пришли *факт*, который будет на карте."
 
-#: app/bot/replies.py:159
+#: app/bot/replies.py:147
 msgid ""
 "Your new card:\n"
 "\n"
@@ -165,7 +195,7 @@ msgstr ""
 "\n"
 "{fact}"
 
-#: app/bot/replies.py:163
+#: app/bot/replies.py:150
 msgid ""
 "Send me {number} comma-separated correct answers to this question:\n"
 "\n"
@@ -176,7 +206,7 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:170
+#: app/bot/replies.py:157
 msgid ""
 "Send me comma-separated correct answers to this question:\n"
 "\n"
@@ -186,7 +216,7 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:174
+#: app/bot/replies.py:161
 msgid ""
 "Send me comma-separated wrong answers to this question:\n"
 "\n"
@@ -196,7 +226,7 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:178
+#: app/bot/replies.py:165
 msgid ""
 "Send me the correct answer to this question:\n"
 "\n"
@@ -206,15 +236,15 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:182
+#: app/bot/replies.py:168
 msgid "There are no correct answers."
 msgstr "Правильных ответов нет."
 
-#: app/bot/replies.py:186
+#: app/bot/replies.py:170
 msgid "There are no wrong answers."
 msgstr "Неправильных ответов нет."
 
-#: app/bot/replies.py:190
+#: app/bot/replies.py:173
 msgid ""
 "You are confusing me!\n"
 "\n"
@@ -228,7 +258,7 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:198
+#: app/bot/replies.py:181
 msgid ""
 "You are confusing me!\n"
 "\n"
@@ -242,7 +272,7 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:206
+#: app/bot/replies.py:189
 msgid ""
 "You are confusing me!\n"
 "\n"
@@ -256,7 +286,7 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:214
+#: app/bot/replies.py:197
 msgid ""
 "What do you want to change in this card?\n"
 "\n"
@@ -270,7 +300,7 @@ msgstr ""
 "\n"
 "{answers}"
 
-#: app/bot/replies.py:218
+#: app/bot/replies.py:200
 msgid ""
 "Do you want to change in this fact?\n"
 "\n"
@@ -280,67 +310,67 @@ msgstr ""
 "\n"
 "{question}"
 
-#: app/bot/replies.py:222
+#: app/bot/replies.py:203
 msgid "What do you want to change in the deck *{deck_title}*?"
 msgstr "Что ты хочешь изменить в колоде *{deck_title}*?"
 
-#: app/bot/replies.py:227
+#: app/bot/replies.py:208
 msgid "Send me the name to the deck *{deck_title}*."
 msgstr "Пришли мне новое название для колоды *{}*."
 
-#: app/bot/replies.py:232
+#: app/bot/replies.py:212
 msgid "Are you sure you want to delete deck *{title}*?"
 msgstr "Удалить колоду *{title}*?"
 
-#: app/bot/replies.py:237
+#: app/bot/replies.py:215
 msgid "Correct answer: "
 msgstr "Правильный ответ: "
 
-#: app/bot/replies.py:241
+#: app/bot/replies.py:217
 msgid "Correct answers: "
 msgstr "Правильные ответы: "
 
-#: app/bot/replies.py:245
+#: app/bot/replies.py:219
 msgid "Wrong answers: "
 msgstr "Неправильные ответы: "
 
-#: app/bot/replies.py:249
+#: app/bot/replies.py:221
 msgid "Your choice:"
 msgstr "Твой выбор:"
 
-#: app/bot/replies.py:253
+#: app/bot/replies.py:224
 msgid "Correct!"
 msgstr "Правильно!"
 
-#: app/bot/replies.py:254
+#: app/bot/replies.py:225
 msgid "Absolutely correct!"
 msgstr "Совершенно верно!"
 
-#: app/bot/replies.py:255
+#: app/bot/replies.py:226
 msgid "Perfect!"
 msgstr "Отлично!"
 
-#: app/bot/replies.py:256
+#: app/bot/replies.py:227
 msgid "Well done!"
 msgstr "Именно так!"
 
-#: app/bot/replies.py:257
+#: app/bot/replies.py:228
 msgid "Excellent!"
 msgstr "Великолепно!"
 
-#: app/bot/replies.py:261
+#: app/bot/replies.py:232
 msgid "Wrong!"
 msgstr "Неправильно!"
 
-#: app/bot/replies.py:262
+#: app/bot/replies.py:233
 msgid "Bad news, wrong!"
 msgstr "К сожалению, ты ошибаешься!"
 
-#: app/bot/replies.py:263
+#: app/bot/replies.py:234
 msgid "Sorry, incorrect!"
 msgstr "Извини, но это неверный ответ!"
 
-#: app/bot/replies.py:267
+#: app/bot/replies.py:238
 msgid ""
 "Your question is too long.\n"
 "Try to make it shorter."
@@ -348,7 +378,7 @@ msgstr ""
 "Вопрос слишком длинный.\n"
 "Попробуй его укоротить."
 
-#: app/bot/replies.py:271
+#: app/bot/replies.py:242
 msgid ""
 "The card of type {type} was successfully created:\n"
 "\n"
@@ -362,7 +392,7 @@ msgstr ""
 "\n"
 "Правильные ответы: {correct_answers}"
 
-#: app/bot/replies.py:279
+#: app/bot/replies.py:250
 msgid ""
 "The card of type {type} was successfully created:\n"
 "\n"
@@ -380,27 +410,27 @@ msgstr ""
 "\n"
 "Неправильные: {wrong_answers}"
 
-#: app/bot/replies.py:288
+#: app/bot/replies.py:259
 msgid "Sorry, but a card of type *2* should contain gaps \"*_*\""
 msgstr "Извини, но карта типа *2* должна содержать поля для ввода \"*_*\""
 
-#: app/bot/replies.py:292
+#: app/bot/replies.py:263
 msgid "Sorry, but I need {expected} answers, whereas you gave me {actual}."
 msgstr "Прости, но мне необходимо {expected} ответов, а у тебя их {actual}.'"
 
-#: app/bot/replies.py:298
+#: app/bot/replies.py:266
 msgid "Choose the language you want to set"
 msgstr "Выбери язык"
 
-#: app/bot/replies.py:302
+#: app/bot/replies.py:268
 msgid "The language was successfully changed!"
 msgstr "Язык был успешно изменен!"
 
-#: app/bot/replies.py:306
+#: app/bot/replies.py:270
 msgid "Tip: "
 msgstr "Подсказка: "
 
-#: app/bot/replies.py:310
+#: app/bot/replies.py:273
 msgid ""
 "Unfortunately, there are no tips for this question...\n"
 "I can show you the answer though"
@@ -408,23 +438,23 @@ msgstr ""
 "К сожалению, к этому вопросу нет подсказок...\n"
 "Однако, я могу показать правильный ответ"
 
-#: app/bot/replies.py:317
+#: app/bot/replies.py:280
 msgid "Unfortunately, the context of our dialogue is already forgotten..."
 msgstr "К сожалению, контекст нашего диалога уже забыт..."
 
-#: app/bot/replies.py:321
+#: app/bot/replies.py:284
 msgid "What do you mean?"
 msgstr "Что ты имеешь в виду?"
 
-#: app/bot/replies.py:322
+#: app/bot/replies.py:285
 msgid "Please type /help and get the available commands"
 msgstr "Советую ввести /help и посмотреть список доступных команд"
 
-#: app/bot/replies.py:323
+#: app/bot/replies.py:286
 msgid "Sorry, I can't understand"
 msgstr "К сожалению, я не понимаю о чём ты"
 
-#: app/bot/replies.py:324
+#: app/bot/replies.py:287
 msgid ""
 "Sorry, but I can't reply...\n"
 "But I can help you learn something!"
@@ -433,94 +463,142 @@ msgstr ""
 "Зато я могу предложить поучиться!"
 
 #: app/bot/keyboard/button_texts.py:4
+msgid "Sign up"
+msgstr "Зарегистрироваться"
+
+#: app/bot/keyboard/button_texts.py:6
 msgid "My decks"
 msgstr "Мои колоды"
 
-#: app/bot/keyboard/button_texts.py:6
+#: app/bot/keyboard/button_texts.py:8
 msgid "Add deck"
 msgstr "Добавить колоду"
 
-#: app/bot/keyboard/button_texts.py:8
+#: app/bot/keyboard/button_texts.py:10
 msgid "Question"
 msgstr "Вопрос"
 
-#: app/bot/keyboard/button_texts.py:10
+#: app/bot/keyboard/button_texts.py:12
 msgid "Correct"
 msgstr "Правильные"
 
-#: app/bot/keyboard/button_texts.py:12
+#: app/bot/keyboard/button_texts.py:14
 msgid "Wrong"
 msgstr "Неправильные"
 
-#: app/bot/keyboard/button_texts.py:14
+#: app/bot/keyboard/button_texts.py:16
 msgid "Delete"
 msgstr "Удалить"
 
-#: app/bot/keyboard/button_texts.py:16
+#: app/bot/keyboard/button_texts.py:18
 msgid "Cancel"
 msgstr "Отмена"
 
-#: app/bot/keyboard/button_texts.py:18
+#: app/bot/keyboard/button_texts.py:20
 msgid "Rename"
 msgstr "Переименовать"
 
-#: app/bot/keyboard/button_texts.py:20
+#: app/bot/keyboard/button_texts.py:22
 msgid "Back"
 msgstr "Назад"
 
-#: app/bot/keyboard/button_texts.py:22
+#: app/bot/keyboard/button_texts.py:24
 msgid "Add card"
 msgstr "Добавить карту"
 
-#: app/bot/keyboard/button_texts.py:24
+#: app/bot/keyboard/button_texts.py:26
 msgid "Learn"
 msgstr "Учить"
 
-#: app/bot/keyboard/button_texts.py:26
+#: app/bot/keyboard/button_texts.py:28
 msgid "Edit"
 msgstr "Редактировать"
 
-#: app/bot/keyboard/button_texts.py:28
+#: app/bot/keyboard/button_texts.py:30
 msgid "Tip"
 msgstr "Подсказка"
 
-#: app/bot/keyboard/button_texts.py:30
+#: app/bot/keyboard/button_texts.py:32
 msgid "Show answer"
 msgstr "Показать ответ"
 
-#: app/bot/keyboard/button_texts.py:32
+#: app/bot/keyboard/button_texts.py:34
 msgid "Submit"
 msgstr "Подтвердить"
 
-#: app/bot/keyboard/button_texts.py:34
+#: app/bot/keyboard/button_texts.py:36
 msgid "Change language"
 msgstr "Сменить язык"
 
-#: app/bot/keyboard/button_texts.py:36
+#: app/bot/keyboard/button_texts.py:38
+msgid "Support"
+msgstr "Поддержка"
+
+#: app/bot/keyboard/button_texts.py:40
 msgid "👎"
 msgstr "👎"
 
-#: app/bot/keyboard/button_texts.py:36
+#: app/bot/keyboard/button_texts.py:40
 msgid "🖕"
 msgstr "🖕"
 
-#: app/bot/keyboard/button_texts.py:36
+#: app/bot/keyboard/button_texts.py:40
 msgid "👍"
 msgstr "👍"
 
-#: app/bot/keyboard/button_texts.py:38
+#: app/bot/keyboard/button_texts.py:42
 msgid "Create"
 msgstr "Создать"
 
-#: app/bot/keyboard/button_texts.py:40
+#: app/bot/keyboard/button_texts.py:44
 msgid "Add"
 msgstr "Добавить"
 
-#: app/bot/keyboard/button_texts.py:42
+#: app/bot/keyboard/button_texts.py:46
 msgid "No correct answers"
 msgstr "Правильных ответов нет"
 
-#: app/bot/keyboard/button_texts.py:44
+#: app/bot/keyboard/button_texts.py:48
 msgid "No wrong answers"
 msgstr "Неправильных ответов нет"
+
+#: app/views/flashes.py:12
+msgid "The email {email} is already in use"
+msgstr "Адрес электронной почты {email} уже используется"
+
+#: app/views/flashes.py:17
+msgid "No account was found with the email address {email}"
+msgstr "Аккаунт с адресом электронной почтты {email} не найден"
+
+#: app/views/flashes.py:23
+msgid "The password is incorrect"
+msgstr "Неверный пароль"
+
+#: app/views/flashes.py:28
+msgid ""
+"The username {username} contains incorrect characters, only latin letters"
+" and numbers are allowed"
+msgstr ""
+"Имя пользователя {username} содержит запрещенные символы, можно "
+"использовать только латинские буквы и цифры"
+
+#: app/views/flashes.py:38
+msgid "The username {username} is already in use"
+msgstr "Имя пользователя {username} уже используется"
+
+#: app/views/flashes.py:45
+msgid ""
+"Password must be at least 8 characters long, contain at least one digit, "
+"one uppercase and one lowercase latin letter"
+msgstr ""
+"Пароль должен быть длиной хотя бы 8 символов, содержать хотя бы одну "
+"цифру, одну заглавную и одну строчную латинскую букву"
+
+#: app/views/flashes.py:55
+msgid "Well done! Now you can sign in using your credentials"
+msgstr "Отлично! Теперь ты можешь войти, используя данные для входа"
+
+#: app/views/flashes.py:59
+msgid "An unexpected error happened. Please, try again later."
+msgstr "Произошла неожиданная ошибка. Пожалуйста, попробуйте позже."
 

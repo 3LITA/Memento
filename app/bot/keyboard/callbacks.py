@@ -8,6 +8,8 @@ class CallbackData:
 
     _MAIN_MENU = 'main_menu'
 
+    _SUPPORT = 'support'
+
     _ADD_DECK = 'add_deck'
 
     _CREATE_NEW_DECK = 'new_deck'
@@ -76,6 +78,9 @@ class CallbackData:
 
     def main_menu(self) -> str:
         return self._get_callback(self._MAIN_MENU)
+
+    def support(self) -> str:
+        return self._get_callback(self._SUPPORT)
 
     def add_deck(self) -> str:
         return self._get_callback(self._ADD_DECK)

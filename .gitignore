@@ -2,5 +2,5 @@
 .idea
 .vscode
 !**/__pychache__/
-*.log
+*.log*
 *.mo

@@ -2,6 +2,8 @@ import random
 from functools import partial
 from typing import Any, Callable, List, Optional, Sequence
 
+import mock
+
 import app.models.User
 import app.models.Deck
 
@@ -56,7 +58,8 @@ def _get_user_by(
     for k in kwargs.keys():
         if k.startswith('_') and search_result_map[k]:
             kwargs[k[1:]] = kwargs.pop(k)
-            user = app.models.User.User(**kwargs)
+            with mock.patch.object(app.models.User.User, 'get_by', dummy_func):
+                user = app.models.User.User(**kwargs)
             user._id = random.randint(1, 1000)
             if has_decks:
                 user.has_decks = true_func
@@ -156,9 +159,13 @@ def raise_value_error(*args, **kwargs):
     raise ValueError
 
 
+app.support_bot.report = dummy_func
+app.support_bot.notify_critical_error = dummy_func
+
 app.models.utils.ActiveRecordMixin.delete = dummy_func
 app.models.utils.ActiveRecordMixin.save = dummy_func
 app.models.utils.ActiveRecordMixin.get = dummy_func
 app.models.utils.ActiveRecordMixin.get_by = dummy_func
+
 
 app.models.Deck.Deck.search_by_title = dummy_func

@@ -1,9 +1,9 @@
 import logging
 from typing import Any
 
-from flask_babel import refresh
 from telebot.types import CallbackQuery
 
+from app import i18n
 from app.bot import bot, contexts, replies, utils
 from app.bot.keyboard import cd, markups
 from app.models.Deck import Deck
@@ -14,10 +14,8 @@ from app.models.utils import humanize_title
 @bot.callback_query_handler(
     func=lambda msg: utils.button_pressed(msg, cd.delete_message())
 )
-@utils.log_pressed_button
-def delete_message_markup_handler(callback: CallbackQuery) -> utils.handler_return:
-    bot.delete_message(callback.from_user.id)
-    return None, None
+def delete_message_markup_handler(callback: CallbackQuery) -> None:
+    bot.delete_message(callback.from_user.id, callback.message.message_id)
 
 
 @bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.main_menu()))
@@ -93,11 +91,21 @@ def set_language_markup_handler(
     language: str, user: User, **_: Any
 ) -> utils.handler_return:
     user.set_preferred_language(language)
+    i18n.set_language(user)
 
     logging.info("Set '%s' language to user %s", language, user.id)
-    refresh()  # TODO: make this work
 
     reply = replies.LANGUAGE_WAS_CHANGED
     keyboard = markups.main_menu_markup(user.has_decks())
+
+    return keyboard, reply
+
+
+@bot.callback_query_handler(func=lambda msg: utils.button_pressed(msg, cd.support()))
+@utils.log_pressed_button
+def support_markup_handler(user: User, **_: Any) -> utils.handler_return:
+    reply = replies.SUPPORT.format(username=user.username)
+    keyboard = markups.support_markup()
+    contexts.set_context(user, contexts.ExpectedCommands.SEND_ISSUE)
 
     return keyboard, reply

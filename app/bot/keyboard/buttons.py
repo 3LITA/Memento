@@ -20,14 +20,20 @@ class Button:
 
 class SignUpButton(Button):
     def __init__(self, chat_id: int) -> None:
-        text = button_texts.SIGN_UP
+        text = button_texts.sign_up()
         url = f"{WEBSITE}{URLS.LOGIN}?chat_id={chat_id}"
         super().__init__(text, callback=cd.delete_message(), url=url)
 
 
+class SupportButton(Button):
+    def __init__(self) -> None:
+        text = button_texts.support()
+        super().__init__(text, callback=cd.support())
+
+
 class DecksButton(Button):
     def __init__(self) -> None:
-        text = button_texts.MY_DECKS
+        text = button_texts.my_decks()
         super().__init__(text, cd.my_decks())
 
 
@@ -45,49 +51,49 @@ class DeckMenuButton(Button):
 
 class CreateNewDeckButton(Button):
     def __init__(self) -> None:
-        text = button_texts.CREATE_NEW_DECK
+        text = button_texts.create_new_deck()
         super().__init__(text, cd.create_new_deck())
 
 
 class AddDeckButton(Button):
     def __init__(self) -> None:
-        text = button_texts.ADD_DECK
+        text = button_texts.add_deck()
         super().__init__(text, cd.add_deck())
 
 
 class AddCardButton(Button):
     def __init__(self, deck_id: Union[int, str]) -> None:
-        text = button_texts.ADD_CARD
+        text = button_texts.add_card()
         super().__init__(text, cd.add_card(deck_id))
 
 
 class LanguageButton(Button):
     def __init__(self) -> None:
-        text = button_texts.LANGUAGE
+        text = button_texts.language()
         super().__init__(text, cd.language())
 
 
 class EditQuestionButton(Button):
     def __init__(self, card_id: Union[int, str]) -> None:
-        text = button_texts.QUESTION
+        text = button_texts.question()
         super().__init__(text, cd.edit_question(card_id))
 
 
 class EditCorrectAnswersButton(Button):
     def __init__(self, card_id: Union[int, str]) -> None:
-        text = button_texts.CORRECT
+        text = button_texts.correct()
         super().__init__(text, cd.edit_correct_answers(card_id))
 
 
 class EditWrongAnswersButton(Button):
     def __init__(self, card_id: Union[int, str]) -> None:
-        text = button_texts.WRONG
+        text = button_texts.wrong()
         super().__init__(text, cd.edit_wrong_answers(card_id))
 
 
 class _DeleteButton(Button):
     def __init__(self, callback: str) -> None:
-        text = button_texts.DELETE
+        text = button_texts.delete()
         super().__init__(text, callback)
 
 
@@ -108,25 +114,25 @@ class SureDeleteDeckButton(_DeleteButton):
 
 class CancelButton(Button):
     def __init__(self, callback: str) -> None:
-        text = button_texts.CANCEL
+        text = button_texts.cancel()
         super().__init__(text, callback)
 
 
 class RenameUserDeckButton(Button):
     def __init__(self, deck_id: Union[int, str]) -> None:
-        text = button_texts.RENAME
+        text = button_texts.rename()
         super().__init__(text, cd.rename_deck(deck_id))
 
 
 class LearnButton(Button):
     def __init__(self, deck_id: Union[int, str]) -> None:
-        text = button_texts.LEARN
+        text = button_texts.learn()
         super().__init__(text, cd.learn_deck(deck_id))
 
 
 class _EditButton(Button):
     def __init__(self, callback: str) -> None:
-        text = button_texts.EDIT
+        text = button_texts.edit()
         super().__init__(text, callback)
 
 
@@ -142,7 +148,7 @@ class EditCardButton(_EditButton):
 
 class BackButton(Button):
     def __init__(self, callback: str) -> None:
-        text = button_texts.BACK
+        text = button_texts.back()
         super().__init__(text, callback)
 
 
@@ -154,19 +160,19 @@ class CardTypeButton(Button):
 
 class TipButton(Button):
     def __init__(self, card_id: Union[int, str]) -> None:
-        text = button_texts.TIP
+        text = button_texts.tip()
         super().__init__(text, cd.tip(card_id))
 
 
 class ShowAnswerButton(Button):
     def __init__(self, card_id: Union[int, str]) -> None:
-        text = button_texts.SHOW_ANSWER
+        text = button_texts.show_answer()
         super().__init__(text, cd.show_answer(card_id))
 
 
 class RateKnowledgeButton(Button):
     def __init__(self, card_id: Union[int, str], knowledge: int) -> None:
-        text = button_texts.KNOWLEDGE_RATES[knowledge]
+        text = button_texts.knowledge_rates()[knowledge]
         super().__init__(text, cd.rate_knowledge(card_id, knowledge))
 
 
@@ -184,7 +190,7 @@ class AnswerButton(Button):
 
 class SubmitButton(Button):
     def __init__(self, card_id: int) -> None:
-        text = button_texts.SUBMIT
+        text = button_texts.submit()
         super().__init__(text, cd.submit(card_id))
 
 
@@ -199,11 +205,11 @@ class RadioAnswerButton(Button):
 
 class NoCorrectAnswersButton(Button):
     def __init__(self) -> None:
-        text = button_texts.NO_CORRECT_ANSWERS
+        text = button_texts.no_correct_answers()
         super().__init__(text, cd.no_correct_answers())
 
 
 class NoWrongAnswersButton(Button):
     def __init__(self) -> None:
-        text = button_texts.NO_WRONG_ANSWERS
+        text = button_texts.no_wrong_answers()
         super().__init__(text, cd.no_wrong_answers())

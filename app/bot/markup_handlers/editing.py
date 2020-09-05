@@ -24,14 +24,14 @@ def edit_card_markup_handler(card_id: int, **_: Any) -> utils.handler_return:
                 f"{replies.CORRECT_ANSWERS_ARE}" f"{', '.join(card.correct_answers)}"
             )
         else:
-            answers = button_texts.NO_CORRECT_ANSWERS
+            answers = button_texts.no_correct_answers()
         if card.wrong_answers:
             answers = (
                 f"{answers}\n\n{replies.WRONG_ANSWERS_ARE}"
                 f"{', '.join(card.wrong_answers)}"
             )
         elif card.type in (CardType.MULTIPLE_CHOICE, CardType.RADIOBUTTON):
-            answers = f"{answers}\n\n{button_texts.NO_WRONG_ANSWERS}"
+            answers = f"{answers}\n\n{button_texts.no_wrong_answers()}"
 
         reply = replies.EDIT_CARD.format(question=card.question, answers=answers)
 

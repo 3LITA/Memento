@@ -80,7 +80,9 @@ def show_answers_markup_handler(
             text = replies.CORRECT_ANSWERS_ARE
         text = replies.Reply(f"{text}{', '.join(card.correct_answers)}")
 
-    keyboard = utils.repeat_keyboard(callback, exclude=[button_texts.SHOW_ANSWER])
+    keyboard = utils.repeat_keyboard(
+        callback, exclude_text=[button_texts.show_answer()]
+    )
     reply = replies.Reply(f"{card.question}\n\n{text}")
 
     return keyboard, reply
@@ -123,7 +125,7 @@ def answer_sheet_markup_handler(
     text = callback.message.text
 
     keyboard = utils.repeat_keyboard(callback)
-    if text.endswith(replies.USER_CHOSEN.text):
+    if text.endswith(replies.USER_CHOSEN.text()):
         reply = replies.Reply(f"{text} {option}")
     else:
         chosen_nums = utils.parse_chosen_nums(callback)

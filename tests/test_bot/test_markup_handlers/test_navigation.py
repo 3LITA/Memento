@@ -1,14 +1,28 @@
-import json
-
 import mock
 from flask_babel import gettext as _
 
 from tests import conftest
 from tests.test_bot import markups
 from tests.testutils import setup, request_generator, utils, mocks
-from tests.testutils.telebot_requests import EDIT_MESSAGE, MARKDOWN, Request
+from tests.testutils.telebot_requests import (
+    EDIT_MESSAGE, DELETE_MESSAGE, MARKDOWN, Request
+)
 
 setup.setup_servers()
+
+
+def test_delete_message_via_button(chat_id, username):
+    from app.bot.keyboard import cd
+
+    data = request_generator.generate_callback_query(
+        callback_data=cd.delete_message(),
+        chat_id=chat_id,
+    )
+
+    r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+
+    assert r.status_code == 200
+    assert queue == [Request(DELETE_MESSAGE, chat_id=chat_id)]
 
 
 def test_open_main_menu_with_no_decks(chat_id):
@@ -210,3 +224,37 @@ def test_open_deck_menu_having_cards(chat_id, deck_id):
             reply_markup=markups.deck_menu_having_cards(deck_id),
         )
     ]
+
+
+def test_press_support_button(chat_id, username):
+    from app.bot.contexts import Context, ExpectedCommands, expectations
+    from app.bot.keyboard import cd
+    from app.models.User import User
+
+    data = request_generator.generate_callback_query(
+        callback_data=cd.support(),
+        chat_id=chat_id,
+    )
+
+    with mock.patch.object(
+            User, 'get_by', mocks.get_user_by(by_chat_id=True, username=username)
+    ):
+        r, queue = utils.post(conftest.BOT_SECRET_URL, json=data)
+
+    assert r.status_code == 200
+    assert queue == [
+        Request(
+            EDIT_MESSAGE,
+            chat_id=chat_id,
+            text=_(
+                "Okay, *{username}*, please describe your issue, "
+                "it will be forwarded to our support assistant"
+            ).format(username=username),
+            parse_mode=MARKDOWN,
+            reply_markup=markups.back_to_main_menu(),
+        )
+    ]
+
+    assert utils.expectations_match(
+        expectations.get(chat_id), Context(command=ExpectedCommands.SEND_ISSUE)
+    )

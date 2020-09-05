@@ -7,9 +7,7 @@ from flask_babel import gettext as _
 from tests import conftest
 from tests.test_bot import markups
 from tests.testutils import request_generator, setup, mocks, utils
-from tests.testutils.telebot_requests import (
-    Request, SEND_MESSAGE, DELETE_MESSAGE, MARKDOWN
-)
+from tests.testutils.telebot_requests import Request, SEND_MESSAGE, DELETE_MESSAGE
 
 setup.setup_servers()
 

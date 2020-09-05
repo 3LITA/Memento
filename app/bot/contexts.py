@@ -27,6 +27,8 @@ class ExpectedCommands:
 
     LEARN = "learn"
 
+    SEND_ISSUE = "send_issue"
+
 
 class Context:
     command: str
