@@ -52,6 +52,7 @@ Deploy:
     - chmod 700 ~/.ssh
   script:
     - docker build --cache-from $CONTAINER_TEST_IMAGE -t $CONTAINER_APP_IMAGE --target app .
+    - docker push $CONTAINER_APP_IMAGE
     - scp ./docker-compose.deploy.yml deploy@35.228.107.28:~/memento/docker-compose.yml
     - |
       ssh deploy@35.228.107.28 \
