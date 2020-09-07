@@ -166,6 +166,6 @@ app.models.utils.ActiveRecordMixin.delete = dummy_func
 app.models.utils.ActiveRecordMixin.save = dummy_func
 app.models.utils.ActiveRecordMixin.get = dummy_func
 app.models.utils.ActiveRecordMixin.get_by = dummy_func
-
+app.models.db.create_all = dummy_func
 
 app.models.Deck.Deck.search_by_title = dummy_func

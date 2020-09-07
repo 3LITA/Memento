@@ -12,6 +12,7 @@ flask
 flask-babel
 flask-login
 flask-sqlalchemy
+gunicorn
 psycopg2-binary
 pyTelegramBotAPI
 SQLAlchemy

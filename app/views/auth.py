@@ -1,10 +1,12 @@
+import logging
+
 from flask import Response, make_response, redirect, render_template, request
 from flask_login import login_required, login_user, logout_user
 from werkzeug import wrappers
 
 from app import exceptions, support_bot
 from app.models.User import User
-from app.server import logging, login_manager, web
+from app.server import login_manager, web
 from app.settings import URLS
 
 from . import flashes

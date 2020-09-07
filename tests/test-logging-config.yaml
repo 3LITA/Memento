@@ -15,7 +15,6 @@ loggers:
   app:
     level: DEBUG
     handlers: [console]
-    propagate: no
 
 root:
   level: DEBUG

@@ -24,44 +24,6 @@ LOGGING_CONFIG_PATH = os.getenv(
     'LOGGING_CONFIG_PATH', f"{(pathlib.Path().absolute())}/logging-config.yaml"
 )
 
-try:
-    with open(LOGGING_CONFIG_PATH, 'r') as file:
-        log_cfg = yaml.safe_load(file.read())
-        dictConfig(log_cfg)
-except FileNotFoundError:
-    LOGGING_CONFIG = {
-        'version': 1,
-        'formatters': {
-            'default': {
-                'format': (
-                    '%(asctime)s %(levelname)s '
-                    'in %(module)s.%(funcName)s [%(lineno)d]: %(message)s'
-                )
-            }
-        },
-        'handlers': {
-            'console': {
-                'class': 'logging.StreamHandler',
-                'level': 'DEBUG',
-                'formatter': 'default',
-                'stream': 'ext://sys.stdout',
-            },
-            'file': {
-                'class': 'logging.handlers.RotatingFileHandler',
-                'level': 'INFO',
-                'formatter': 'default',
-                'filename': 'memento.log',
-                'maxBytes': 1024,
-                'backupCount': 3,
-            },
-        },
-        'loggers': {
-            'app': {
-                'level': 'DEBUG',
-                'handlers': ['console', 'file'],
-                'propagate': False,
-            }
-        },
-        'root': {'level': 'DEBUG', 'handlers': ['console']},
-    }
-    dictConfig(LOGGING_CONFIG)
+with open(LOGGING_CONFIG_PATH, 'r') as file:
+    log_cfg = yaml.safe_load(file.read())
+    dictConfig(log_cfg)

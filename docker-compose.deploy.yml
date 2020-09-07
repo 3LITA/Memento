@@ -2,15 +2,10 @@ version: '3.7'
 
 services:
   app:
-    build:
-      context: .
-      target: dev
-    image: memento-dev
-    volumes:
-      - '.:/srv/app'
+    image: registry.gitlab.com/theonetwelfth/anki
     ports:
       - '5000:5000'
-    depends_on: 
+    depends_on:
       - postgres
     restart: unless-stopped
     env_file:

@@ -1,15 +1,18 @@
-FROM python:3.8
+FROM python:3.8 AS base
 
 WORKDIR /srv/app
 
 COPY ./requirements.txt ./
 RUN pip install -r requirements.txt
-
-COPY ./app ./app
-COPY ./tests ./tests
-COPY ./pyproject.toml ./
-COPY ./setup.cfg ./
-
 EXPOSE 5000
 
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+FROM base AS app
+
+COPY ./app ./app
+COPY ./pyproject.toml ./setup.cfg ./logging-config.yaml ./babel.cfg ./
+RUN pybabel compile -d app/i18n
+CMD ["gunicorn", "-k", "sync", "-w", "5", "-b", "0.0.0.0:5000", "app.server:web"]
+
+FROM app AS dev
+
+COPY ./ ./
