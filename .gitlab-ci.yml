@@ -41,6 +41,8 @@ Application Tests:
 
 Deploy:
   stage: Deploy
+  image:
+    name: debian:10-slim
   only:
     refs:
       - master
