@@ -5,6 +5,7 @@ services:
 stages:
   - Build
   - Test
+  - Release
   - Deploy
 
 variables:
@@ -39,6 +40,12 @@ Application Tests:
     - docker rm -fv anki-tests-${CI_JOB_ID}_app_1 anki-tests-${CI_JOB_ID}_postgres_1 || true
     - docker network rm anki-tests-${CI_JOB_ID}_default || true
 
+Build Release Image:
+  stage: Release
+  script:
+    - docker build --cache-from $CONTAINER_TEST_IMAGE -t $CONTAINER_APP_IMAGE --target app .
+    - docker push $CONTAINER_APP_IMAGE
+
 Deploy:
   stage: Deploy
   image:
@@ -48,14 +55,11 @@ Deploy:
       - master
   before_script:
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-    - apt-get install docker -y
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - docker build --cache-from $CONTAINER_TEST_IMAGE -t $CONTAINER_APP_IMAGE --target app .
-    - docker push $CONTAINER_APP_IMAGE
     - scp ./docker-compose.deploy.yml deploy@35.228.107.28:~/memento/docker-compose.yml
     - |
       ssh deploy@35.228.107.28 \
