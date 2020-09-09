@@ -6,8 +6,6 @@ services:
       context: .
       target: dev
     image: memento-dev
-    volumes:
-      - '.:/srv/app'
     ports:
       - '5000:5000'
     depends_on: 

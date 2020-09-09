@@ -11,7 +11,7 @@ FROM base AS app
 COPY ./app ./app
 COPY ./pyproject.toml ./setup.cfg ./logging-config.yaml ./babel.cfg ./
 RUN pybabel compile -d app/i18n
-CMD ["gunicorn", "-k", "sync", "-w", "5", "-b", "0.0.0.0:5000", "app.server:web"]
+CMD ["gunicorn", "-k", "sync", "-w", "5", "-b", "0.0.0.0:5000", "--preload", "app.server:web"]
 
 FROM app AS dev
 
