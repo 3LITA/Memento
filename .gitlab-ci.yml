@@ -59,6 +59,8 @@ Deploy:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+    - chmod 600 ~/.ssh/config
   script:
     - scp ./docker-compose.deploy.yml deploy@35.228.107.28:~/memento/docker-compose.yml
     - |
