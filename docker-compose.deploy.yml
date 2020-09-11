@@ -3,8 +3,6 @@ version: '3.7'
 services:
   app:
     image: registry.gitlab.com/theonetwelfth/anki
-    ports:
-      - '5000:5000'
     depends_on:
       - postgres
     volumes:
@@ -40,6 +38,9 @@ services:
       - type: bind
         source: ./nginx.conf
         target: /etc/nginx/conf.d/default.conf
+      - type: bind
+        source: /etc/letsencrypt/live/mementorize.ml
+        target: /var/memento/mementorize.ml
 
 volumes:
   pgdata: null
