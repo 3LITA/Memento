@@ -39,8 +39,14 @@ services:
         source: ./nginx.conf
         target: /etc/nginx/conf.d/default.conf
       - type: bind
-        source: /etc/letsencrypt/live/mementorize.ml
-        target: /var/memento/mementorize.ml
+        source: /etc/letsencrypt/live/mementorize.ml/cert.pem
+        target: /var/memento/mementorize.ml/cert.pem
+        read_only: true
+      - type: bind
+        source: /etc/letsencrypt/live/mementorize.ml/privkey.pem
+        target: /var/memento/mementorize.ml/privkey.pem
+        read_only: true
+
 
 volumes:
   pgdata: null
