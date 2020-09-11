@@ -7,6 +7,11 @@ services:
       - '5000:5000'
     depends_on:
       - postgres
+    volumes:
+      - type: volume
+        source: app-static
+        target: /srv/app/app/static
+        consistency: delegated
     restart: unless-stopped
     env_file:
       - .env
@@ -20,5 +25,22 @@ services:
     env_file:
       - .env
 
+  nginx:
+    image: nginx:stable
+    ports:
+      - '80:80'
+      - '443:443'
+    depends_on:
+      - app
+    volumes:
+      - type: volume
+        source: app-static
+        target: /var/memento/static
+        read_only: true
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+
 volumes:
   pgdata: null
+  app-static: null

@@ -63,6 +63,7 @@ Deploy:
     - chmod 600 ~/.ssh/config
   script:
     - scp ./docker-compose.deploy.yml deploy@35.228.107.28:~/memento/docker-compose.yml
+    - scp ./nginx.conf deploy@35.228.107.28:~/memento/nginx.conf
     - |
       ssh deploy@35.228.107.28 \
       "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && \
