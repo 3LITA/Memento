@@ -28,13 +28,13 @@ def catch_errors(func: Callable) -> Callable:
         try:
             res = func(*args, **kwargs)
         except Exception as e:
-            support_bot.notify_critical_error(e)
             logging.critical(
                 "An unexpected error happened in route %s.%s: %s",
                 func.__module__,
                 func.__name__,
                 e,
             )
+            support_bot.notify_critical_error(e)
         else:
             return res
 
