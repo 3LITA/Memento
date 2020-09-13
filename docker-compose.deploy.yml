@@ -40,12 +40,16 @@ services:
         source: ./nginx.conf
         target: /etc/nginx/conf.d/default.conf
       - type: bind
-        source: /etc/letsencrypt/live/mementorize.ml/cert.pem
-        target: /var/memento/mementorize.ml/cert.pem
+        source: /etc/letsencrypt/live/mementorize.ml/fullchain.pem
+        target: /var/memento/fullchain.pem
         read_only: true
       - type: bind
         source: /etc/letsencrypt/live/mementorize.ml/privkey.pem
-        target: /var/memento/mementorize.ml/privkey.pem
+        target: /var/memento/privkey.pem
+        read_only: true
+      - type: bind
+        source: /etc/letsencrypt/live/mementorize.ml/chain.pem
+        target: /var/memento/chain.pem
         read_only: true
 
 
