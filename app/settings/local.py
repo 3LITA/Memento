@@ -1,3 +1,4 @@
+import logging
 import os
 import pathlib
 from logging.config import dictConfig
@@ -17,7 +18,6 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 WEBSITE = os.getenv('WEBSITE')
 
 SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
-# SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:@localhost/memento'
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 LOGGING_CONFIG_PATH = os.getenv(
@@ -27,3 +27,4 @@ LOGGING_CONFIG_PATH = os.getenv(
 with open(LOGGING_CONFIG_PATH, 'r') as file:
     log_cfg = yaml.safe_load(file.read())
     dictConfig(log_cfg)
+    logging.info("Successfully loaded logging config")

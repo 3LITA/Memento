@@ -1,4 +1,7 @@
-from telebot import TeleBot
+import importlib
+import logging
+
+import telebot
 
 from app import settings
 from app.bot.keyboard import markups
@@ -7,7 +10,20 @@ from app.models.User import User
 from . import replies
 
 
-bot = TeleBot(settings.TOKEN)
+bot = telebot.TeleBot(settings.TOKEN, threaded=False)
+
+
+def process_update(raw_update: str) -> None:
+    importlib.import_module('app.bot.main')
+    importlib.import_module('app.bot.contextual_handlers')
+    importlib.import_module('app.bot.markup_handlers')
+
+    logging.debug("Message handlers number: %s", len(bot.message_handlers))
+    logging.debug("CallbackQuery handlers number: %s", len(bot.callback_query_handlers))
+
+    update = telebot.types.Update.de_json(raw_update)
+    logging.debug("Proceeding update: %s", update.update_id)
+    bot.process_new_updates([update])
 
 
 def send_greetings(user: User) -> None:

@@ -5,10 +5,8 @@ from typing import Any, Callable
 
 from flask import Flask, request
 from flask_login import LoginManager
-from telebot.types import Update
 
-from app import settings, support_bot
-from app.bot import bot
+from app import bot, settings, support_bot
 from app.models import db
 
 from . import babel
@@ -44,14 +42,10 @@ def catch_errors(func: Callable) -> Callable:
 @web.route(f'/{settings.BOT_SECRET_URL}', methods=['POST'])
 @catch_errors
 def bot_message() -> str:
-    importlib.import_module('app.bot.main')
-    importlib.import_module('app.bot.contextual_handlers')
-    importlib.import_module('app.bot.markup_handlers')
-
     logging.info('Got new bot request')
     json_string = request.get_data().decode('utf-8')
-    update = Update.de_json(json_string)
-    bot.process_new_updates([update])
+    bot.process_update(json_string)
+    logging.info('Update is proceeded')
     return ''
 
 
