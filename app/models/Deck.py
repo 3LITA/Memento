@@ -40,7 +40,7 @@ class Deck(db.Model, utils.ActiveRecordMixin):  # type: ignore
             raise exceptions.TooLongError(f'deck title is too long: {deck_title}')
 
         deck_title = utils.generate_title(user.id, deck_title)
-        search = Deck.search_by_title(user, deck_title)
+        search = Deck.get_by(_title=deck_title)
 
         if search:
             logging.error("Tried to create deck with non unique title %s", deck_title)
