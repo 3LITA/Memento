@@ -21,7 +21,6 @@ DB_NAME = os.getenv('DATABASE_NAME')
 
 REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
 REDIS_PORT = os.getenv('REDIS_PORT', 6379)
-REDIS_PASS = os.getenv('REDIS_PASS', '')
 
 SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
 SQLALCHEMY_TRACK_MODIFICATIONS = False

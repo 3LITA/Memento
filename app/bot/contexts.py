@@ -3,18 +3,14 @@ import logging
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
-import redis
+from redis import Redis
 from telebot.types import CallbackQuery, Message
 
 from app import settings
 from app.models.User import User
 
 
-rdb = redis.Redis(
-    host=settings.REDIS_HOST,
-    port=settings.REDIS_PORT,
-    password=settings.REDIS_PASS,
-)
+rdb = Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT)
 
 
 class ContextNotFound(Exception):
