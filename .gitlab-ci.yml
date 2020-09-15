@@ -42,6 +42,9 @@ Application Tests:
 
 Build Release Image:
   stage: Release
+  only:
+    refs:
+      - master
   script:
     - docker build --cache-from $CONTAINER_TEST_IMAGE -t $CONTAINER_APP_IMAGE --target app .
     - docker push $CONTAINER_APP_IMAGE
