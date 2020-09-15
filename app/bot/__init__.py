@@ -10,7 +10,7 @@ from app.models.User import User
 from . import replies
 
 
-bot = telebot.TeleBot(settings.TOKEN, threaded=False)
+bot = telebot.TeleBot(settings.BOT_TOKEN, threaded=False)
 
 
 def process_update(raw_update: str) -> None:

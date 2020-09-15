@@ -1,9 +1,20 @@
+import json
 import logging
-from typing import Dict, List, Optional, Union
+from dataclasses import dataclass
+from typing import List, Optional, Union
 
+import redis
 from telebot.types import CallbackQuery, Message
 
+from app import settings
 from app.models.User import User
+
+
+rdb = redis.Redis(
+    host=settings.REDIS_HOST,
+    port=settings.REDIS_PORT,
+    password=settings.REDIS_PASS,
+)
 
 
 class ContextNotFound(Exception):
@@ -30,32 +41,36 @@ class ExpectedCommands:
     SEND_ISSUE = "send_issue"
 
 
+@dataclass
 class Context:
     command: str
-    deck_id: int
-    card_id: int
-    card_type: int
-    question: str
-    correct_answers: List[str]
-    gaps: int
+    deck_id: int = None
+    card_id: int = None
+    card_type: int = None
+    question: str = None
+    correct_answers: List[str] = None
+    gaps: int = None
 
-    def __init__(self, command: str, **kwargs: Union[int, str, List[str]]) -> None:
-        self.command = command
-        for item in kwargs:
-            self.__setattr__(item, kwargs[item])
+    def serialize(self) -> str:
+        return json.dumps({k: v for k, v in self.__dict__.items()})
 
-
-expectations: Dict[int, Context] = dict()  # chat_id: {key: value}
+    @classmethod
+    def parse(cls, raw_context: str) -> 'Context':
+        return cls(**json.loads(raw_context))
 
 
 def forget_context(user: User) -> Optional[Context]:
-    return expectations.pop(user.chat_id, None) if user.chat_id else None
+    return rdb.delete(user.chat_id)
 
 
 def set_context(user: User, command: str, **kwargs: Union[int, str, List[str]]) -> None:
     if not user.chat_id:
         raise AttributeError("User %s has no chat_id", user.id)
-    expectations[user.chat_id] = Context(command=command, **kwargs)
+    rdb.set(
+        user.chat_id,
+        Context(command=command, **kwargs).serialize(),
+        ex=settings.REDIS_EXPIRATION_SECONDS,
+    )
 
 
 def command_expected(message: Message, command: str) -> bool:
@@ -71,7 +86,7 @@ def command_expected(message: Message, command: str) -> bool:
 
 
 def get_context(message: Union[Message, CallbackQuery]) -> Context:
-    context = expectations.get(message.from_user.id)
+    context = rdb.get(message.from_user.id)
     if not context:
         raise ContextNotFound("Context for user %s not found", message.from_user.id)
-    return context
+    return Context.parse(context)

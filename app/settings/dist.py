@@ -8,6 +8,7 @@ MAX_ANSWER_LENGTH = 63
 MAX_TIP_LENGTH = 63
 CARD_TYPES_RANGE = 5  # 0 - 4
 KNOWLEDGE_RANGE = 3
+REDIS_EXPIRATION_SECONDS = 3600
 
 DEFAULT_LOCALE = 'en'
 LANGUAGES = {'en': '🇬🇧', 'ru': '🇷🇺'}
@@ -28,5 +29,4 @@ class URLS:
 class BotCommands:
     start_commands = ['start']
     help_commands = ['help']
-    expectations_commands = ['expectations']
     menu_commands = ['menu']
